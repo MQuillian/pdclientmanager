@@ -25,8 +25,8 @@ public class Client {
     @NotEmpty(message = "Name")
     private String name;
     
-    @Column(name = "in_custody")
-    @NotEmpty(message = "In custody")
+    @Column(name = "custody_status")
+    @NotEmpty(message = "Custody status")
     private CustodyStatus custodyStatus;
     
     @Column(name = "FK_attorney")

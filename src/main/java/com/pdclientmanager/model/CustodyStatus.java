@@ -1,5 +1,5 @@
 package com.pdclientmanager.model;
 
 public enum CustodyStatus {
-    CUSTODY, BOND;
+    IN_CUSTODY, OUT_ON_BOND;
 }
