@@ -54,4 +54,7 @@ local.properties
 
 # JDT-specific (Eclipse Java Development Tools)     
 .classpath
+
+# Hibernate config with username and pw
 *.cfg.xml
+
