@@ -23,10 +23,10 @@
 		</style>
 	</head>
 	<body>
-		<h1>The feckin home page, yeh?</h1>
+		<h1>Home page</h1>
 		<hr>
 		<a href="searchPage">Search database</a>
 		<br>
-		<a href="attorneyManagementHome">Manage mah feckin attorneys</a>
+		<a href="attorneyManagementHome">Manage attorneys</a>
 	</body>
 </html>
