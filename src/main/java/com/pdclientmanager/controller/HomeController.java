@@ -16,4 +16,29 @@ public class HomeController {
         return "searchPage";
     }
     
+    @GetMapping("/caseManagement")
+    public String caseManagement() {
+        return "caseManagement";
+    }
+    
+    @GetMapping("/employeeManagement")
+    public String employeeManagement() {
+        return "employeeManagement";
+    }
+    
+    @GetMapping("/individualStats")
+    public String individualStats() {
+        return "individualStats";
+    }
+    
+    @GetMapping("/officeStats")
+    public String officeStats() {
+        return "officeStats";
+    }
+    
+    @GetMapping("/pendingCourt")
+    public String pendingCourt() {
+        return "pendingCourt";
+    }
+    
 }

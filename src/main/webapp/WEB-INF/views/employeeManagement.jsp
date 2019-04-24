@@ -2,6 +2,7 @@
 	pageEncoding="ISO-8859-1"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -23,22 +24,12 @@
 		</style>
 	</head>
 	<body>
-		<h1>Home</h1>
+		<h1>Employee Management</h1>
 		<hr>
-		CASE SEARCH UI
+		<a href="${contextPath}/">Return to Home</a>
+		<hr>
+		LIST ATTORNEYS W/ CRUD FUNCTIONALITY
 		<br>
-		PENDING CT DATE UI
-		<br>
-		<a href="pendingCourt">Pending Court Dates</a>
-		<br>
-		<a href="caseManagement">Case Management</a>
-		<br>
-		<a href="employeeManagement">Employee Management</a>
-		<br>
-		STATISTICS UI
-		<br>
-		<a href="individualStats">Individual Statistics</a>
-		<br>
-		<a href="officeStats">Office Statistics</a>
+		LIST INVESTIGATORS W/ CRUD FUNCTIONALITY
 	</body>
 </html>
