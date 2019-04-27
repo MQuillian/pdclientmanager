@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pdclientmanager.model.Attorney;
 import com.pdclientmanager.service.CrudService;
 
 @Controller
-public class AttorneyController {
+public class EmployeeController {
     
     @Autowired
     CrudService<Attorney> attorneyService;
+    
     
     @ModelAttribute("attorney")
     public Attorney formBackingObject() {
@@ -30,7 +30,11 @@ public class AttorneyController {
     
     @GetMapping("/attorneyManagementHome")
     public String attorneyManagementHome(Model model) {
-        model.addAttribute("attorneys", attorneyService.list());
+        List<Attorney> list = attorneyService.getAll();
+        for(Attorney a: list) {
+            System.out.println(a);
+        }
+        model.addAttribute("attorneys", attorneyService.getAll());
         return "attorneyManagementHome";
     }
     
@@ -38,20 +42,20 @@ public class AttorneyController {
     public String saveAttorney(@ModelAttribute("attorney") @Valid Attorney attorney, 
                             BindingResult result, Model model) {
         if(result.hasErrors()) {
-            model.addAttribute("attorneys", attorneyService.list());
+            model.addAttribute("attorneys", attorneyService.getAll());
             return "attorneyManagementHome";
         }
         
-        attorneyService.save(attorney);
+        attorneyService.create(attorney);
         return "attorneyManagementHome";
     }
     
-    @GetMapping("/searchAttorney")
-    public String searchAttorney(@RequestParam("searchTerm") String searchTerm, Model model) {
-        model.addAttribute("searchTerm", searchTerm);
-        model.addAttribute("attorneys", attorneyService.search(searchTerm));
-        return "attorneySearchResults";
-    }
+//    @GetMapping("/searchAttorney")
+//    public String searchAttorney(@RequestParam("searchTerm") String searchTerm, Model model) {
+//        model.addAttribute("searchTerm", searchTerm);
+//        model.addAttribute("attorneys", employeeService.search(searchTerm));
+//        return "attorneySearchResults";
+//    }
     
     @GetMapping("/manageAttorney/{id}")
     public String manageAttorney(@PathVariable("id") Long targetId, Model model) {
@@ -66,8 +70,8 @@ public class AttorneyController {
             model.addAttribute("attorney", attorney);
             return "manageAttorney";
         }
-        attorneyService.update(attorney.getId(), attorney);
-        model.addAttribute("attorneys", attorneyService.list());
+        attorneyService.update(attorney);
+        model.addAttribute("attorneys", attorneyService.getAll());
         return "redirect:/attorneyManagementHome";
     }
 
