@@ -21,10 +21,11 @@ public class HomeController {
         return "caseManagement";
     }
     
-    @GetMapping("/employeeManagement")
-    public String employeeManagement() {
-        return "employeeManagement";
-    }
+//    @GetMapping("/employeeManagement")
+//    public String employeeManagement(Model model) {
+//        model.addAttribute(attributeValue)
+//        return "employeeManagement";
+//    }
     
     @GetMapping("/individualStats")
     public String individualStats() {

@@ -4,16 +4,17 @@ import java.util.List;
 
 public interface CrudDao<T> {
     
-    void save(T newObject);
+    void setClass(Class<T> entityClass);
     
-    List<T> search(String searchTerm);
+    void create(final T newObject);
     
-    List<T> list();
+    T getById(final Long targetId);
     
-    void update(Long targetId, T updatedObject);
+    List<T> getAll();
     
-    void delete(Long targetId);
+    void update(final T entity);
     
-    T getById(Long targetId);
-
+    void delete(final T entity);
+    
+    void deleteById(final Long id);
 }

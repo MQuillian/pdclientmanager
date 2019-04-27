@@ -2,18 +2,21 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
+import com.pdclientmanager.dao.CrudDao;
+
 public interface CrudService<T> {
     
-void save(T newObject);
+    public void setDao(CrudDao<T> dao);
     
-    List<T> search(String searchTerm);
+    void create(final T entity);
     
-    List<T> list();
+    T getById(final Long id);
     
-    void update(Long targetId, T updatedObject);
+    List<T> getAll();
     
-    void delete(Long targetId);
+    void update(final T entity);
     
-    T getById(Long targetId);
-
+    void delete(final T entity);
+    
+    void deleteById(final Long id);
 }

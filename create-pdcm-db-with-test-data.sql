@@ -5,20 +5,32 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 CREATE SCHEMA IF NOT EXISTS `walton_public_defender` DEFAULT CHARACTER SET latin1 ;
 USE `walton_public_defender` ;
 
+# Drop/create Investigators table
+
+DROP TABLE IF EXISTS `investigators` ;
+
+CREATE TABLE IF NOT EXISTS `investigators` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `employment_status` INT(4) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
 # Drop/create Attorneys table
 
 DROP TABLE IF EXISTS `attorneys` ;
 
 CREATE TABLE IF NOT EXISTS `attorneys` (
-  `attorney_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `employment_status` INT(4) NOT NULL DEFAULT '0',
-  `FK_investigator` INT(4) NOT NULL,
-  PRIMARY KEY (`attorney_id`),
-  INDEX `FK_investigator` (`FK_investigator` ASC),
+  `investigator_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `investigator_id` (`investigator_id` ASC),
   CONSTRAINT `attorneys_ibfk_1`
-    FOREIGN KEY (`FK_investigator`)
-    REFERENCES `investigators`(`investigator_id`)
+    FOREIGN KEY (`investigator_id`)
+    REFERENCES `investigators` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -30,10 +42,10 @@ DROP TABLE IF EXISTS `clients` ;
 # Drop/create Clients table
 
 CREATE TABLE IF NOT EXISTS `clients` (
-  `client_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `custody_status` INT(4) NULL DEFAULT '0',
-  PRIMARY KEY (`client_id`))
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
@@ -42,9 +54,9 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `judges` ;
 
 CREATE TABLE IF NOT EXISTS `judges` (
-  `judge_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`judge_id`))
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
@@ -53,28 +65,28 @@ DROP TABLE IF EXISTS `cases` ;
 # Drop/create Cases table
 
 CREATE TABLE IF NOT EXISTS `cases` (
-  `case_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `case_number` VARCHAR(45) UNIQUE NOT NULL,
-  `FK_client` INT(11) NOT NULL,
-  `FK_judge` INT(11) NOT NULL,
-  `FK_attorney` INT(11) NOT NULL,
-  PRIMARY KEY (`case_id`),
-  INDEX `FK_client` (`FK_client` ASC),
-  INDEX `FK_judge` (`FK_judge` ASC),
-  INDEX `FK_attorney` (`FK_attorney` ASC),
+  `client_id` INT(11) NOT NULL,
+  `judge_id` INT(11) NOT NULL,
+  `attorney_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `client_id` (`client_id` ASC),
+  INDEX `judge_id` (`judge_id` ASC),
+  INDEX `attorney_id` (`attorney_id` ASC),
   CONSTRAINT `cases_ibfk_1`
-    FOREIGN KEY (`FK_client`)
-    REFERENCES `clients` (`client_id`)
+    FOREIGN KEY (`client_id`)
+    REFERENCES `clients` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `cases_ibfk_2`
-    FOREIGN KEY (`FK_judge`)
-    REFERENCES `judges` (`judge_id`)
+    FOREIGN KEY (`judge_id`)
+    REFERENCES `judges` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `cases_ibfk_3`
-    FOREIGN KEY (`FK_attorney`)
-    REFERENCES `attorneys` (`attorney_id`)
+    FOREIGN KEY (`attorney_id`)
+    REFERENCES `attorneys` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -85,10 +97,10 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `charges` ;
 
 CREATE TABLE IF NOT EXISTS `charges` (
-  `charge_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `statute` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`charge_id`))
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
@@ -97,54 +109,46 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `charged_counts` ;
 
 CREATE TABLE IF NOT EXISTS `charged_counts` (
-  `FK_case` INT(11) NOT NULL,
-  `FK_charge` INT(11) NOT NULL,
-  PRIMARY KEY (`FK_case`, `FK_charge`),
-  INDEX `FK_charge` (`FK_charge` ASC),
+  `case_id` INT(11) NOT NULL,
+  `charge_id` INT(11) NOT NULL,
+  PRIMARY KEY (`case_id`, `charge_id`),
+  INDEX `charge_id` (`charge_id` ASC),
   CONSTRAINT `charged_counts_ibfk_1`
-    FOREIGN KEY (`FK_case`)
-    REFERENCES `cases` (`case_id`)
+    FOREIGN KEY (`case_id`)
+    REFERENCES `cases` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `charged_counts_ibfk_2`
-    FOREIGN KEY (`FK_charge`)
-    REFERENCES `charges` (`charge_id`)
+    FOREIGN KEY (`charge_id`)
+    REFERENCES `charges` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-# Drop/create Investigators table
-
-DROP TABLE IF EXISTS `investigators` ;
-
-CREATE TABLE IF NOT EXISTS `investigators` (
-  `investigator_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`investigator_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+#-------------------------------------
+#TEST DATA
+#-------------------------------------
 
 # Insert investigators
 
-INSERT INTO investigators (name)
+INSERT INTO investigators (name, employment_status)
 	VALUES
-    ('Tim Loodle'),
-    ('Sandra Sanderson'),
-    ('INACTIVE');
+    ('Tim Loodle', 0),
+    ('Sandra Sanderson', 0);
 
 # Insert attorneys
 
-INSERT INTO attorneys (name, employment_status, FK_investigator)
+INSERT INTO attorneys (name, employment_status, investigator_id)
 	VALUES
     ('Matt Quillian', 0,
-		(SELECT investigator_id FROM investigators WHERE name = 'Tim Loodle')),
+		(SELECT id FROM investigators WHERE name = 'Tim Loodle')),
     ('John Doe', 0,
-		(SELECT investigator_id FROM investigators WHERE name = 'Sandra Sanderson')),
+		(SELECT id FROM investigators WHERE name = 'Sandra Sanderson')),
     ('Jane Smith', 1,
-		(SELECT investigator_id FROM investigators WHERE name = 'INACTIVE')),
+		(SELECT id FROM investigators WHERE name = 'Tim Loodle')),
     ('Matt Schneider', 1,
-		(SELECT investigator_id FROM investigators WHERE name = 'INACTIVE'));
+		(SELECT id FROM investigators WHERE name = 'Sandra Sanderson'));
 
 # Insert clients
 
@@ -170,67 +174,67 @@ INSERT INTO judges (name)
     
 # Insert cases
 
-INSERT INTO cases (case_number, FK_client, FK_judge, FK_attorney)
+INSERT INTO cases (case_number, client_id, judge_id, attorney_id)
 	VALUES
     ('18J161450', 
-		(SELECT client_id FROM clients WHERE name = 'Eric Hoefle'),
-        (SELECT judge_id FROM judges WHERE name = 'Horace Johnson'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'Matt Quillian')
+		(SELECT id FROM clients WHERE name = 'Eric Hoefle'),
+        (SELECT id FROM judges WHERE name = 'Horace Johnson'),
+        (SELECT id FROM attorneys WHERE name = 'Matt Quillian')
 	),
     ('18J141738', 
-		(SELECT client_id FROM clients WHERE name = 'Jason Baddorf'),
-        (SELECT judge_id FROM judges WHERE name = 'Horace Johnson'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'John Doe')
+		(SELECT id FROM clients WHERE name = 'Jason Baddorf'),
+        (SELECT id FROM judges WHERE name = 'Horace Johnson'),
+        (SELECT id FROM attorneys WHERE name = 'John Doe')
 	),
     ('18J171429', 
-		(SELECT client_id FROM clients WHERE name = 'Jamie Jameson'),
-        (SELECT judge_id FROM judges WHERE name = 'Horace Johnson'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'Matt Quillian')
+		(SELECT id FROM clients WHERE name = 'Jamie Jameson'),
+        (SELECT id FROM judges WHERE name = 'Horace Johnson'),
+        (SELECT id FROM attorneys WHERE name = 'Matt Quillian')
 	),
     ('17J283757', 
-		(SELECT client_id FROM clients WHERE name = 'Marky Mark'),
-        (SELECT judge_id FROM judges WHERE name = 'John Mott'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'John Doe')
+		(SELECT id FROM clients WHERE name = 'Marky Mark'),
+        (SELECT id FROM judges WHERE name = 'John Mott'),
+        (SELECT id FROM attorneys WHERE name = 'John Doe')
 	),
     ('17J172365', 
-		(SELECT client_id FROM clients WHERE name = 'Phteven McButton'),
-        (SELECT judge_id FROM judges WHERE name = 'John Mott'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'John Doe')
+		(SELECT id FROM clients WHERE name = 'Phteven McButton'),
+        (SELECT id FROM judges WHERE name = 'John Mott'),
+        (SELECT id FROM attorneys WHERE name = 'John Doe')
 	),
     ('18J179254', 
-		(SELECT client_id FROM clients WHERE name = 'Atticus Finch'),
-        (SELECT judge_id FROM judges WHERE name = 'John Mott'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'Matt Quillian')
+		(SELECT id FROM clients WHERE name = 'Atticus Finch'),
+        (SELECT id FROM judges WHERE name = 'John Mott'),
+        (SELECT id FROM attorneys WHERE name = 'Matt Quillian')
 	),
     ('18J172979', 
-		(SELECT client_id FROM clients WHERE name = 'Jamie Jameson'),
-        (SELECT judge_id FROM judges WHERE name = 'Horace Johnson'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'Matt Quillian')
+		(SELECT id FROM clients WHERE name = 'Jamie Jameson'),
+        (SELECT id FROM judges WHERE name = 'Horace Johnson'),
+        (SELECT id FROM attorneys WHERE name = 'Matt Quillian')
 	),
     ('17J281737', 
-		(SELECT client_id FROM clients WHERE name = 'Erica Erickson'),
-        (SELECT judge_id FROM judges WHERE name = 'John Mott'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'John Doe')
+		(SELECT id FROM clients WHERE name = 'Erica Erickson'),
+        (SELECT id FROM judges WHERE name = 'John Mott'),
+        (SELECT id FROM attorneys WHERE name = 'John Doe')
 	),
     ('18J218436', 
-		(SELECT client_id FROM clients WHERE name = 'Erica Erickson'),
-        (SELECT judge_id FROM judges WHERE name = 'John Mott'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'John Doe')
+		(SELECT id FROM clients WHERE name = 'Erica Erickson'),
+        (SELECT id FROM judges WHERE name = 'John Mott'),
+        (SELECT id FROM attorneys WHERE name = 'John Doe')
 	),
     ('18J476421', 
-		(SELECT client_id FROM clients WHERE name = 'Fblthp NLN'),
-        (SELECT judge_id FROM judges WHERE name = 'Horace Johnson'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'Matt Quillian')
+		(SELECT id FROM clients WHERE name = 'Fblthp NLN'),
+        (SELECT id FROM judges WHERE name = 'Horace Johnson'),
+        (SELECT id FROM attorneys WHERE name = 'Matt Quillian')
 	),
     ('17J742874', 
-		(SELECT client_id FROM clients WHERE name = 'Jimmy Fallon'),
-        (SELECT judge_id FROM judges WHERE name = 'Horace Johnson'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'John Doe')
+		(SELECT id FROM clients WHERE name = 'Jimmy Fallon'),
+        (SELECT id FROM judges WHERE name = 'Horace Johnson'),
+        (SELECT id FROM attorneys WHERE name = 'John Doe')
 	),
     ('18J851936', 
-		(SELECT client_id FROM clients WHERE name = 'Hamilton Holmes'),
-        (SELECT judge_id FROM judges WHERE name = 'John Mott'),
-        (SELECT attorney_id FROM attorneys WHERE name = 'Matt Quillian')
+		(SELECT id FROM clients WHERE name = 'Hamilton Holmes'),
+        (SELECT id FROM judges WHERE name = 'John Mott'),
+        (SELECT id FROM attorneys WHERE name = 'Matt Quillian')
 	);
     
 
@@ -246,46 +250,46 @@ INSERT INTO charges (name, statute)
 
 # Insert charged counts
 
-INSERT INTO charged_counts (FK_case, FK_charge)
+INSERT INTO charged_counts (case_id, charge_id)
 	VALUES
-    ((SELECT case_id FROM cases WHERE case_number = '18J161450'),
-		(SELECT charge_id FROM charges WHERE name = 'Battery')
+    ((SELECT id FROM cases WHERE case_number = '18J161450'),
+		(SELECT id FROM charges WHERE name = 'Battery')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '18J161450'),
-		(SELECT charge_id FROM charges WHERE name = 'Simple battery')
+    ((SELECT id FROM cases WHERE case_number = '18J161450'),
+		(SELECT id FROM charges WHERE name = 'Simple battery')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '18J171429'),
-		(SELECT charge_id FROM charges WHERE name = 'Theft by taking')
+    ((SELECT id FROM cases WHERE case_number = '18J171429'),
+		(SELECT id FROM charges WHERE name = 'Theft by taking')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '17J283757'),
-		(SELECT charge_id FROM charges WHERE name = 'Driving while license suspended')
+    ((SELECT id FROM cases WHERE case_number = '17J283757'),
+		(SELECT id FROM charges WHERE name = 'Driving while license suspended')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '17J283757'),
-		(SELECT charge_id FROM charges WHERE name = 'Possession of controlled substance')
+    ((SELECT id FROM cases WHERE case_number = '17J283757'),
+		(SELECT id FROM charges WHERE name = 'Possession of controlled substance')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '17J172365'),
-		(SELECT charge_id FROM charges WHERE name = 'Theft by taking')
+    ((SELECT id FROM cases WHERE case_number = '17J172365'),
+		(SELECT id FROM charges WHERE name = 'Theft by taking')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '18J179254'),
-		(SELECT charge_id FROM charges WHERE name = 'Battery')
+    ((SELECT id FROM cases WHERE case_number = '18J179254'),
+		(SELECT id FROM charges WHERE name = 'Battery')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '18J172979'),
-		(SELECT charge_id FROM charges WHERE name = 'Driving while license suspended')
+    ((SELECT id FROM cases WHERE case_number = '18J172979'),
+		(SELECT id FROM charges WHERE name = 'Driving while license suspended')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '17J281737'),
-		(SELECT charge_id FROM charges WHERE name = 'Simple battery')
+    ((SELECT id FROM cases WHERE case_number = '17J281737'),
+		(SELECT id FROM charges WHERE name = 'Simple battery')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '18J218436'),
-		(SELECT charge_id FROM charges WHERE name = 'Possession of controlled substance')
+    ((SELECT id FROM cases WHERE case_number = '18J218436'),
+		(SELECT id FROM charges WHERE name = 'Possession of controlled substance')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '18J476421'),
-		(SELECT charge_id FROM charges WHERE name = 'Battery')
+    ((SELECT id FROM cases WHERE case_number = '18J476421'),
+		(SELECT id FROM charges WHERE name = 'Battery')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '17J742874'),
-		(SELECT charge_id FROM charges WHERE name = 'Simple battery')
+    ((SELECT id FROM cases WHERE case_number = '17J742874'),
+		(SELECT id FROM charges WHERE name = 'Simple battery')
 	),
-    ((SELECT case_id FROM cases WHERE case_number = '18J851936'),
-		(SELECT charge_id FROM charges WHERE name = 'Theft by taking')
+    ((SELECT id FROM cases WHERE case_number = '18J851936'),
+		(SELECT id FROM charges WHERE name = 'Theft by taking')
 	);
 
 
