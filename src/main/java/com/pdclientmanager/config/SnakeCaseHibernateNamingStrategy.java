@@ -18,25 +18,28 @@ public class SnakeCaseHibernateNamingStrategy implements PhysicalNamingStrategy 
 
     @Override
     public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment jdbcEnvironment) {
-        return convertToSnakeCase(name);
+        return convertToSnakeCase(name, true);
     }
 
     @Override
     public Identifier toPhysicalSequenceName(Identifier name, JdbcEnvironment jdbcEnvironment) {
-        return convertToSnakeCase(name);
+        return convertToSnakeCase(name, false);
     }
 
     @Override
     public Identifier toPhysicalColumnName(Identifier name, JdbcEnvironment jdbcEnvironment) {
-        return convertToSnakeCase(name);
+        return convertToSnakeCase(name, false);
     }
     
-    private Identifier convertToSnakeCase(Identifier identifier) {
+    private Identifier convertToSnakeCase(Identifier identifier, boolean isTable) {
         final String regex = "([a-z])([A-Z])";
         final String replacement = "$1_$2";
-        final String newName = identifier.getText()
+        String newName = identifier.getText()
                 .replaceAll(regex, replacement)
                 .toLowerCase();
+        if(isTable == true) {
+            newName += "s";
+        }
         return Identifier.toIdentifier(newName);
     }
 
