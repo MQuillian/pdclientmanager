@@ -16,7 +16,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.pdclientmanager"})
-public class WebMvcConfig implements WebMvcConfigurer {
+public class ApplicationMvcConfig implements WebMvcConfigurer {
     
     @Bean
     public InternalResourceViewResolver resolver() {
@@ -39,6 +39,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
             .addResourceHandler("/resources/**")
             .addResourceLocations("/resources/");
+        
+//        registry
+//            .addResourceHandler("/webjars/**")
+//            .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        
     }
 
     @Override
@@ -47,7 +52,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
         validator.setValidationMessageSource(messageSource());
         return validator;
     }
-    
-    
-
 }

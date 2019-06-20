@@ -6,21 +6,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 @MappedSuperclass
-public abstract class Employee {  //Refactor for inheritance w/ Attorney and Investigator
+public abstract class Employee {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotEmpty(message = "Name")
+    @NotEmpty(message = "Please enter name")
     private String name;
     
-    @NotNull(message = "Employment status")
+    @NotNull(message = "Please enter employment status")
     private EmploymentStatus employmentStatus;
     
     public Employee() {
@@ -58,8 +57,12 @@ public abstract class Employee {  //Refactor for inheritance w/ Attorney and Inv
         this.employmentStatus = status;
     }
 
+    public boolean isNew() {
+        return (this.id == null);
+    }
+    
     @Override
     public String toString() {
-        return "Employee [id=" + id + ", name=" + name + ", employmentStatus=" + employmentStatus + "]";
+        return this.getName();
     }
 }
