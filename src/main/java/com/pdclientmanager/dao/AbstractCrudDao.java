@@ -1,22 +1,22 @@
 package com.pdclientmanager.dao;
 
-import java.io.Serializable;
 import java.util.List;
+
+import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class AbstractCrudDao<T extends Serializable> {
+public abstract class AbstractCrudDao<T> implements CrudDao<T> {
 
     private Class<T> entityClass;
     
     @Autowired
     private SessionFactory sessionFactory;
     
-
     public final void setClass(Class<T> classToSet) {
-        entityClass = classToSet;
+        this.entityClass = classToSet;
     }
     
     public void create(final T entity) {
@@ -27,10 +27,10 @@ public abstract class AbstractCrudDao<T extends Serializable> {
         return (T) getCurrentSession().get(entityClass, id);
     }
     
-    @SuppressWarnings("unchecked")
     public List<T> getAll() {
-        return getCurrentSession()
-                .createQuery("FROM " + entityClass.getName()).getResultList();
+        TypedQuery<T> query = getCurrentSession()
+                .createQuery("FROM " + entityClass.getName(), entityClass);
+        return query.getResultList();
     }
     
     public void update(final T entity) {
@@ -48,5 +48,9 @@ public abstract class AbstractCrudDao<T extends Serializable> {
     
     protected final Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
+    }
+    
+    protected Class<T> getEntityClass() {
+        return this.entityClass;
     }
 }

@@ -1,47 +1,41 @@
 package com.pdclientmanager.model;
 
-import javax.persistence.Column;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 @Entity
-@Table(name = "clients")
 public class Client {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "client_id")
     private Long id;
     
-    @Column(name = "name")
     @NotEmpty(message = "Name")
     private String name;
     
-    @Column(name = "custody_status")
-    @NotEmpty(message = "Custody status")
+    @NotNull(message = "Custody status")
     private CustodyStatus custodyStatus;
     
-    @Column(name = "FK_attorney")
-    @NotNull(message = "Attorney")
-    private Long attorneyId;
+    @OneToMany(mappedBy = "client")
+    private List<Case> cases;
     
     public Client() {
         
     }
 
-    public Client(Long id, String name, CustodyStatus custodyStatus, Long attorneyId) {
+    public Client(Long id, String name, CustodyStatus custodyStatus) {
         this.id = id;
         this.name = name;
         this.custodyStatus = custodyStatus;
-        this.attorneyId = attorneyId;
     }
 
     public Long getId() {
@@ -69,14 +63,8 @@ public class Client {
         this.custodyStatus = custodyStatus;
     }
 
-    public Long getAttorneyId() {
-        return attorneyId;
+    @Override
+    public String toString() {
+        return "Client [id=" + id + ", name=" + name + ", custodyStatus=" + custodyStatus + "]";
     }
-
-    public void setAttorneyId(Long attorneyId) {
-        this.attorneyId = attorneyId;
-    }
-    
-    
-
 }
