@@ -4,13 +4,14 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties("assignedAttorneys")
 public class Investigator extends Employee {
-    
+
     @OneToMany(mappedBy = "investigator")
-    @NotEmpty(message = "Please select attorneys to assign")
     private List<Attorney> assignedAttorneys;
 
     public Investigator() {
@@ -18,11 +19,9 @@ public class Investigator extends Employee {
     }
     
     public Investigator(Long id, String name, EmploymentStatus employmentStatus, List<Attorney> assignedAttorneys) {
-        super();
+        super(id, name, employmentStatus);
         this.assignedAttorneys = assignedAttorneys;
     }
-    
-    
     
     public List<Attorney> getAssignedAttorneys() {
         return assignedAttorneys;
@@ -35,5 +34,23 @@ public class Investigator extends Employee {
     @Override
     public String toString() {
         return super.getName();
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        return result + prime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof Investigator))
+            return false;
+        return true;
     }
 }

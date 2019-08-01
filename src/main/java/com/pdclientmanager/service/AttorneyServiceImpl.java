@@ -23,14 +23,21 @@ public class AttorneyServiceImpl implements EmployeeService<Attorney> {
 
     @Override
     @Transactional
-    public void create(Attorney entity) {
-        dao.create(entity);
+    public void persist(Attorney entity) {
+        dao.persist(entity);
     }
 
     @Override
     @Transactional
-    public Attorney getById(Long id) {
-        return dao.getById(id);
+    public Attorney getById(Long targetId) {
+        return dao.getById(targetId);
+    }
+    
+    @Override
+    @Transactional
+    public Attorney getByIdWithInitializedAssignedAttorneys(Long targetId) {
+        // No lazy initialized methods in Attorney class - method is not used
+        return dao.getById(targetId);
     }
 
     @Override
@@ -38,28 +45,33 @@ public class AttorneyServiceImpl implements EmployeeService<Attorney> {
     public List<Attorney> getAll() {
         return dao.getAll();
     }
-
-    @Override
-    @Transactional
-    public void update(Attorney entity) {
-        dao.update(entity);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Attorney entity) {
-        dao.delete(entity);
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Long id) {
-        dao.deleteById(id);
-    }
     
+    @Override
     @Transactional
     public List<Attorney> getAllActive() {
         return dao.getAllActive();
     }
 
+    @Override
+    @Transactional
+    public void merge(Attorney entity) {
+        dao.merge(entity);
+    }
+
+    @Override
+    @Transactional
+    public boolean delete(Attorney entity) {
+        if(entity.getCaseload().isEmpty()) {
+            dao.delete(entity);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteById(Long targetId) {
+        return delete(getById(targetId));
+    }
 }

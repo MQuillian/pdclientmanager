@@ -1,5 +1,7 @@
 <%@ include file = "header.jsp" %>
 
+<div class="container" >
+
 <h1>Employee Management</h1>
 <hr>
 <a href="${contextPath}/">Return to Home</a>
@@ -28,11 +30,13 @@ Current investigators
 		</tr>
 		<c:forEach items="${activeInvestigators}" var="investigator">
 			<tr>
-				<td><a href="manageInvestigator/${investigator.id}">${investigator.name}</a></td>
+				<td><a href="investigators/${investigator.id}">${investigator.name}</a></td>
 			</tr>
 		</c:forEach>
 	</table>
 <br>
-	<a href="addInvestigatorForm">Add new investigator</a>
-		
+	<a href="investigators/add">Add new investigator</a>
+	<a href="investigators">View all investigators</a>
+</div>
+
 <%@ include file = "footer.jsp" %>

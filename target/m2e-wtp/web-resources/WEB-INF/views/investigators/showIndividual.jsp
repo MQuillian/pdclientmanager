@@ -11,31 +11,37 @@
 	</div>
 </c:if>
 
-<h1>Attorney Details</h1>
+<h1>Investigator Details</h1>
 <hr />
 <a href="${contextPath}/employeeManagement">Return to Employee Management</a>
 <hr />
 
 <div class="row">
 	<label class="col-sm-2">Name</label>
-	<div class="col-sm-10">${attorney.name}</div>
+	<div class="col-sm-10">${investigator.name}</div>
 </div>
 
 <div class="row">
 	<label class="col-sm-2">Employment Status</label>
-	<div class="col-sm-10">${attorney.employmentStatus}</div>
+	<div class="col-sm-10">${investigator.employmentStatus}</div>
 </div>
 
-<div class="row">
-	<label class="col-sm-2">Investigator</label>
-	<c:choose>
-		<c:when test="${attorney.employmentStatus == 'ACTIVE'}">
-			<div class="col-sm-10">${attorney.investigator}</div>
-		</c:when>
-		<c:otherwise>
-			<div class="col-sm-10">None assigned</div>
-		</c:otherwise>
-	</c:choose>
+<div>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Assigned Attorneys</th>
+			</tr>
+		</thead>
+		<c:forEach items="${assignedAttorneys}" var="attorney">
+			<tr>
+				<td>
+					<spring:url value="/attorneys/${attorney.id}" var="attorneyUrl" />
+					<a href="${attorneyUrl}">${attorney.name}</a>
+				</td>
+			</tr>
+		</c:forEach>
+	</table>
 </div>
 	
 </div>

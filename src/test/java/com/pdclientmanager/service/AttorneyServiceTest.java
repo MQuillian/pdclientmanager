@@ -45,8 +45,8 @@ class AttorneyServiceTest {
     
     @Test
     public void createAttorney_WithValidAttorney_CallsDaoCreateMethod() {
-        attorneyService.create(attorney);
-        verify(attorneyDao).create(attorney);
+        attorneyService.persist(attorney);
+        verify(attorneyDao).persist(attorney);
     }
     
     @Test
@@ -65,8 +65,8 @@ class AttorneyServiceTest {
     
     @Test
     public void update_WithValidEntity_CallsDaoUpdateMethod() {
-        attorneyService.update(attorney);
-        verify(attorneyDao).update(attorney);
+        attorneyService.merge(attorney);
+        verify(attorneyDao).merge(attorney);
     }
     
     @Test

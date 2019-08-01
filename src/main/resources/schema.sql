@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `cases` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `case_number` VARCHAR(45) UNIQUE NOT NULL,
   `client` INT(11) NOT NULL,
+  `case_status` INT(4) NOT NULL DEFAULT '0',
   `judge` INT(11) NOT NULL,
   `attorney` INT(11) NOT NULL,
   PRIMARY KEY (`id`),

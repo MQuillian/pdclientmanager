@@ -24,7 +24,7 @@
 			<th>Investigator</th>
 		</tr>
 	</thead>
-	<c:forEach items="${attorneys}" var="attorney">
+	<c:forEach items="${attorneyList}" var="attorney">
 		<tr>
 			<td>${attorney.name}</td>
 			<td>${attorney.employmentStatus}</td>

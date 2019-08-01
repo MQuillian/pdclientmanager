@@ -8,7 +8,7 @@ INSERT INTO clients VALUES (1, 'Eric Hoefle', 0), (2, 'Jason Baddorf', 0), (3, '
 TRUNCATE TABLE judges;
 INSERT INTO judges VALUES (1, 'Horace Johnson'), (2, 'John Mott');
 TRUNCATE TABLE cases;
-INSERT INTO cases VALUES (1, '18J161450', 1, 1, 1),(2, '18J141738', 2, 1, 2),(3, '18J171429', 3, 1, 1), (4, '17J283757', 4, 1, 2), (5, '17J172365', 5, 1, 2), (6, '18J179254', 6, 1, 1), (7, '18J172979', 6, 1, 1), (8, '17J281737', 7, 1, 2), (9, '18J218436', 7, 1, 2), (10, '18J476421', 8, 1, 1), (11, '17J742874', 9, 1, 2), (12, '18J851936', 10, 1, 1);
+INSERT INTO cases VALUES (1, '18J161450', 1, 0, 1, 1), (2, '18J141738', 2, 0, 1, 2), (3, '18J171429', 3, 1, 1, 1), (4, '17J283757', 4, 0, 1, 2), (5, '17J172365', 5, 0, 1, 2), (6, '18J179254', 6, 0, 1, 1), (7, '18J172979', 6, 1, 1, 1), (8, '17J281737', 7, 0, 1, 2), (9, '18J218436', 7, 0, 1, 2), (10, '18J476421', 8, 1, 1, 1), (11, '17J742874', 9, 0, 1, 2), (12, '18J851936', 10, 0, 1, 1);
 TRUNCATE TABLE charges;
 INSERT INTO charges VALUES (1, 'Simple battery', '16-5-23.1'), (2, 'Battery', '16-5-23.1'), (3, 'Theft by taking', '16-8-2'),(4, 'Driving while license suspended', '40-5-21'), (5, 'Possession of controlled substance', '16-13-30');
 TRUNCATE TABLE charged_counts;

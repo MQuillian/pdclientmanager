@@ -1,6 +1,5 @@
 package com.pdclientmanager.config;
 
-
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -16,14 +15,15 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+
 @Configuration
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
 @ComponentScan(basePackages = {
         "com.pdclientmanager"
 })
-public class HibernateConfig {
-
+public class PersistenceConfigTest extends PersistenceConfig {
+    
     @Autowired
     private Environment environment;
     

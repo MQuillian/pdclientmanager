@@ -16,7 +16,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.pdclientmanager"})
-public class ApplicationMvcConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
     
     @Bean
     public InternalResourceViewResolver resolver() {

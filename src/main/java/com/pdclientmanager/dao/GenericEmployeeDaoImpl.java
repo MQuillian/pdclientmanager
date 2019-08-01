@@ -22,5 +22,6 @@ public class GenericEmployeeDaoImpl<T>
                 .createQuery("FROM " + entityClass.getName() + " WHERE employment_status = 0", entityClass);
         return query.getResultList();
     }
+
 }
 
