@@ -4,15 +4,15 @@ import java.util.List;
 
 public interface CrudService<T> {
     
-    void create(final T entity);
+    void persist(final T entity);
     
-    T getById(final Long id);
-    
+    T getById(final Long targetId);
+        
     List<T> getAll();
     
-    void update(final T entity);
+    void merge(final T entity);
     
-    void delete(final T entity);
+    boolean delete(final T entity);
     
-    void deleteById(final Long id);
+    boolean deleteById(final Long id);
 }

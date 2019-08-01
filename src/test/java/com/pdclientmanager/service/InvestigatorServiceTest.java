@@ -41,8 +41,8 @@ class investigatorServiceTest {
     
     @Test
     public void createinvestigator_WithValidinvestigator_CallsDaoCreateMethod() {
-        investigatorService.create(investigator);
-        verify(investigatorDao).create(investigator);
+        investigatorService.persist(investigator);
+        verify(investigatorDao).persist(investigator);
     }
     
     @Test
@@ -61,8 +61,8 @@ class investigatorServiceTest {
     
     @Test
     public void update_WithValidEntity_CallsDaoUpdateMethod() {
-        investigatorService.update(investigator);
-        verify(investigatorDao).update(investigator);
+        investigatorService.merge(investigator);
+        verify(investigatorDao).merge(investigator);
     }
     
     @Test

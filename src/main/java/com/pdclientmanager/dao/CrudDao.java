@@ -6,13 +6,13 @@ public interface CrudDao<T> {
     
     void setClass(Class<T> entityClass);
     
-    void create(final T newObject);
+    void persist(final T newObject);
     
     T getById(final Long targetId);
-    
+        
     List<T> getAll();
     
-    void update(final T entity);
+    void merge(final T entity);
     
     void delete(final T entity);
     

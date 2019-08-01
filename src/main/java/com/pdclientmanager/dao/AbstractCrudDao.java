@@ -19,12 +19,12 @@ public abstract class AbstractCrudDao<T> implements CrudDao<T> {
         this.entityClass = classToSet;
     }
     
-    public void create(final T entity) {
+    public void persist(final T entity) {
         getCurrentSession().persist(entity);
     }
     
-    public T getById(final Long id) {
-        return (T) getCurrentSession().get(entityClass, id);
+    public T getById(final Long targetId) {
+        return (T) getCurrentSession().get(entityClass, targetId);
     }
     
     public List<T> getAll() {
@@ -33,7 +33,7 @@ public abstract class AbstractCrudDao<T> implements CrudDao<T> {
         return query.getResultList();
     }
     
-    public void update(final T entity) {
+    public void merge(final T entity) {
         getCurrentSession().merge(entity);
     }
     
@@ -41,8 +41,8 @@ public abstract class AbstractCrudDao<T> implements CrudDao<T> {
         getCurrentSession().delete(entity);
     }
     
-    public void deleteById(final Long id) {
-        T entity = getById(id);
+    public void deleteById(final Long targetId) {
+        T entity = getById(targetId);
         delete(entity);
     }
     

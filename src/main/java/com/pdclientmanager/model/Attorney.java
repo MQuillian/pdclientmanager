@@ -22,7 +22,7 @@ public class Attorney extends Employee {
     }
 
     public Attorney(Long id, String name, EmploymentStatus employmentStatus, Investigator investigator) {
-        super();
+        super(id, name, employmentStatus);
         this.investigator = investigator;
     }
     
@@ -47,5 +47,30 @@ public class Attorney extends Employee {
     @Override
     public String toString() {
         return super.getName();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((investigator == null) ? 0 : investigator.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof Attorney))
+            return false;
+        Attorney other = (Attorney) obj;
+        if (investigator == null) {
+            if (other.investigator != null)
+                return false;
+        } else if (!investigator.equals(other.investigator))
+            return false;
+        return true;
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +24,21 @@ public class InvestigatorServiceImpl implements EmployeeService<Investigator> {
 
     @Override
     @Transactional
-    public void create(Investigator entity) {
-        dao.create(entity);
+    public void persist(Investigator entity) {
+        dao.persist(entity);
     }
 
     @Override
     @Transactional
-    public Investigator getById(Long id) {
-        return dao.getById(id);
+    public Investigator getById(Long targetId) {
+        return dao.getById(targetId);
+    }
+    
+    @Transactional
+    public Investigator getByIdWithInitializedAssignedAttorneys(Long targetId) {
+        Investigator investigator = dao.getById(targetId);
+        Hibernate.initialize(investigator.getAssignedAttorneys());
+        return investigator;
     }
 
     @Override
@@ -38,28 +46,29 @@ public class InvestigatorServiceImpl implements EmployeeService<Investigator> {
     public List<Investigator> getAll() {
         return dao.getAll();
     }
-
-    @Override
-    @Transactional
-    public void update(Investigator entity) {
-        dao.update(entity);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Investigator entity) {
-        dao.delete(entity);
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Long id) {
-        dao.deleteById(id);
-    }
     
+    @Override
     @Transactional
     public List<Investigator> getAllActive() {
         return dao.getAllActive();
     }
-    
+
+    @Override
+    @Transactional
+    public void merge(Investigator entity) {
+        dao.merge(entity);
+    }
+
+    @Override
+    @Transactional
+    public boolean delete(Investigator entity) {
+        dao.delete(entity);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteById(Long targetId) {
+        return delete(getById(targetId));
+    }
 }

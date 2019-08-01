@@ -2,43 +2,66 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pdclientmanager.dao.CaseDaoImpl;
 import com.pdclientmanager.model.Case;
 
-public class CaseServiceImpl implements CrudService<Case>{
+@Service
+public class CaseServiceImpl implements CaseService {
 
+    @Autowired
+    CaseDaoImpl dao;
+    
     @Override
-    public void create(Case entity) {
-        // TODO Auto-generated method stub
+    @Transactional
+    public void persist(Case entity) {
+        dao.persist(entity);
     }
 
     @Override
-    public Case getById(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+    @Transactional
+    public Case getById(Long targetId) {
+        return dao.getById(targetId);
     }
 
     @Override
+    @Transactional
     public List<Case> getAll() {
-        // TODO Auto-generated method stub
-        return null;
+        return dao.getAll();
     }
 
     @Override
-    public void update(Case entity) {
-        // TODO Auto-generated method stub
-        
+    @Transactional
+    public void merge(Case entity) {
+        dao.merge(entity);
     }
 
     @Override
-    public void delete(Case entity) {
-        // TODO Auto-generated method stub
-        
+    @Transactional
+    public boolean delete(Case entity) {
+        dao.delete(entity);
+        return true;
     }
 
     @Override
-    public void deleteById(Long id) {
-        // TODO Auto-generated method stub
-        
+    @Transactional
+    public boolean deleteById(Long targetId) {
+        return delete(getById(targetId));
     }
-
+    
+    @Override
+    @Transactional
+    public List<Case> getAllWithInitializedClients() {
+        return dao.getAllWithInitializedClients();
+    }
+    
+    @Override
+    @Transactional
+    public List<Case> getAllActiveByAttorneyIdWithInitializedClient(Long attorneyId) {
+        return dao.getAllActiveByAttorneyIdWithInitializedClient(attorneyId);
+    }
 }
