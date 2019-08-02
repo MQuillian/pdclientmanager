@@ -1,6 +1,7 @@
 package com.pdclientmanager.model;
 
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,9 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
@@ -26,6 +27,11 @@ public class Case {
     @NotEmpty(message = "Case status")
     private CaseStatus caseStatus;
     
+    @NotEmpty(message = "Date opened")
+    private LocalDate dateOpened;
+    
+    private LocalDate dateClosed;
+    
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "client", nullable = false)
     private Client client;
@@ -38,19 +44,26 @@ public class Case {
     @JoinColumn(name = "attorney", nullable = false)
     private Attorney attorney;
     
-    @ManyToMany
-    @JoinTable(name = "charged_counts",
-            joinColumns = {@JoinColumn(name = "case")},
-            inverseJoinColumns = {@JoinColumn(name = "charge")})
-    private Set<Charge> chargedCounts;
+    @OneToMany(mappedBy = "court_case")
+    @MapKey(name = "count_number")
+    private Map<Integer, Count> chargedCounts;
     
     public Case() {
         
     }
 
-    public Case(Long id, String caseNumber) {
+    public Case(Long id, String caseNumber, 
+            CaseStatus caseStatus, LocalDate dateOpened, LocalDate dateClosed,
+            Client client, Judge judge, Attorney attorney, Map<Integer, Count> chargedCounts) {
         this.id = id;
         this.caseNumber = caseNumber;
+        this.caseStatus = caseStatus;
+        this.dateOpened = dateOpened;
+        this.dateClosed = dateClosed;
+        this.client = client;
+        this.judge = judge;
+        this.attorney = attorney;
+        this.chargedCounts = chargedCounts;
     }
 
     public Long getId() {
@@ -69,12 +82,28 @@ public class Case {
         this.caseNumber = caseNumber;
     }
 
-    public CaseStatus getStatus() {
+    public CaseStatus getCaseStatus() {
         return caseStatus;
     }
 
-    public void setStatus(CaseStatus status) {
+    public void setCaseStatus(CaseStatus status) {
         this.caseStatus = status;
+    }
+
+    public LocalDate getDateOpened() {
+        return dateOpened;
+    }
+
+    public void setDateOpened(LocalDate dateOpened) {
+        this.dateOpened = dateOpened;
+    }
+
+    public LocalDate getDateClosed() {
+        return dateClosed;
+    }
+
+    public void setDateClosed(LocalDate dateClosed) {
+        this.dateClosed = dateClosed;
     }
 
     public Client getClient() {
@@ -101,11 +130,11 @@ public class Case {
         this.attorney = attorney;
     }
 
-    public Set<Charge> getChargedCounts() {
+    public Map<Integer, Count> getChargedCounts() {
         return chargedCounts;
     }
 
-    public void setChargedCounts(Set<Charge> chargedCounts) {
+    public void setChargedCounts(Map<Integer, Count> chargedCounts) {
         this.chargedCounts = chargedCounts;
     }
 
@@ -119,8 +148,6 @@ public class Case {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((caseNumber == null) ? 0 : caseNumber.hashCode());
-        result = prime * result + ((client == null) ? 0 : client.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
@@ -134,16 +161,6 @@ public class Case {
         if (!(obj instanceof Case))
             return false;
         Case other = (Case) obj;
-        if (caseNumber == null) {
-            if (other.caseNumber != null)
-                return false;
-        } else if (!caseNumber.equals(other.caseNumber))
-            return false;
-        if (client == null) {
-            if (other.client != null)
-                return false;
-        } else if (!client.equals(other.client))
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;

@@ -69,6 +69,8 @@ CREATE TABLE IF NOT EXISTS `cases` (
   `case_number` VARCHAR(45) UNIQUE NOT NULL,
   `client` INT(11) NOT NULL,
   `case_status` INT(4) NOT NULL DEFAULT '0',
+  `date_opened` DATE NOT NULL,
+  `date_closed` DATE,
   `judge` INT(11) NOT NULL,
   `attorney` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -107,19 +109,23 @@ DEFAULT CHARACTER SET = latin1;
 
 # Drop/create Cases <-> Charges relationship table
 
-DROP TABLE IF EXISTS `charged_counts` ;
+DROP TABLE IF EXISTS `counts` ;
 
-CREATE TABLE IF NOT EXISTS `charged_counts` (
-  `case` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `counts` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `count_number` INT(11) NOT NULL,
+  `court_case` INT(11) NOT NULL,
   `charge` INT(11) NOT NULL,
-  PRIMARY KEY (`case`, `charge`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `count_number` (`count_number`, `court_case`),
+  INDEX `court_case` (`court_case` ASC),
   INDEX `charge` (`charge` ASC),
-  CONSTRAINT `charged_counts_ibfk_1`
-    FOREIGN KEY (`case`)
+  CONSTRAINT `counts_ibfk_1`
+    FOREIGN KEY (`court_case`)
     REFERENCES `cases` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `charged_counts_ibfk_2`
+  CONSTRAINT `counts_ibfk_2`
     FOREIGN KEY (`charge`)
     REFERENCES `charges` (`id`)
     ON DELETE NO ACTION
