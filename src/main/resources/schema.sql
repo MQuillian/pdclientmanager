@@ -109,9 +109,9 @@ DEFAULT CHARACTER SET = latin1;
 
 # Drop/create Cases <-> Charges relationship table
 
-DROP TABLE IF EXISTS `counts` ;
+DROP TABLE IF EXISTS `charged_counts` ;
 
-CREATE TABLE IF NOT EXISTS `counts` (
+CREATE TABLE IF NOT EXISTS `charged_counts` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `count_number` INT(11) NOT NULL,
   `court_case` INT(11) NOT NULL,

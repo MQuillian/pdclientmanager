@@ -4,64 +4,67 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.dao.GenericEmployeeDaoImpl;
-import com.pdclientmanager.model.Investigator;
+import com.pdclientmanager.model.dto.InvestigatorDto;
+import com.pdclientmanager.model.dto.InvestigatorFormDto;
+import com.pdclientmanager.model.entity.Investigator;
+import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
+import com.pdclientmanager.util.mapper.InvestigatorMapper;
 
 @Service
-public class InvestigatorServiceImpl implements EmployeeService<Investigator> {
-    
-    GenericEmployeeDaoImpl<Investigator> dao;
+public class InvestigatorServiceImpl implements InvestigatorService {
+    private GenericEmployeeDaoImpl<Investigator> dao;
+    private InvestigatorMapper mapper;
     
     @Autowired
-    public void setDao(GenericEmployeeDaoImpl<Investigator> typedDao) {
-        dao = typedDao;
-        dao.setClass(Investigator.class);
+    public InvestigatorServiceImpl(GenericEmployeeDaoImpl<Investigator> dao, InvestigatorMapper mapper) {
+        this.dao = dao;
+        this.dao.setClass(Investigator.class);
+        this.mapper = mapper;
     }
 
     @Override
     @Transactional
-    public void persist(Investigator entity) {
+    public void persist(InvestigatorFormDto dto) {
+        Investigator entity = mapper.toInvestigatorFromInvestigatorFormDto(dto, new CycleAvoidingMappingContext());
         dao.persist(entity);
     }
 
     @Override
     @Transactional
-    public Investigator getById(Long targetId) {
-        return dao.getById(targetId);
-    }
-    
-    @Transactional
-    public Investigator getByIdWithInitializedAssignedAttorneys(Long targetId) {
-        Investigator investigator = dao.getById(targetId);
-        Hibernate.initialize(investigator.getAssignedAttorneys());
-        return investigator;
+    public InvestigatorDto getById(Long targetId) {
+        InvestigatorDto dto = mapper.toInvestigatorDto(dao.getById(targetId), new CycleAvoidingMappingContext());
+        return dto;
     }
 
     @Override
     @Transactional
-    public List<Investigator> getAll() {
-        return dao.getAll();
+    public List<InvestigatorDto> getAll() {
+        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(dao.getAll(), new CycleAvoidingMappingContext());
+        return dtoList;
     }
     
     @Override
     @Transactional
-    public List<Investigator> getAllActive() {
-        return dao.getAllActive();
+    public List<InvestigatorDto> getAllActive() {
+        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(dao.getAllActive(), new CycleAvoidingMappingContext());
+        return dtoList;
     }
 
     @Override
     @Transactional
-    public void merge(Investigator entity) {
+    public void merge(InvestigatorFormDto dto) {
+        Investigator entity = mapper.toInvestigatorFromInvestigatorFormDto(dto, new CycleAvoidingMappingContext());
         dao.merge(entity);
     }
 
     @Override
     @Transactional
-    public boolean delete(Investigator entity) {
+    public boolean delete(InvestigatorDto dto) {
+        Investigator entity = mapper.toInvestigator(dto, new CycleAvoidingMappingContext());
         dao.delete(entity);
         return true;
     }

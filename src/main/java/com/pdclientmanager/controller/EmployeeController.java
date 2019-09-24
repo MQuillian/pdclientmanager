@@ -17,31 +17,50 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.pdclientmanager.model.Attorney;
-import com.pdclientmanager.model.AttorneyEditor;
-import com.pdclientmanager.model.Case;
-import com.pdclientmanager.model.Investigator;
-import com.pdclientmanager.model.InvestigatorEditor;
+import com.pdclientmanager.model.dto.AttorneyDto;
+import com.pdclientmanager.model.dto.AttorneyFormDto;
+import com.pdclientmanager.model.dto.AttorneyMinimalDto;
+import com.pdclientmanager.model.dto.CaseDto;
+import com.pdclientmanager.model.dto.InvestigatorDto;
+import com.pdclientmanager.model.dto.InvestigatorFormDto;
+import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
+import com.pdclientmanager.service.AttorneyService;
 import com.pdclientmanager.service.CaseService;
-import com.pdclientmanager.service.EmployeeService;
+import com.pdclientmanager.service.InvestigatorService;
+import com.pdclientmanager.util.AttorneyDtoEditor;
+import com.pdclientmanager.util.AttorneyMinimalDtoEditor;
+import com.pdclientmanager.util.InvestigatorDtoEditor;
+import com.pdclientmanager.util.InvestigatorMinimalDtoEditor;
+import com.pdclientmanager.util.mapper.AttorneyMapper;
+import com.pdclientmanager.util.mapper.InvestigatorMapper;
 
 @Controller
 public class EmployeeController {
     
-    @Autowired
-    EmployeeService<Attorney> attorneyService;
+    private AttorneyService attorneyService;
+    private InvestigatorService investigatorService;
+    private CaseService caseService;
     
     @Autowired
-    EmployeeService<Investigator> investigatorService;
-    
-    @Autowired
-    CaseService caseService;
+    public EmployeeController(AttorneyService attorneyService,
+            InvestigatorService investigatorService,
+            CaseService caseService, AttorneyMapper attorneyMapper,
+            InvestigatorMapper investigatorMapper) {
+        this.attorneyService = attorneyService;
+        this.investigatorService = investigatorService;
+        this.caseService = caseService;
+    }
     
     @InitBinder 
     public void initBinder(WebDataBinder b) {
-        b.registerCustomEditor(Attorney.class, new AttorneyEditor(attorneyService));
-        b.registerCustomEditor(Investigator.class, 
-                new InvestigatorEditor(investigatorService));
+        b.registerCustomEditor(AttorneyDto.class,
+                new AttorneyDtoEditor(attorneyService));
+        b.registerCustomEditor(AttorneyMinimalDto.class,
+                new AttorneyMinimalDtoEditor(attorneyService));
+        b.registerCustomEditor(InvestigatorDto.class, 
+                new InvestigatorDtoEditor(investigatorService));
+        b.registerCustomEditor(InvestigatorMinimalDto.class,
+                new InvestigatorMinimalDtoEditor(investigatorService));
     } 
     
     @GetMapping("/employeeManagement")
@@ -53,7 +72,7 @@ public class EmployeeController {
     
     @GetMapping("/attorneys/add")
     public String showNewAttorneyForm(Model model) {
-        Attorney attorney = new Attorney();
+        AttorneyFormDto attorney = new AttorneyFormDto();
         model.addAttribute("attorneyForm", attorney);
         model.addAttribute("activeInvestigators", investigatorService.getAllActive());
         return "attorneys/attorneyForm";
@@ -61,53 +80,53 @@ public class EmployeeController {
     
     @PostMapping("/attorneys")
     public String persistOrMergeAttorney(
-            @ModelAttribute("attorneyForm") @Valid Attorney attorney, 
+            @ModelAttribute("attorneyForm") @Valid AttorneyFormDto attorneyForm,
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
             return "attorneys/attorneyForm";
         } else {
-            if(attorney.isNew()) {
-                attorneyService.persist(attorney);
+            Long entityId;
+            if(attorneyForm.isNew()) {
+                entityId = attorneyService.persist(attorneyForm);
                 redirectAttributes.addFlashAttribute("css", "success");
                 redirectAttributes.addFlashAttribute("msg", "Attorney added successfully!");
             } else {
-                attorneyService.merge(attorney);
+                entityId = attorneyService.merge(attorneyForm);
                 redirectAttributes.addFlashAttribute("css", "success");
                 redirectAttributes.addFlashAttribute("msg", "Attorney updated successfully!");
             }
-            return "redirect:/attorneys/" + attorney.getId();
+            return "redirect:/attorneys/" + entityId;
         }
     }
     
     @GetMapping("/attorneys")
     public String showAllAttorneys(Model model) {
         model.addAttribute("attorneyList", attorneyService.getAll());
-        return "attorneys/list";
+        return "attorneys/listAttorneys";
     }
     
     @GetMapping("/attorneys/{id}")
     public String showAttorney(@PathVariable("id") Long id, Model model,
             final RedirectAttributes redirectAttributes) {
-        Attorney attorney = attorneyService.getById(id);
+        AttorneyDto attorney = attorneyService.getById(id);
         if(attorney == null) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", "Attorney could not be found...");
             return "redirect:/attorneys";
         }
-        List<Case> caseload = caseService.getAllActiveByAttorneyIdWithInitializedClient(id);
-        for(Case courtCase : caseload) {
+        List<CaseDto> caseload = caseService.getAllActiveByAttorneyId(id);
+        for(CaseDto courtCase : caseload) {
             Hibernate.initialize(courtCase.getClient());
         }
         model.addAttribute("attorney", attorney);
         model.addAttribute("caseload", caseload);
-        //INITIALIZE THAT SHIT YO
-        return "attorneys/showIndividual";
+        return "attorneys/showAttorney";
     }
     
     @GetMapping("/attorneys/{id}/update")
     public String showUpdateAttorneyForm(@PathVariable("id") Long targetId, Model model) {
-        Attorney attorney = attorneyService.getById(targetId);
+        AttorneyFormDto attorney = attorneyService.getFormById(targetId);
         model.addAttribute("attorneyForm", attorney);
         model.addAttribute("activeInvestigators", investigatorService.getAllActive());
         return "attorneys/attorneyForm";
@@ -122,14 +141,14 @@ public class EmployeeController {
         } else {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", 
-                    "The attorney's caseload must be reassigned before deleting!");
+                    "The attorney's active caseload must be reassigned before deleting!");
         }
         return "redirect:/attorneys";
     }
     
     @GetMapping("/investigators/add")
     public String showNewInvestigatorForm(Model model) {
-        Investigator investigator = new Investigator();
+        InvestigatorDto investigator = new InvestigatorDto();
         model.addAttribute("investigatorForm", investigator);
         model.addAttribute("activeAttorneys", attorneyService.getAllActive());
         return "investigators/investigatorForm";
@@ -137,51 +156,52 @@ public class EmployeeController {
     
     @PostMapping("/investigators")
     public String persistOrMergeInvestigator(
-            @ModelAttribute("investigator") @Valid Investigator investigator, 
-            BindingResult result, Model model) {
+            @ModelAttribute("investigator") @Valid InvestigatorFormDto investigator, 
+            BindingResult result, Model model,
+            final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
-        return "addInvestigatorForm";
+            return "addInvestigatorForm";
         } else {
-            for(Attorney attorney : investigator.getAssignedAttorneys()) {
-                attorney.setInvestigator(investigator);
-                attorneyService.merge(attorney);
-            }
+            
             if(investigator.isNew()) {
                 investigatorService.persist(investigator);
+                redirectAttributes.addFlashAttribute("css", "success");
+                redirectAttributes.addFlashAttribute("msg", "Investigator added successfully!");
             } else {
                 investigatorService.merge(investigator);
+                redirectAttributes.addFlashAttribute("css", "success");
+                redirectAttributes.addFlashAttribute("msg", "Investigator updated successfully!");
             }
         }
-        
-        return "redirect:/employeeManagement";
+        return "redirect:/investigators/1";
     }
     
     @GetMapping("/investigators")
     public String viewAllInvestigators(Model model) {
         model.addAttribute("investigatorList", investigatorService.getAll());
-        return "investigators/list";
+        return "investigators/listInvestigators";
     }
     
     @GetMapping("/investigators/{id}")
     public String showInvestigator(@PathVariable("id") Long targetId, Model model) {
-        Investigator investigator = investigatorService
-                .getByIdWithInitializedAssignedAttorneys(targetId);
+        InvestigatorDto investigator = investigatorService
+                .getById(targetId);
         if(investigator == null) {
             model.addAttribute("css", "error");
             model.addAttribute("msg", "Investigator not found");
-            return "redirect:/ivestigatorss";
+            return "redirect:/investigators";
         }
         Hibernate.initialize(investigator.getAssignedAttorneys());
         model.addAttribute("investigator", investigator);
         model.addAttribute("assignedAttorneys", investigator.getAssignedAttorneys());
-        return "investigators/showIndividual";
+        return "investigators/showInvestigator";
     }
     
     @GetMapping("/investigators/{id}/update")
     public String showUpdateInvestigatorForm(@PathVariable("id") Long targetId, Model model,
             final RedirectAttributes redirectAttributes) {
-        Investigator investigator = 
-                investigatorService.getByIdWithInitializedAssignedAttorneys(targetId);
+        InvestigatorDto investigator = 
+                investigatorService.getById(targetId);
         if(investigator == null) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", "Investigator could not be found...");

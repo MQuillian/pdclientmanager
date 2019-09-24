@@ -1,6 +1,7 @@
 package com.pdclientmanager.controller;
 
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
@@ -49,10 +50,16 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.Attorney;
-import com.pdclientmanager.model.EmploymentStatus;
-import com.pdclientmanager.model.Investigator;
+import com.pdclientmanager.model.dto.AttorneyDto;
+import com.pdclientmanager.model.dto.AttorneyMinimalDto;
+import com.pdclientmanager.model.dto.InvestigatorDto;
+import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
+import com.pdclientmanager.model.entity.Attorney;
+import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.Investigator;
 import com.pdclientmanager.service.AttorneyServiceImpl;
+import com.pdclientmanager.service.CaseService;
+import com.pdclientmanager.service.CaseServiceImpl;
 import com.pdclientmanager.service.EmployeeService;
 import com.pdclientmanager.service.InvestigatorServiceImpl;
 
@@ -69,36 +76,45 @@ public class EmployeeControllerTest {
         
         @Bean
         @Primary
-        EmployeeService<Attorney> attorneyServiceMock() {
+        EmployeeService<AttorneyDto, Attorney> attorneyServiceMock() {
             return Mockito.mock(AttorneyServiceImpl.class);
         }
         
         @Bean
         @Primary
-        EmployeeService<Investigator> investigatorServiceMock() {
+        EmployeeService<InvestigatorDto, Investigator> investigatorServiceMock() {
             return Mockito.mock(InvestigatorServiceImpl.class);
+        }
+        
+        @Bean
+        @Primary
+        CaseService caseService() {
+            return Mockito.mock(CaseServiceImpl.class);
         }
     }
     
     @Autowired
-    EmployeeService<Attorney> attorneyServiceMock;
+    EmployeeService<AttorneyDto, Attorney> attorneyServiceMock;
     
     @Autowired
-    EmployeeService<Investigator> investigatorServiceMock;
-    
-    private Investigator activeInvestigator;
-    private Investigator inactiveInvestigator;
-    private Attorney activeAttorney;
-    private Attorney inactiveAttorney;
-    private List<Investigator> investigatorList;
-    private List<Investigator> activeInvestigatorList;
-    private List<Attorney> attorneyList;
-    private List<Attorney> activeAttorneyList;
+    EmployeeService<InvestigatorDto, Investigator> investigatorServiceMock;
     
     private MockMvc mockMvc;
     
     @Autowired
     WebApplicationContext wac;
+    
+    private InvestigatorDto activeInvestigatorDto;
+    private InvestigatorDto inactiveInvestigatorDto;
+    private InvestigatorMinimalDto investigatorMinimalDto;
+    private AttorneyDto activeAttorneyDto;
+    private AttorneyDto inactiveAttorneyDto;
+    private AttorneyMinimalDto attorneyMinimalDto;
+    private List<AttorneyDto> allAttorneyDtoList;
+    private List<AttorneyDto> activeAttorneyDtoList;
+    private List<AttorneyMinimalDto> attorneyMinimalDtoList;
+    private List<InvestigatorDto> allInvestigatorDtoList;
+    private List<InvestigatorDto> activeInvestigatorDtoList;
     
     @BeforeAll
     public void setup() {
@@ -108,34 +124,59 @@ public class EmployeeControllerTest {
         
     @BeforeEach
     public void setupTestData() {
-        // REFACTOR THIS WITH BUILDER PATTERN TO CLEAN IT UP!!!
         
-        activeInvestigator = new Investigator(1L, "Test Inv 1", EmploymentStatus.ACTIVE, 
-                new ArrayList<Attorney>());
-        inactiveInvestigator = new Investigator(2L, "Test Inv 2", EmploymentStatus.INACTIVE, 
-                new ArrayList<Attorney>());
-        activeAttorney = new Attorney(1L, "Test Attorney 1", EmploymentStatus.ACTIVE, 
-                activeInvestigator);
-        inactiveAttorney = new Attorney(2L, "Test Attorney 2", EmploymentStatus.INACTIVE, 
-                inactiveInvestigator);
+        activeInvestigatorDto = new InvestigatorDto.InvestigatorDtoBuilder()
+                .withId(1L)
+                .withName("Active Investigator")
+                .withEmploymentStatus(EmploymentStatus.ACTIVE)
+                .build();
         
-        List<Attorney> activeInvestigatorAssignments = new ArrayList<>();
-        activeInvestigatorAssignments.add(activeAttorney);
-        activeInvestigator.setAssignedAttorneys(activeInvestigatorAssignments);
+        inactiveInvestigatorDto = new InvestigatorDto.InvestigatorDtoBuilder()
+                .withId(2L)
+                .withName("Inactive Investigator")
+                .withEmploymentStatus(EmploymentStatus.INACTIVE)
+                .build();
         
-        investigatorList = new ArrayList<>();
-        investigatorList.add(activeInvestigator);
-        investigatorList.add(inactiveInvestigator);
+        investigatorMinimalDto = new InvestigatorMinimalDto.InvestigatorMinimalDtoBuilder()
+                .build();
         
-        activeInvestigatorList = new ArrayList<>();
-        activeInvestigatorList.add(activeInvestigator);
+        activeAttorneyDto = new AttorneyDto.AttorneyDtoBuilder()
+                .withId(1L)
+                .withName("Active Attorney")
+                .withEmploymentStatus(EmploymentStatus.ACTIVE)
+                .withInvestigator(investigatorMinimalDto)
+                .build();
         
-        attorneyList = new ArrayList<>();
-        attorneyList.add(activeAttorney);
-        attorneyList.add(inactiveAttorney);
+        inactiveAttorneyDto = new AttorneyDto.AttorneyDtoBuilder()
+                .withId(2L)
+                .withName("Inactive Attorney")
+                .withEmploymentStatus(EmploymentStatus.INACTIVE)
+                .withInvestigator(investigatorMinimalDto)
+                .build();
         
-        activeAttorneyList = new ArrayList<>();
-        activeAttorneyList.add(activeAttorney);
+        attorneyMinimalDto = new AttorneyMinimalDto.AttorneyMinimalDtoBuilder()
+                .build();
+        
+        List<AttorneyMinimalDto> assignedAttorneys = new ArrayList<>();
+        assignedAttorneys.add(attorneyMinimalDto);
+        activeInvestigatorDto.setAssignedAttorneys(assignedAttorneys);
+        
+        allAttorneyDtoList = new ArrayList<>();
+        allAttorneyDtoList.add(activeAttorneyDto);
+        allAttorneyDtoList.add(inactiveAttorneyDto);
+        
+        activeAttorneyDtoList = new ArrayList<>();
+        activeAttorneyDtoList.add(activeAttorneyDto);
+        
+        attorneyMinimalDtoList = new ArrayList<>();
+        attorneyMinimalDtoList.add(attorneyMinimalDto);
+        
+        allInvestigatorDtoList = new ArrayList<>();
+        allInvestigatorDtoList.add(activeInvestigatorDto);
+        allInvestigatorDtoList.add(inactiveInvestigatorDto);
+        
+        activeInvestigatorDtoList = new ArrayList<>();
+        activeInvestigatorDtoList.add(activeInvestigatorDto);
     }
     
     @AfterAll
@@ -147,78 +188,59 @@ public class EmployeeControllerTest {
     public void employeeManagement_ShouldAddEmployeesToModelAndRenderEmployeeManagementView() throws Exception {
         
         when(attorneyServiceMock.getAllActive())
-            .thenReturn(activeAttorneyList);
+            .thenReturn(activeAttorneyDtoList);
         
         when(investigatorServiceMock.getAllActive())
-            .thenReturn(activeInvestigatorList);
+            .thenReturn(activeInvestigatorDtoList);
                 
         mockMvc.perform(get("/employeeManagement"))
             .andExpect(status().isOk())
             .andExpect(view().name("employeeManagement"))
             .andExpect(forwardedUrl("/WEB-INF/views/employeeManagement.jsp"))
             .andExpect(model().attribute("activeInvestigators", hasSize(1)))
-            .andExpect(model().attribute("activeInvestigators", hasItem(
-                    allOf(
-                            hasProperty("id", is(1L)),
-                            hasProperty("name", is("Test Inv 1")),
-                            hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
-                            hasProperty("assignedAttorneys", is(activeInvestigator.getAssignedAttorneys()))
-                        )
-            )))
+            .andExpect(model().attribute("activeInvestigators", contains(activeInvestigatorDto)))
             .andExpect(model().attribute("activeAttorneys", hasSize(1)))
-            .andExpect(model().attribute("activeAttorneys", hasItem(
-                    allOf(
-                            hasProperty("id", is(1L)),
-                            hasProperty("name", is("Test Attorney 1")),
-                            hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
-                            hasProperty("investigator", is(activeInvestigator))
-                        )
-            )));
+            .andExpect(model().attribute("activeAttorneys", contains(activeAttorneyDto)));
     }
     
     @Test
     public void attorneyForm_ShouldAddAttorneyAndActiveInvestigatorListToModelAndRenderFormView() throws Exception {
         
         when(investigatorServiceMock.getAllActive())
-            .thenReturn(activeInvestigatorList);
+            .thenReturn(activeInvestigatorDtoList);
         
         mockMvc.perform(get("/attorneys/add"))
             .andExpect(status().isOk())
             .andExpect(view().name("attorneys/attorneyForm"))
             .andExpect(forwardedUrl("/WEB-INF/views/attorneys/attorneyForm.jsp"))
-            .andExpect(model().attribute("attorneyForm", instanceOf(Attorney.class)))
+            .andExpect(model().attribute("attorneyForm", instanceOf(AttorneyDto.class)))
             .andExpect(model().attribute("activeInvestigators", hasSize(1)))
             .andExpect(model().attribute("activeInvestigators", hasItem(
                     allOf(
                             hasProperty("id", is(1L)),
-                            hasProperty("name", is("Test Inv 1")),
+                            hasProperty("name", is("Active Investigator")),
                             hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
-                            hasProperty("assignedAttorneys", is(activeInvestigator.getAssignedAttorneys()))
-                            )
-                    )));
+                            hasProperty("assignedAttorneys", is(activeInvestigatorDto.getAssignedAttorneys()))))));
     }
     
     @SuppressWarnings("rawtypes")
     @Test 
     public void persistOrMergeAttorney_WhenValidNewAttorney_ShouldPersistAttorney() throws Exception {
         
-        Attorney newAttorney = activeAttorney;
+        AttorneyDto newAttorney = activeAttorneyDto;
         newAttorney.setId(null);
-        
-//        when(attorneyServiceMock.creatingNew(any(Attorney.class)))
-//            .thenReturn(true);
         
 // Stubbing persist method to simulate generating id for newAttorney upon persisting
         doAnswer((Answer) invocation -> {
             Object arg0 = invocation.getArgument(0);
-            Attorney testedAttorney = (Attorney) arg0;
+            AttorneyDto persistedAttorney = (AttorneyDto) arg0;
             
-            testedAttorney.setId(1L);
+            persistedAttorney.setId(1L);
             return null;
-        }).when(attorneyServiceMock).persist(any(Attorney.class));
+        }).when(attorneyServiceMock).persist(any(AttorneyDto.class));
         
         mockMvc.perform(post("/attorneys")
-            .param("name", "Test Attorney 1")
+            .param("name", "Active Attorney")
             .param("employmentStatus", "ACTIVE")
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(newAttorney)))
@@ -230,59 +252,60 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void viewAllAttorneys_ShouldRenderListViewOfAllAttorneys() throws Exception {
+    public void viewAllAttorneys_ShouldRenderListAttorneysView() throws Exception {
+        
         when(attorneyServiceMock.getAll())
-            .thenReturn(attorneyList);
+            .thenReturn(allAttorneyDtoList);
         
         mockMvc.perform(get("/attorneys"))
             .andExpect(status().isOk())
-            .andExpect(view().name("attorneys/list"))
-            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/list.jsp"))
+            .andExpect(view().name("attorneys/listAttorneys"))
+            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/listAttorneys.jsp"))
             .andExpect(model().attribute("attorneyList", hasSize(2)))
             .andExpect(model().attribute("attorneyList", hasItem(
                 allOf(
                     hasProperty("id", is(1L)),
-                    hasProperty("name", is("Test Attorney 1")),
+                    hasProperty("name", is("Active Attorney")),
                     hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
-                    hasProperty("investigator", is(activeInvestigator))
-                )
-            )))
+                    hasProperty("investigator", is(activeInvestigatorDto))))))
             .andExpect(model().attribute("attorneyList", hasItem(
                 allOf(
                     hasProperty("id", is(2L)),
-                    hasProperty("name", is("Test Attorney 2")),
+                    hasProperty("name", is("Inactive Attorney")),
                     hasProperty("employmentStatus", is(EmploymentStatus.INACTIVE)),
-                    hasProperty("investigator", is(inactiveInvestigator))))));
+                    hasProperty("investigator", is(inactiveInvestigatorDto))))));
     }
     
     @Test
-    public void showAttorney_WhenValidId_ShouldRenderViewOfAttorney() throws Exception {
+    public void showAttorney_WhenValidRequest_ShouldRenderAttorneyView() throws Exception {
+        
         when(attorneyServiceMock.getById(1L))
-            .thenReturn(activeAttorney);
+            .thenReturn(activeAttorneyDto);
         
         mockMvc.perform(get("/attorneys/1"))
             .andExpect(status().isOk())
-            .andExpect(view().name("attorneys/showIndividual"))
-            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/showIndividual.jsp"))
-            .andExpect(model().attribute("attorney", samePropertyValuesAs(activeAttorney)));
+            .andExpect(view().name("attorneys/showAttorney"))
+            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/showAttorney.jsp"))
+            .andExpect(model().attribute("attorney", samePropertyValuesAs(activeAttorneyDto)));
     }
     
     @Test
-    public void showUpdateAttorneyForm_WhenValidId_ShouldRenderUpdateAttorneyForm() throws Exception {
+    public void showUpdateAttorneyForm_WhenValidRequest_ShouldRenderUpdateAttorneyForm() throws Exception {
+        
         when(attorneyServiceMock.getById(1L))
-            .thenReturn(activeAttorney);
+            .thenReturn(activeAttorneyDto);
         
         mockMvc.perform(get("/attorneys/1/update"))
             .andExpect(status().isOk())
             .andExpect(view().name("attorneys/attorneyForm"))
             .andExpect(forwardedUrl("/WEB-INF/views/attorneys/attorneyForm.jsp"))
-            .andExpect(model().attribute("attorneyForm", samePropertyValuesAs(activeAttorney)));
+            .andExpect(model().attribute("attorneyForm", samePropertyValuesAs(activeAttorneyDto)));
     }
     
     @Test
     public void deleteAttorneyById_WhenValidRequest_ShouldDeleteAndAddMessage() throws Exception {
         
-        Long targetId = inactiveAttorney.getId();
+        Long targetId = inactiveAttorneyDto.getId();
         
         when(attorneyServiceMock.deleteById(targetId))
             .thenReturn(true);
@@ -297,9 +320,9 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void deleteAttorneyById_WhenInvalidRequest_ShouldReturnViewAndAddMessage() throws Exception {
+    public void deleteAttorneyById_WhenActiveCaseloadNotEmpty_ShouldReturnViewAndAddMessage() throws Exception {
         
-        Long targetId = inactiveAttorney.getId();
+        Long targetId = inactiveAttorneyDto.getId();
         
         when(attorneyServiceMock.deleteById(targetId))
             .thenReturn(false);
@@ -310,28 +333,125 @@ public class EmployeeControllerTest {
                 .andExpect(view().name("redirect:/attorneys"))
                 .andExpect(redirectedUrl("/attorneys"))
                 .andExpect(flash().attribute("css", is("danger")))
-                .andExpect(flash().attribute("msg", is("Attorney's caseload must be reassigned before deleting!")));
+                .andExpect(flash().attribute("msg", is("The attorney's active caseload must be reassigned before deleting!")));
     }
     
     @Test
     public void investigatorForm_ShouldAddInvestigatorAndActiveAttorneyListToModelAndRenderFormView() throws Exception {
         
         when(attorneyServiceMock.getAllActive())
-            .thenReturn(activeAttorneyList);
+            .thenReturn(activeAttorneyDtoList);
         
         mockMvc.perform(get("/investigators/add"))
             .andExpect(status().isOk())
             .andExpect(view().name("investigators/investigatorForm"))
             .andExpect(forwardedUrl("/WEB-INF/views/investigators/investigatorForm.jsp"))
-            .andExpect(model().attribute("investigatorForm", instanceOf(Investigator.class)))
+            .andExpect(model().attribute("investigatorForm", instanceOf(InvestigatorDto.class)))
             .andExpect(model().attribute("activeAttorneys", hasSize(1)))
             .andExpect(model().attribute("activeAttorneys", hasItem(
                     allOf(
                             hasProperty("id", is(1L)),
-                            hasProperty("name", is("Test Attorney 1")),
-                            hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE))
+                            hasProperty("name", is("Active Attorney")),
+                            hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
+                            hasProperty("investigator", is(activeInvestigatorDto))
                     )
             )));
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void persistOrMergeInvestigator_WhenValidInvestigator_ShouldPersistInvestigator() throws Exception {
+        
+        InvestigatorDto newInvestigator = activeInvestigatorDto;
+        newInvestigator.setId(null);
+        
+    //Stubbing persist method to simulate generating id for newInvestigator upon persisting
+        doAnswer((Answer) invocation -> {
+            Object arg0 = invocation.getArgument(0);
+            InvestigatorDto persistedInvestigator = (InvestigatorDto) arg0;
+            
+            persistedInvestigator.setId(1L);
+            persistedInvestigator.setAssignedAttorneys(attorneyMinimalDtoList);
+            return null;
+        }).when(investigatorServiceMock).persist(any(InvestigatorDto.class));
+        
+        mockMvc.perform(post("/investigators")
+                .param("name", "Active Investigator")
+                .param("employmentStatus", "ACTIVE")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(newInvestigator)))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/investigators/1"))
+                .andExpect(redirectedUrl("/investigators/1"))
+                .andExpect(flash().attribute("css", is("success")))
+                .andExpect(flash().attribute("msg", is("Investigator added successfully!"))); 
+    }
+    
+    @Test
+    public void viewAllInvestigators_ShouldRenderListInvestigatorsView() throws Exception {
+        
+        when(investigatorServiceMock.getAll())
+            .thenReturn(allInvestigatorDtoList);
+        
+        mockMvc.perform(get("/investigators"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("investigators/listInvestigators"))
+                .andExpect(forwardedUrl("/WEB-INF/views/investigators/listInvestigators.jsp"))
+                .andExpect(model().attribute("investigatorList", hasSize(2)))
+                .andExpect(model().attribute("investigatorList", hasItem(
+                        allOf(
+                                hasProperty("id", is(1L)),
+                                hasProperty("name", is("Active Investigator")),
+                                hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
+                                hasProperty("assignedAttorneys", is(activeInvestigatorDto.getAssignedAttorneys()))))))
+                .andExpect(model().attribute("investigatorList", hasItem(
+                        allOf(
+                                hasProperty("id", is(2L)),
+                                hasProperty("name", is("Inactive Investigator")),
+                                hasProperty("employmentStatus", is(EmploymentStatus.INACTIVE)),
+                                hasProperty("assignedAttorneys", is(inactiveInvestigatorDto.getAssignedAttorneys()))))));
+    }
+    
+    @Test
+    public void showInvestigator_WhenValidRequest_ShouldRenderInvestigatorView() throws Exception {
+        
+        when(investigatorServiceMock.getById(1L))
+        .thenReturn(activeInvestigatorDto);
+    
+        mockMvc.perform(get("/investigators/1"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("investigators/showInvestigator"))
+            .andExpect(forwardedUrl("/WEB-INF/views/investigators/showInvestigator.jsp"))
+            .andExpect(model().attribute("investigator", samePropertyValuesAs(activeInvestigatorDto)));
+    }
+    
+    @Test
+    public void showUpdateInvestigatorForm_WhenValidRequest_ShouldRenderUpdateInvestigatorForm() throws Exception {
+        
+        when(investigatorServiceMock.getById(1L))
+        .thenReturn(activeInvestigatorDto);
+    
+        mockMvc.perform(get("/investigators/1/update"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("investigators/investigatorForm"))
+            .andExpect(forwardedUrl("/WEB-INF/views/investigators/investigatorForm.jsp"))
+            .andExpect(model().attribute("investigatorForm", samePropertyValuesAs(activeInvestigatorDto)));
+    }
+    
+    @Test
+    public void deleteInvestigatorById_WhenValidRequest_ShouldDeleteAndAddMessage() throws Exception {        
+        Long targetId = inactiveInvestigatorDto.getId();
+        
+        when(investigatorServiceMock.deleteById(targetId))
+            .thenReturn(true);
+        
+        mockMvc.perform(post("/investigators/" + targetId + "/delete")
+                .param("id", targetId.toString()))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/investigators"))
+                .andExpect(redirectedUrl("/investigators"))
+                .andExpect(flash().attribute("css", is("success")))
+                .andExpect(flash().attribute("msg", is("Investigator is deleted!")));
     }
     
     public static String asJsonString(final Object obj) {
