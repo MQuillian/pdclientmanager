@@ -8,70 +8,87 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.dao.GenericEmployeeDaoImpl;
-import com.pdclientmanager.model.Attorney;
+import com.pdclientmanager.model.dto.AttorneyDto;
+import com.pdclientmanager.model.dto.AttorneyFormDto;
+import com.pdclientmanager.model.entity.Attorney;
+import com.pdclientmanager.util.mapper.AttorneyMapper;
+import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 
 @Service
-public class AttorneyServiceImpl implements EmployeeService<Attorney> {
+public class AttorneyServiceImpl implements AttorneyService {
 
-    GenericEmployeeDaoImpl<Attorney> dao;
+    private GenericEmployeeDaoImpl<Attorney> dao;
+    private AttorneyMapper mapper;
     
     @Autowired
-    public void setDao(GenericEmployeeDaoImpl<Attorney> typedDao) {
-        dao = typedDao;
-        dao.setClass(Attorney.class);
+    public AttorneyServiceImpl(GenericEmployeeDaoImpl<Attorney> dao,
+            AttorneyMapper mapper) {
+        this.dao = dao;
+        this.dao.setClass(Attorney.class);
+        this.mapper = mapper;
     }
-
+    
     @Override
     @Transactional
-    public void persist(Attorney entity) {
+    public Long persist(AttorneyFormDto formDto) {
+        
+        Attorney entity = mapper.toAttorneyFromAttorneyFormDto(formDto, new CycleAvoidingMappingContext());
         dao.persist(entity);
+        return entity.getId();
     }
 
     @Override
     @Transactional
-    public Attorney getById(Long targetId) {
-        return dao.getById(targetId);
+    public AttorneyDto getById(Long targetId) {
+        AttorneyDto dto = mapper.toAttorneyDto(dao.getById(targetId), new CycleAvoidingMappingContext());
+        return dto;
     }
     
     @Override
     @Transactional
-    public Attorney getByIdWithInitializedAssignedAttorneys(Long targetId) {
-        // No lazy initialized methods in Attorney class - method is not used
-        return dao.getById(targetId);
+    public AttorneyFormDto getFormById(Long targetId) {
+        AttorneyFormDto formDto = mapper.toAttorneyFormDtoFromAttorney(dao.getById(targetId));
+        return formDto;
     }
 
     @Override
     @Transactional
-    public List<Attorney> getAll() {
-        return dao.getAll();
-    }
-    
-    @Override
-    @Transactional
-    public List<Attorney> getAllActive() {
-        return dao.getAllActive();
+    public List<AttorneyDto> getAll() {
+        List<AttorneyDto> dtoList = mapper.toAttorneyDtoList(dao.getAll(), new CycleAvoidingMappingContext());
+        return dtoList;
     }
 
     @Override
     @Transactional
-    public void merge(Attorney entity) {
+    public List<AttorneyDto> getAllActive() {
+        List<AttorneyDto> activeDtoList = mapper.toAttorneyDtoList(dao.getAllActive(), new CycleAvoidingMappingContext());
+        return activeDtoList;
+    }
+
+    @Override
+    @Transactional
+    public Long merge(AttorneyFormDto formDto) {
+        Attorney entity = mapper.toAttorneyFromAttorneyFormDto(formDto, new CycleAvoidingMappingContext());
         dao.merge(entity);
+        return entity.getId();
     }
 
     @Override
     @Transactional
-    public boolean delete(Attorney entity) {
-        if(entity.getCaseload().isEmpty()) {
-            dao.delete(entity);
-            return true;
-        } else {
-            return false;
-        }
+    public boolean delete(AttorneyDto dto) {
+        Attorney entity = mapper.toAttorney(dto, new CycleAvoidingMappingContext());
+        dao.delete(entity);
+        return true;
     }
 
     @Override
     @Transactional
-    public boolean deleteById(Long targetId) {
-        return delete(getById(targetId));
+    public boolean deleteById(Long id) {
+        Attorney entity = dao.getById(id);
+        dao.delete(entity);
+        return true;
     }
+    
+    
+
 }

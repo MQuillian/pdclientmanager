@@ -41,11 +41,6 @@ public abstract class AbstractCrudDao<T> implements CrudDao<T> {
         getCurrentSession().delete(entity);
     }
     
-    public void deleteById(final Long targetId) {
-        T entity = getById(targetId);
-        delete(entity);
-    }
-    
     protected final Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }

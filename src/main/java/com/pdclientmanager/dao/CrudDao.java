@@ -15,6 +15,4 @@ public interface CrudDao<T> {
     void merge(final T entity);
     
     void delete(final T entity);
-    
-    void deleteById(final Long id);
 }
