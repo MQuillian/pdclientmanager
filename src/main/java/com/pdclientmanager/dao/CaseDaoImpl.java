@@ -6,7 +6,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import com.pdclientmanager.model.Case;
+import com.pdclientmanager.model.entity.Case;
 
 @Repository
 public class CaseDaoImpl extends AbstractCrudDao<Case> {
@@ -21,7 +21,7 @@ public class CaseDaoImpl extends AbstractCrudDao<Case> {
         return query.getResultList();
     }
     
-    public List<Case> getAllActiveByAttorneyIdWithInitializedClient(Long attorneyId) {
+    public List<Case> getAllActiveByAttorneyId(Long attorneyId) {
         TypedQuery<Case> query = getCurrentSession()
                 .createQuery("FROM Case AS c "
                         + "LEFT JOIN FETCH c.client "

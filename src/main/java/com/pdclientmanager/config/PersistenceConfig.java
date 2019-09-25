@@ -24,8 +24,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 })
 public class PersistenceConfig {
 
-    @Autowired
     private Environment environment;
+    
+    @Autowired
+    public PersistenceConfig(Environment environment) {
+        this.environment = environment;
+    }
     
     @Bean
     public LocalSessionFactoryBean getSessionFactory() {
@@ -37,6 +41,7 @@ public class PersistenceConfig {
         return factoryBean;
     }
     
+    @Bean
     public DataSource dataSource() {
       DriverManagerDataSource dataSource = new DriverManagerDataSource();
       dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));

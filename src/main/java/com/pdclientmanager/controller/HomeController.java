@@ -11,8 +11,12 @@ import com.pdclientmanager.dao.DemoDao;
 @Controller
 public class HomeController {
     
+    private DemoDao resetDao;
+    
     @Autowired
-    DemoDao resetDao;
+    public HomeController(DemoDao dao) {
+        this.resetDao = dao;
+    }
     
     @GetMapping("/")
     public String showHome() {
