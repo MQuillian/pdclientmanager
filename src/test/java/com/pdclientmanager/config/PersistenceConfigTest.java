@@ -24,8 +24,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 })
 public class PersistenceConfigTest extends PersistenceConfig {
     
-    @Autowired
     private Environment environment;
+    
+    @Autowired
+    public PersistenceConfigTest(Environment environment) {
+        super(environment);
+    }
     
     @Bean
     public LocalSessionFactoryBean getSessionFactory() {

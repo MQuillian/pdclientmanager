@@ -48,13 +48,13 @@
 		</div>
 	</spring:bind>
 	
-	<spring:bind path="investigator">
+	<spring:bind path="investigatorId">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-2 control-label">Investigator</label>
 			<div class="col-sm-5">
-				<form:select path="investigator" items="${activeInvestigators}"
+				<form:select path="investigatorId" items="${activeInvestigators}"
 					itemLabel="name" itemValue="id" size="5" class="form-control" />
-				<form:errors path="investigator" class="control-label" />
+				<form:errors path="investigatorId" class="control-label" />
 			</div>
 			<br />
 		</div>

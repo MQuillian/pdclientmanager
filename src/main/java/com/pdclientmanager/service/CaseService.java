@@ -2,12 +2,13 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
-import com.pdclientmanager.model.Case;
+import com.pdclientmanager.model.dto.CaseDto;
+import com.pdclientmanager.model.entity.Case;
 
-public interface CaseService extends CrudService<Case> {
+public interface CaseService extends CrudService<CaseDto, Case> {
     
-    public List<Case> getAllWithInitializedClients();
+    public List<CaseDto> getAllWithInitializedClients();
 
-    public List<Case> getAllActiveByAttorneyIdWithInitializedClient(Long attorneyId);
+    public List<CaseDto> getAllActiveByAttorneyId(Long attorneyId);
     
 }

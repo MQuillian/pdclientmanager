@@ -2,11 +2,11 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
-import com.pdclientmanager.model.Employee;
+import com.pdclientmanager.model.entity.Employee;
 
-public interface EmployeeService<T extends Employee> extends CrudService<T> {
+public interface EmployeeService<T, S extends Employee> extends CrudService<T, S> {
         
-    public T getByIdWithInitializedAssignedAttorneys(Long targetId);
+    //Classes of type 'T' must be the corresponding DTO for the Employee type
     
     public List<T> getAllActive();
 }
