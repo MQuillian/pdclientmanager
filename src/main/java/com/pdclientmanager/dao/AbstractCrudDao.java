@@ -41,6 +41,11 @@ public abstract class AbstractCrudDao<T> implements CrudDao<T> {
         getCurrentSession().delete(entity);
     }
     
+    public T loadProxy(final Long proxyId) {
+        Class<T> entityClass = getEntityClass();
+        return (T) getCurrentSession().load(entityClass, proxyId);
+    }
+    
     protected final Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }

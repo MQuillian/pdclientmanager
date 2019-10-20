@@ -40,7 +40,7 @@ public class AttorneyServiceImpl implements AttorneyService {
     @Override
     @Transactional
     public AttorneyDto getById(Long targetId) {
-        AttorneyDto dto = mapper.toAttorneyDto(dao.getById(targetId), new CycleAvoidingMappingContext());
+        AttorneyDto dto = mapper.toAttorneyDto(dao.getById(targetId));
         return dto;
     }
     
@@ -54,14 +54,14 @@ public class AttorneyServiceImpl implements AttorneyService {
     @Override
     @Transactional
     public List<AttorneyDto> getAll() {
-        List<AttorneyDto> dtoList = mapper.toAttorneyDtoList(dao.getAll(), new CycleAvoidingMappingContext());
+        List<AttorneyDto> dtoList = mapper.toAttorneyDtoList(dao.getAll());
         return dtoList;
     }
 
     @Override
     @Transactional
     public List<AttorneyDto> getAllActive() {
-        List<AttorneyDto> activeDtoList = mapper.toAttorneyDtoList(dao.getAllActive(), new CycleAvoidingMappingContext());
+        List<AttorneyDto> activeDtoList = mapper.toAttorneyDtoList(dao.getAllActive());
         return activeDtoList;
     }
 
@@ -76,17 +76,25 @@ public class AttorneyServiceImpl implements AttorneyService {
     @Override
     @Transactional
     public boolean delete(AttorneyDto dto) {
-        Attorney entity = mapper.toAttorney(dto, new CycleAvoidingMappingContext());
-        dao.delete(entity);
-        return true;
+        if(dto.getCaseload().isEmpty()) {
+            Attorney entity = mapper.toAttorney(dto, new CycleAvoidingMappingContext());
+            dao.delete(entity);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     @Transactional
     public boolean deleteById(Long id) {
         Attorney entity = dao.getById(id);
-        dao.delete(entity);
-        return true;
+        if(entity.getCaseload().isEmpty()) {
+            dao.delete(entity);
+            return true;
+        } else {
+            return false;
+        }
     }
     
     

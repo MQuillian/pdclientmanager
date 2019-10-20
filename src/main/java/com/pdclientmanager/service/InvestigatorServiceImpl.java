@@ -28,37 +28,39 @@ public class InvestigatorServiceImpl implements InvestigatorService {
 
     @Override
     @Transactional
-    public void persist(InvestigatorFormDto dto) {
+    public Long persist(InvestigatorFormDto dto) {
         Investigator entity = mapper.toInvestigatorFromInvestigatorFormDto(dto, new CycleAvoidingMappingContext());
         dao.persist(entity);
+        return entity.getId();
     }
 
     @Override
     @Transactional
     public InvestigatorDto getById(Long targetId) {
-        InvestigatorDto dto = mapper.toInvestigatorDto(dao.getById(targetId), new CycleAvoidingMappingContext());
+        InvestigatorDto dto = mapper.toInvestigatorDto(dao.getById(targetId));
         return dto;
     }
 
     @Override
     @Transactional
     public List<InvestigatorDto> getAll() {
-        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(dao.getAll(), new CycleAvoidingMappingContext());
+        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(dao.getAll());
         return dtoList;
     }
     
     @Override
     @Transactional
     public List<InvestigatorDto> getAllActive() {
-        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(dao.getAllActive(), new CycleAvoidingMappingContext());
+        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(dao.getAllActive());
         return dtoList;
     }
 
     @Override
     @Transactional
-    public void merge(InvestigatorFormDto dto) {
+    public Long merge(InvestigatorFormDto dto) {
         Investigator entity = mapper.toInvestigatorFromInvestigatorFormDto(dto, new CycleAvoidingMappingContext());
         dao.merge(entity);
+        return entity.getId();
     }
 
     @Override
@@ -72,6 +74,8 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Override
     @Transactional
     public boolean deleteById(Long targetId) {
-        return delete(getById(targetId));
+        Investigator entity = dao.getById(targetId);
+        dao.delete(entity);
+        return true;
     }
 }

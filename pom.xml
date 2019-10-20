@@ -12,6 +12,7 @@
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
         
         <spring.version>5.1.6.RELEASE</spring.version>
+        <spring-data.version>2.2.0.RELEASE</spring-data.version>
         <hibernate.version>5.4.2.Final</hibernate.version>
         <hibernate-validator.version>6.0.16.Final</hibernate-validator.version>
         <c3p0.version>0.9.5.4</c3p0.version>
@@ -50,6 +51,13 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        
+        <dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-jpa</artifactId>
+		    <version>${spring-data.version}</version>
+		</dependency>
+        
  
         <!-- Hibernate Core -->
         <dependency>

@@ -22,7 +22,7 @@ public class InvestigatorResolver {
     
     @Transactional
     public Investigator resolve(Long investigatorId, @TargetType Class<Investigator> type) {
-        return investigatorId != null ? dao.getById(investigatorId) : new Investigator();
+        return investigatorId != null ? dao.loadProxy(investigatorId) : new Investigator();
     }
     
     public Long toLong(Investigator entity) {

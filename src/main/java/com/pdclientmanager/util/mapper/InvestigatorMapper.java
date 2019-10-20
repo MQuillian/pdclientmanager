@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import com.pdclientmanager.model.dto.InvestigatorDto;
@@ -19,28 +20,36 @@ public interface InvestigatorMapper {
 
     Investigator toInvestigator(final InvestigatorDto dto, @Context CycleAvoidingMappingContext context);
     
-    InvestigatorDto toInvestigatorDto(final Investigator entity, @Context CycleAvoidingMappingContext context);
+    InvestigatorDto toInvestigatorDto(final Investigator entity);
     
     List<Investigator> toInvestigatorList(final List<InvestigatorDto> dtos, @Context CycleAvoidingMappingContext context);
     
-    List<InvestigatorDto> toInvestigatorDtoList(final List<Investigator> entities, @Context CycleAvoidingMappingContext context);
+    List<InvestigatorDto> toInvestigatorDtoList(final List<Investigator> entities);
     
     
     //Mapping between InvestigatorFormDto and Investigator entity
     
+    @Mapping(source = "assignedAttorneyIds", target = "assignedAttorneys")
     Investigator toInvestigatorFromInvestigatorFormDto(final InvestigatorFormDto dto, @Context CycleAvoidingMappingContext context);
 
+    @Mapping(source = "assignedAttorneys", target = "assignedAttorneyIds")
+    InvestigatorFormDto toInvestigatorFormDtoFromInvestigator(final Investigator entity);
+    
+    List<Investigator> toInvestigatorListFromInvestigatorFormDtoList(final List<InvestigatorFormDto> formDtos, @Context CycleAvoidingMappingContext context);
+    
+    List<InvestigatorFormDto> toInvestigatorFormDtoListFromInvestigatorList(final List<Investigator> entities);
+    
     
     //Mapping between InvestigatorMinimalDto and Investigator entity
     
-    InvestigatorMinimalDto toInvestigatorMinimalDto(final Investigator entity);
+    InvestigatorMinimalDto toInvestigatorMinimalDtoFromInvestigator(final Investigator entity);
     
-    List<InvestigatorMinimalDto> toInvestigatorMinimalDtoList(final List<Investigator> entities);
+    List<InvestigatorMinimalDto> toInvestigatorMinimalDtoListFromInvestigatorList(final List<Investigator> entities);
     
     
     //Mapping between InvestigatorDto and InvestigatorMinimalDto
     
-    InvestigatorMinimalDto toInvestigatorMinimalDtoFromFullDto(final InvestigatorDto fullDto);
+    InvestigatorMinimalDto toInvestigatorMinimalDtoFromInvestigatorDto(final InvestigatorDto fullDto);
     
-    List<InvestigatorMinimalDto> toInvestigatorMinimalDtoListFromFullDtoList(final List<InvestigatorDto> fullDtoList);
+    List<InvestigatorMinimalDto> toInvestigatorMinimalDtoListFromInvestigatorDtoList(final List<InvestigatorDto> fullDtoList);
 }

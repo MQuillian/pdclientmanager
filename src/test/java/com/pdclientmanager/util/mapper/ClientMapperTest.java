@@ -45,7 +45,7 @@ public class ClientMapperTest {
                 .build();
         entity.getCases().add(new Case.CaseBuilder().build());
         
-        ClientDto dto = clientMapper.toClientDto(entity, new CycleAvoidingMappingContext());
+        ClientDto dto = clientMapper.toClientDto(entity);
         
         assertThat(entity.getId()).isEqualTo(dto.getId());
         assertThat(entity.getName()).isEqualTo(dto.getName());

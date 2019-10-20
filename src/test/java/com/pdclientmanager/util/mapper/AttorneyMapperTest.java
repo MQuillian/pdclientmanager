@@ -17,6 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.dto.AttorneyDto;
 import com.pdclientmanager.model.dto.AttorneyFormDto;
+import com.pdclientmanager.model.dto.AttorneyMinimalDto;
 import com.pdclientmanager.model.dto.CaseMinimalDto;
 import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
 import com.pdclientmanager.model.entity.Attorney;
@@ -37,8 +38,8 @@ public class AttorneyMapperTest {
     
     private InvestigatorMinimalDto investigatorMinimalDto;
     private Investigator investigator;
-    private AttorneyDto attorneyDto;
     private Attorney attorney;
+    private AttorneyDto attorneyDto;
     private AttorneyFormDto attorneyFormDto;
     
     @BeforeEach
@@ -80,7 +81,7 @@ public class AttorneyMapperTest {
         attorneyDto.getCaseload().add(new CaseMinimalDto.CaseMinimalDtoBuilder()
                 .build());
         
-        Attorney entity = mapper.toAttorneyFromDto(attorneyDto, new CycleAvoidingMappingContext());
+        Attorney entity = mapper.toAttorney(attorneyDto, new CycleAvoidingMappingContext());
         
         assertThat(attorneyDto.getId()).isEqualTo(entity.getId());
         assertThat(attorneyDto.getName()).isEqualTo(entity.getName());
@@ -95,7 +96,7 @@ public class AttorneyMapperTest {
         attorney.getCaseload().add(new Case.CaseBuilder().build());
         investigator.getAssignedAttorneys().add(attorney);
         
-        AttorneyDto dto = mapper.toAttorneyDto(attorney, new CycleAvoidingMappingContext());
+        AttorneyDto dto = mapper.toAttorneyDto(attorney);
         
         assertThat(attorney.getId()).isEqualTo(dto.getId());
         assertThat(attorney.getName()).isEqualTo(dto.getName());
@@ -111,6 +112,38 @@ public class AttorneyMapperTest {
         
         Attorney mappedAttorney = mapper.toAttorneyFromAttorneyFormDto(attorneyFormDto, new CycleAvoidingMappingContext());
 
+        assertThat(mappedAttorney.getId()).isEqualTo(attorneyFormDto.getId());
+        assertThat(mappedAttorney.getName()).isEqualTo(attorneyFormDto.getName());
         assertThat(mappedAttorney.getInvestigator().getId()).isEqualTo(attorneyFormDto.getInvestigatorId());
+    }
+    
+    @Test
+    public void mapper_ShouldMapEntityToAttorneyFormDto() {
+        
+        Mockito.when(resolver.toLong(attorney.getInvestigator())).thenReturn(attorney.getInvestigator().getId());
+        
+        AttorneyFormDto mappedFormDto = mapper.toAttorneyFormDtoFromAttorney(attorney);
+        
+        assertThat(mappedFormDto.getId()).isEqualTo(attorney.getId());
+        assertThat(mappedFormDto.getName()).isEqualTo(attorney.getName());
+        assertThat(mappedFormDto.getInvestigatorId()).isEqualTo(attorney.getInvestigator().getId());
+    }
+    
+    @Test
+    public void mapper_ShouldMapEntityToAttorneyMinimalDto() {
+        
+        AttorneyMinimalDto mappedMinimalDto = mapper.toAttorneyMinimalDtoFromAttorney(attorney);
+        
+        assertThat(mappedMinimalDto.getId()).isEqualTo(attorney.getId());
+        assertThat(mappedMinimalDto.getName()).isEqualTo(attorney.getName());
+    }
+    
+    @Test
+    public void mapper_ShouldMapAttorneyDtoToAttorneyMinimalDto() {
+        
+        AttorneyMinimalDto mappedMinimalDto = mapper.toAttorneyMinimalDtoFromAttorneyDto(attorneyDto);
+        
+        assertThat(mappedMinimalDto.getId()).isEqualTo(attorneyDto.getId());
+        assertThat(mappedMinimalDto.getName()).isEqualTo(attorneyDto.getName());
     }
 }
