@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-09-25T14:44:37-0400",
+    date = "2019-10-20T18:23:06-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -48,24 +48,17 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
     }
 
     @Override
-    public InvestigatorDto toInvestigatorDto(Investigator entity, CycleAvoidingMappingContext context) {
-        InvestigatorDto target = context.getMappedInstance( entity, InvestigatorDto.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    public InvestigatorDto toInvestigatorDto(Investigator entity) {
         if ( entity == null ) {
             return null;
         }
 
         InvestigatorDto investigatorDto = new InvestigatorDto();
 
-        context.storeMappedInstance( entity, investigatorDto );
-
         investigatorDto.setId( entity.getId() );
         investigatorDto.setName( entity.getName() );
         investigatorDto.setEmploymentStatus( entity.getEmploymentStatus() );
-        investigatorDto.setAssignedAttorneys( attorneyListToAttorneyMinimalDtoList( entity.getAssignedAttorneys(), context ) );
+        investigatorDto.setAssignedAttorneys( attorneyListToAttorneyMinimalDtoList( entity.getAssignedAttorneys() ) );
 
         return investigatorDto;
     }
@@ -92,21 +85,14 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
     }
 
     @Override
-    public List<InvestigatorDto> toInvestigatorDtoList(List<Investigator> entities, CycleAvoidingMappingContext context) {
-        List<InvestigatorDto> target = context.getMappedInstance( entities, List.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    public List<InvestigatorDto> toInvestigatorDtoList(List<Investigator> entities) {
         if ( entities == null ) {
             return null;
         }
 
         List<InvestigatorDto> list = new ArrayList<InvestigatorDto>( entities.size() );
-        context.storeMappedInstance( entities, list );
-
         for ( Investigator investigator : entities ) {
-            list.add( toInvestigatorDto( investigator, context ) );
+            list.add( toInvestigatorDto( investigator ) );
         }
 
         return list;
@@ -127,6 +113,7 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         context.storeMappedInstance( dto, investigator );
 
+        investigator.setAssignedAttorneys( longListToAttorneyList( dto.getAssignedAttorneyIds(), context ) );
         investigator.setId( dto.getId() );
         investigator.setName( dto.getName() );
         investigator.setEmploymentStatus( dto.getEmploymentStatus() );
@@ -135,7 +122,58 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
     }
 
     @Override
-    public InvestigatorMinimalDto toInvestigatorMinimalDto(Investigator entity) {
+    public InvestigatorFormDto toInvestigatorFormDtoFromInvestigator(Investigator entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        InvestigatorFormDto investigatorFormDto = new InvestigatorFormDto();
+
+        investigatorFormDto.setAssignedAttorneyIds( attorneyListToLongList( entity.getAssignedAttorneys() ) );
+        investigatorFormDto.setId( entity.getId() );
+        investigatorFormDto.setName( entity.getName() );
+        investigatorFormDto.setEmploymentStatus( entity.getEmploymentStatus() );
+
+        return investigatorFormDto;
+    }
+
+    @Override
+    public List<Investigator> toInvestigatorListFromInvestigatorFormDtoList(List<InvestigatorFormDto> formDtos, CycleAvoidingMappingContext context) {
+        List<Investigator> target = context.getMappedInstance( formDtos, List.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( formDtos == null ) {
+            return null;
+        }
+
+        List<Investigator> list = new ArrayList<Investigator>( formDtos.size() );
+        context.storeMappedInstance( formDtos, list );
+
+        for ( InvestigatorFormDto investigatorFormDto : formDtos ) {
+            list.add( toInvestigatorFromInvestigatorFormDto( investigatorFormDto, context ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<InvestigatorFormDto> toInvestigatorFormDtoListFromInvestigatorList(List<Investigator> entities) {
+        if ( entities == null ) {
+            return null;
+        }
+
+        List<InvestigatorFormDto> list = new ArrayList<InvestigatorFormDto>( entities.size() );
+        for ( Investigator investigator : entities ) {
+            list.add( toInvestigatorFormDtoFromInvestigator( investigator ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public InvestigatorMinimalDto toInvestigatorMinimalDtoFromInvestigator(Investigator entity) {
         if ( entity == null ) {
             return null;
         }
@@ -150,21 +188,21 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
     }
 
     @Override
-    public List<InvestigatorMinimalDto> toInvestigatorMinimalDtoList(List<Investigator> entities) {
+    public List<InvestigatorMinimalDto> toInvestigatorMinimalDtoListFromInvestigatorList(List<Investigator> entities) {
         if ( entities == null ) {
             return null;
         }
 
         List<InvestigatorMinimalDto> list = new ArrayList<InvestigatorMinimalDto>( entities.size() );
         for ( Investigator investigator : entities ) {
-            list.add( toInvestigatorMinimalDto( investigator ) );
+            list.add( toInvestigatorMinimalDtoFromInvestigator( investigator ) );
         }
 
         return list;
     }
 
     @Override
-    public InvestigatorMinimalDto toInvestigatorMinimalDtoFromFullDto(InvestigatorDto fullDto) {
+    public InvestigatorMinimalDto toInvestigatorMinimalDtoFromInvestigatorDto(InvestigatorDto fullDto) {
         if ( fullDto == null ) {
             return null;
         }
@@ -179,14 +217,14 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
     }
 
     @Override
-    public List<InvestigatorMinimalDto> toInvestigatorMinimalDtoListFromFullDtoList(List<InvestigatorDto> fullDtoList) {
+    public List<InvestigatorMinimalDto> toInvestigatorMinimalDtoListFromInvestigatorDtoList(List<InvestigatorDto> fullDtoList) {
         if ( fullDtoList == null ) {
             return null;
         }
 
         List<InvestigatorMinimalDto> list = new ArrayList<InvestigatorMinimalDto>( fullDtoList.size() );
         for ( InvestigatorDto investigatorDto : fullDtoList ) {
-            list.add( toInvestigatorMinimalDtoFromFullDto( investigatorDto ) );
+            list.add( toInvestigatorMinimalDtoFromInvestigatorDto( investigatorDto ) );
         }
 
         return list;
@@ -233,19 +271,12 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
         return list1;
     }
 
-    protected AttorneyMinimalDto attorneyToAttorneyMinimalDto(Attorney attorney, CycleAvoidingMappingContext context) {
-        AttorneyMinimalDto target = context.getMappedInstance( attorney, AttorneyMinimalDto.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    protected AttorneyMinimalDto attorneyToAttorneyMinimalDto(Attorney attorney) {
         if ( attorney == null ) {
             return null;
         }
 
         AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
-
-        context.storeMappedInstance( attorney, attorneyMinimalDto );
 
         attorneyMinimalDto.setId( attorney.getId() );
         attorneyMinimalDto.setName( attorney.getName() );
@@ -254,8 +285,21 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
         return attorneyMinimalDto;
     }
 
-    protected List<AttorneyMinimalDto> attorneyListToAttorneyMinimalDtoList(List<Attorney> list, CycleAvoidingMappingContext context) {
-        List<AttorneyMinimalDto> target = context.getMappedInstance( list, List.class );
+    protected List<AttorneyMinimalDto> attorneyListToAttorneyMinimalDtoList(List<Attorney> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<AttorneyMinimalDto> list1 = new ArrayList<AttorneyMinimalDto>( list.size() );
+        for ( Attorney attorney : list ) {
+            list1.add( attorneyToAttorneyMinimalDto( attorney ) );
+        }
+
+        return list1;
+    }
+
+    protected List<Attorney> longListToAttorneyList(List<Long> list, CycleAvoidingMappingContext context) {
+        List<Attorney> target = context.getMappedInstance( list, List.class );
         if ( target != null ) {
             return target;
         }
@@ -264,11 +308,24 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
             return null;
         }
 
-        List<AttorneyMinimalDto> list1 = new ArrayList<AttorneyMinimalDto>( list.size() );
+        List<Attorney> list1 = new ArrayList<Attorney>( list.size() );
         context.storeMappedInstance( list, list1 );
 
+        for ( Long long1 : list ) {
+            list1.add( attorneyResolver.resolve( long1, Attorney.class ) );
+        }
+
+        return list1;
+    }
+
+    protected List<Long> attorneyListToLongList(List<Attorney> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Long> list1 = new ArrayList<Long>( list.size() );
         for ( Attorney attorney : list ) {
-            list1.add( attorneyToAttorneyMinimalDto( attorney, context ) );
+            list1.add( attorneyResolver.toLong( attorney ) );
         }
 
         return list1;

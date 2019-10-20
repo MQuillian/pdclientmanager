@@ -68,7 +68,7 @@ public class AttorneyFormDto {
             return this;
         }
         
-        public AttorneyFormDtoBuilder withname(String name) {
+        public AttorneyFormDtoBuilder withName(String name) {
             this.name = name;
             return this;
         }

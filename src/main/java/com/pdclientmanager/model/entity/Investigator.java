@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 public class Investigator extends Employee {
 
     @OneToMany(mappedBy = "investigator")
-//    @JsonBackReference
     private List<Attorney> assignedAttorneys;
 
     public Investigator() {
@@ -28,6 +27,9 @@ public class Investigator extends Employee {
 
     public void setAssignedAttorneys(List<Attorney> assignedAttorneys) {
         this.assignedAttorneys = assignedAttorneys;
+        for(Attorney attorney : assignedAttorneys) {
+            attorney.setInvestigator(this);
+        }
     }
 
     @Override

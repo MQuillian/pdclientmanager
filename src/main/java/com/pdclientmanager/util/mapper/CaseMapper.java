@@ -17,11 +17,11 @@ public interface CaseMapper {
     
     Case toCase(final CaseDto dto, @Context CycleAvoidingMappingContext context);
     
-    CaseDto toCaseDto(final Case entity, @Context CycleAvoidingMappingContext context);
+    CaseDto toCaseDto(final Case entity);
     
     List<Case> toCaseList(final List<CaseDto> dtos, @Context CycleAvoidingMappingContext context);
 
-    List<CaseDto> toCaseDtoList(final List<Case> entities, @Context CycleAvoidingMappingContext context);
+    List<CaseDto> toCaseDtoList(final List<Case> entities);
 
     
     //Mapping between CaseMinimalDto and Case entity

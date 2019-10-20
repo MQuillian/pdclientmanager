@@ -37,7 +37,7 @@ public class CaseServiceImpl implements CaseService {
     @Transactional
     public CaseDto getById(Long targetId) {
         
-        CaseDto dto = caseMapper.toCaseDto(dao.getById(targetId), new CycleAvoidingMappingContext());
+        CaseDto dto = caseMapper.toCaseDto(dao.getById(targetId));
         return dto;
     }
 
@@ -45,7 +45,7 @@ public class CaseServiceImpl implements CaseService {
     @Transactional
     public List<CaseDto> getAll() {
         
-        List<CaseDto> dtoList = caseMapper.toCaseDtoList(dao.getAll(), new CycleAvoidingMappingContext());
+        List<CaseDto> dtoList = caseMapper.toCaseDtoList(dao.getAll());
         return dtoList;
     }
 
@@ -77,7 +77,7 @@ public class CaseServiceImpl implements CaseService {
     @Transactional
     public List<CaseDto> getAllWithInitializedClients() {
         
-        List<CaseDto> dtoList = caseMapper.toCaseDtoList(dao.getAllWithInitializedClients(), new CycleAvoidingMappingContext());
+        List<CaseDto> dtoList = caseMapper.toCaseDtoList(dao.getAllWithInitializedClients());
         return dtoList;
     }
     
@@ -86,8 +86,7 @@ public class CaseServiceImpl implements CaseService {
     public List<CaseDto> getAllActiveByAttorneyId(Long attorneyId) {
         
         List<CaseDto> dtoList = caseMapper.toCaseDtoList(
-                dao.getAllActiveByAttorneyId(attorneyId),
-                    new CycleAvoidingMappingContext());
+                dao.getAllActiveByAttorneyId(attorneyId));
         return dtoList;
         
     }

@@ -33,7 +33,7 @@ public class InvestigatorMinimalDtoEditor extends PropertyEditorSupport {
     public void setAsText(String targetId) throws IllegalArgumentException {
         Long id = Long.valueOf(targetId);
         InvestigatorDto investigator = investigatorService.getById(id);
-        InvestigatorMinimalDto minimalDto = mapper.toInvestigatorMinimalDtoFromFullDto(investigator);
+        InvestigatorMinimalDto minimalDto = mapper.toInvestigatorMinimalDtoFromInvestigatorDto(investigator);
         super.setValue(minimalDto);
     }
 }

@@ -77,7 +77,7 @@ public class CaseMapperTest {
     @Test
     public void mapper_ShouldMapEntityToDto() {
                 
-        CaseDto dto = caseMapper.toCaseDto(courtCase, new CycleAvoidingMappingContext());
+        CaseDto dto = caseMapper.toCaseDto(courtCase);
                 
         assertThat(courtCase.getId()).isEqualTo(dto.getId());
         assertThat(courtCase.getCaseNumber()).isEqualTo(dto.getCaseNumber());

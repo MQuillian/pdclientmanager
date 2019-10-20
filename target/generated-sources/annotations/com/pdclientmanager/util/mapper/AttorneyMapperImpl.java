@@ -2,6 +2,7 @@ package com.pdclientmanager.util.mapper;
 
 import com.pdclientmanager.model.dto.AttorneyDto;
 import com.pdclientmanager.model.dto.AttorneyFormDto;
+import com.pdclientmanager.model.dto.AttorneyMinimalDto;
 import com.pdclientmanager.model.dto.CaseMinimalDto;
 import com.pdclientmanager.model.dto.ChargeDto;
 import com.pdclientmanager.model.dto.ChargedCountDto;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-09-25T14:44:38-0400",
+    date = "2019-10-20T18:23:07-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -56,25 +57,18 @@ public class AttorneyMapperImpl implements AttorneyMapper {
     }
 
     @Override
-    public AttorneyDto toAttorneyDto(Attorney entity, CycleAvoidingMappingContext context) {
-        AttorneyDto target = context.getMappedInstance( entity, AttorneyDto.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    public AttorneyDto toAttorneyDto(Attorney entity) {
         if ( entity == null ) {
             return null;
         }
 
         AttorneyDto attorneyDto = new AttorneyDto();
 
-        context.storeMappedInstance( entity, attorneyDto );
-
         attorneyDto.setId( entity.getId() );
         attorneyDto.setName( entity.getName() );
         attorneyDto.setEmploymentStatus( entity.getEmploymentStatus() );
-        attorneyDto.setInvestigator( investigatorToInvestigatorMinimalDto( entity.getInvestigator(), context ) );
-        attorneyDto.setCaseload( caseListToCaseMinimalDtoList( entity.getCaseload(), context ) );
+        attorneyDto.setInvestigator( investigatorToInvestigatorMinimalDto( entity.getInvestigator() ) );
+        attorneyDto.setCaseload( caseListToCaseMinimalDtoList( entity.getCaseload() ) );
 
         return attorneyDto;
     }
@@ -101,21 +95,14 @@ public class AttorneyMapperImpl implements AttorneyMapper {
     }
 
     @Override
-    public List<AttorneyDto> toAttorneyDtoList(List<Attorney> entities, CycleAvoidingMappingContext context) {
-        List<AttorneyDto> target = context.getMappedInstance( entities, List.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    public List<AttorneyDto> toAttorneyDtoList(List<Attorney> entities) {
         if ( entities == null ) {
             return null;
         }
 
         List<AttorneyDto> list = new ArrayList<AttorneyDto>( entities.size() );
-        context.storeMappedInstance( entities, list );
-
         for ( Attorney attorney : entities ) {
-            list.add( toAttorneyDto( attorney, context ) );
+            list.add( toAttorneyDto( attorney ) );
         }
 
         return list;
@@ -190,6 +177,64 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         List<AttorneyFormDto> list = new ArrayList<AttorneyFormDto>( entities.size() );
         for ( Attorney attorney : entities ) {
             list.add( toAttorneyFormDtoFromAttorney( attorney ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public AttorneyMinimalDto toAttorneyMinimalDtoFromAttorney(Attorney entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
+
+        attorneyMinimalDto.setId( entity.getId() );
+        attorneyMinimalDto.setName( entity.getName() );
+        attorneyMinimalDto.setEmploymentStatus( entity.getEmploymentStatus() );
+
+        return attorneyMinimalDto;
+    }
+
+    @Override
+    public List<AttorneyMinimalDto> toAttorneyMinimalDtoList(List<Attorney> entities) {
+        if ( entities == null ) {
+            return null;
+        }
+
+        List<AttorneyMinimalDto> list = new ArrayList<AttorneyMinimalDto>( entities.size() );
+        for ( Attorney attorney : entities ) {
+            list.add( toAttorneyMinimalDtoFromAttorney( attorney ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public AttorneyMinimalDto toAttorneyMinimalDtoFromAttorneyDto(AttorneyDto fullDto) {
+        if ( fullDto == null ) {
+            return null;
+        }
+
+        AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
+
+        attorneyMinimalDto.setId( fullDto.getId() );
+        attorneyMinimalDto.setName( fullDto.getName() );
+        attorneyMinimalDto.setEmploymentStatus( fullDto.getEmploymentStatus() );
+
+        return attorneyMinimalDto;
+    }
+
+    @Override
+    public List<AttorneyMinimalDto> toAttorneyMinimalDtoListFromAttorneyDtoList(List<AttorneyDto> fullDtoList) {
+        if ( fullDtoList == null ) {
+            return null;
+        }
+
+        List<AttorneyMinimalDto> list = new ArrayList<AttorneyMinimalDto>( fullDtoList.size() );
+        for ( AttorneyDto attorneyDto : fullDtoList ) {
+            list.add( toAttorneyMinimalDtoFromAttorneyDto( attorneyDto ) );
         }
 
         return list;
@@ -325,19 +370,12 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         return list1;
     }
 
-    protected InvestigatorMinimalDto investigatorToInvestigatorMinimalDto(Investigator investigator, CycleAvoidingMappingContext context) {
-        InvestigatorMinimalDto target = context.getMappedInstance( investigator, InvestigatorMinimalDto.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    protected InvestigatorMinimalDto investigatorToInvestigatorMinimalDto(Investigator investigator) {
         if ( investigator == null ) {
             return null;
         }
 
         InvestigatorMinimalDto investigatorMinimalDto = new InvestigatorMinimalDto();
-
-        context.storeMappedInstance( investigator, investigatorMinimalDto );
 
         investigatorMinimalDto.setId( investigator.getId() );
         investigatorMinimalDto.setName( investigator.getName() );
@@ -346,19 +384,12 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         return investigatorMinimalDto;
     }
 
-    protected ChargeDto chargeToChargeDto(Charge charge, CycleAvoidingMappingContext context) {
-        ChargeDto target = context.getMappedInstance( charge, ChargeDto.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    protected ChargeDto chargeToChargeDto(Charge charge) {
         if ( charge == null ) {
             return null;
         }
 
         ChargeDto chargeDto = new ChargeDto();
-
-        context.storeMappedInstance( charge, chargeDto );
 
         chargeDto.setId( charge.getId() );
         chargeDto.setName( charge.getName() );
@@ -367,91 +398,63 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         return chargeDto;
     }
 
-    protected ChargedCountDto chargedCountToChargedCountDto(ChargedCount chargedCount, CycleAvoidingMappingContext context) {
-        ChargedCountDto target = context.getMappedInstance( chargedCount, ChargedCountDto.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    protected ChargedCountDto chargedCountToChargedCountDto(ChargedCount chargedCount) {
         if ( chargedCount == null ) {
             return null;
         }
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        context.storeMappedInstance( chargedCount, chargedCountDto );
-
         chargedCountDto.setId( chargedCount.getId() );
         if ( chargedCount.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
         }
-        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge(), context ) );
+        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
 
         return chargedCountDto;
     }
 
-    protected Map<Integer, ChargedCountDto> integerChargedCountMapToIntegerChargedCountDtoMap(Map<Integer, ChargedCount> map, CycleAvoidingMappingContext context) {
-        Map<Integer, ChargedCountDto> target = context.getMappedInstance( map, Map.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    protected Map<Integer, ChargedCountDto> integerChargedCountMapToIntegerChargedCountDtoMap(Map<Integer, ChargedCount> map) {
         if ( map == null ) {
             return null;
         }
 
         Map<Integer, ChargedCountDto> map1 = new HashMap<Integer, ChargedCountDto>( Math.max( (int) ( map.size() / .75f ) + 1, 16 ) );
 
-        context.storeMappedInstance( map, map1 );
-
         for ( java.util.Map.Entry<Integer, ChargedCount> entry : map.entrySet() ) {
             Integer key = entry.getKey();
-            ChargedCountDto value = chargedCountToChargedCountDto( entry.getValue(), context );
+            ChargedCountDto value = chargedCountToChargedCountDto( entry.getValue() );
             map1.put( key, value );
         }
 
         return map1;
     }
 
-    protected CaseMinimalDto caseToCaseMinimalDto(Case case1, CycleAvoidingMappingContext context) {
-        CaseMinimalDto target = context.getMappedInstance( case1, CaseMinimalDto.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    protected CaseMinimalDto caseToCaseMinimalDto(Case case1) {
         if ( case1 == null ) {
             return null;
         }
 
         CaseMinimalDto caseMinimalDto = new CaseMinimalDto();
 
-        context.storeMappedInstance( case1, caseMinimalDto );
-
         caseMinimalDto.setId( case1.getId() );
         caseMinimalDto.setCaseNumber( case1.getCaseNumber() );
         caseMinimalDto.setCaseStatus( case1.getCaseStatus() );
         caseMinimalDto.setDateOpened( case1.getDateOpened() );
         caseMinimalDto.setDateClosed( case1.getDateClosed() );
-        caseMinimalDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( case1.getChargedCounts(), context ) );
+        caseMinimalDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( case1.getChargedCounts() ) );
 
         return caseMinimalDto;
     }
 
-    protected List<CaseMinimalDto> caseListToCaseMinimalDtoList(List<Case> list, CycleAvoidingMappingContext context) {
-        List<CaseMinimalDto> target = context.getMappedInstance( list, List.class );
-        if ( target != null ) {
-            return target;
-        }
-
+    protected List<CaseMinimalDto> caseListToCaseMinimalDtoList(List<Case> list) {
         if ( list == null ) {
             return null;
         }
 
         List<CaseMinimalDto> list1 = new ArrayList<CaseMinimalDto>( list.size() );
-        context.storeMappedInstance( list, list1 );
-
         for ( Case case1 : list ) {
-            list1.add( caseToCaseMinimalDto( case1, context ) );
+            list1.add( caseToCaseMinimalDto( case1 ) );
         }
 
         return list1;

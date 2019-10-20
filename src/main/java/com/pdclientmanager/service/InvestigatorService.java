@@ -7,7 +7,7 @@ import com.pdclientmanager.model.dto.InvestigatorFormDto;
 
 public interface InvestigatorService {
 
-    void persist(final InvestigatorFormDto formDto);
+    Long persist(final InvestigatorFormDto formDto);
     
     InvestigatorDto getById(final Long targetId);
         
@@ -15,7 +15,7 @@ public interface InvestigatorService {
     
     List<InvestigatorDto> getAllActive();
     
-    void merge(final InvestigatorFormDto dto);
+    Long merge(final InvestigatorFormDto dto);
     
     boolean delete(final InvestigatorDto dto);
     

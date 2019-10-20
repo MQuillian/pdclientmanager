@@ -13,7 +13,6 @@ public class Attorney extends Employee {
 
     @ManyToOne
     @JoinColumn(name = "investigator")
-//    @JsonManagedReference
     private Investigator investigator;
     
     @OneToMany(mappedBy = "attorney")

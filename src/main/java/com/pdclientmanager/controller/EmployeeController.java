@@ -148,7 +148,7 @@ public class EmployeeController {
     
     @GetMapping("/investigators/add")
     public String showNewInvestigatorForm(Model model) {
-        InvestigatorDto investigator = new InvestigatorDto();
+        InvestigatorFormDto investigator = new InvestigatorFormDto();
         model.addAttribute("investigatorForm", investigator);
         model.addAttribute("activeAttorneys", attorneyService.getAllActive());
         return "investigators/investigatorForm";
@@ -162,22 +162,22 @@ public class EmployeeController {
         if(result.hasErrors()) {
             return "addInvestigatorForm";
         } else {
-            
+            Long entityId;
             if(investigator.isNew()) {
-                investigatorService.persist(investigator);
+                entityId = investigatorService.persist(investigator);
                 redirectAttributes.addFlashAttribute("css", "success");
                 redirectAttributes.addFlashAttribute("msg", "Investigator added successfully!");
             } else {
-                investigatorService.merge(investigator);
+                entityId = investigatorService.merge(investigator);
                 redirectAttributes.addFlashAttribute("css", "success");
                 redirectAttributes.addFlashAttribute("msg", "Investigator updated successfully!");
             }
+            return "redirect:/investigators/" + entityId;
         }
-        return "redirect:/investigators/1";
     }
     
     @GetMapping("/investigators")
-    public String viewAllInvestigators(Model model) {
+    public String showAllInvestigators(Model model) {
         model.addAttribute("investigatorList", investigatorService.getAll());
         return "investigators/listInvestigators";
     }

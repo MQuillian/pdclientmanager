@@ -17,11 +17,11 @@ public interface ClientMapper {
 
     Client toClient(final ClientDto dto, @Context CycleAvoidingMappingContext context);
     
-    ClientDto toClientDto(final Client entity, @Context CycleAvoidingMappingContext context);
+    ClientDto toClientDto(final Client entity);
     
     List<Client> toClientList(final List<ClientDto> dtos, @Context CycleAvoidingMappingContext context);
     
-    List<ClientDto> toClientDtoList(final List<Client> entities, @Context CycleAvoidingMappingContext context);
+    List<ClientDto> toClientDtoList(final List<Client> entities);
 
     
     //Mapping between ClientMinimalDto and Client entity

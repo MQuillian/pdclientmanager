@@ -17,11 +17,11 @@ public class InvestigatorFormDto {
     }
 
     public InvestigatorFormDto(Long id, String name, EmploymentStatus employmentStatus,
-            List<Long> assignedAttorneyIds) {
+            List<Long> assignedAttorneys) {
         this.id = id;
         this.name = name;
         this.employmentStatus = employmentStatus;
-        this.assignedAttorneyIds = assignedAttorneyIds;
+        this.assignedAttorneyIds = assignedAttorneys;
     }
     
     public boolean isNew() {
@@ -65,7 +65,7 @@ public class InvestigatorFormDto {
         private Long id = 1L;
         private String name = "Default InvestigatorFormDto";
         private EmploymentStatus employmentStatus = EmploymentStatus.ACTIVE;
-        private List<Long> assignedAttorneyIds = new ArrayList<>();
+        private List<Long> assignedAttorneys = new ArrayList<>();
         
         public InvestigatorFormDtoBuilder withId(Long id) {
             this.id = id;
@@ -82,13 +82,13 @@ public class InvestigatorFormDto {
             return this;
         }
         
-        public InvestigatorFormDtoBuilder withAssignedAttorneyIds(List<Long> assignedAttorneyIds) {
-            this.assignedAttorneyIds = assignedAttorneyIds;
+        public InvestigatorFormDtoBuilder withAssignedAttorneys(List<Long> assignedAttorneys) {
+            this.assignedAttorneys = assignedAttorneys;
             return this;
         }
         
         public InvestigatorFormDto build() {
-            return new InvestigatorFormDto(id, name, employmentStatus, assignedAttorneyIds);
+            return new InvestigatorFormDto(id, name, employmentStatus, assignedAttorneys);
         }
     }
 }
