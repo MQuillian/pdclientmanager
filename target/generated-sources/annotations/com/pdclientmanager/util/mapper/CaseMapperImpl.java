@@ -2,6 +2,7 @@ package com.pdclientmanager.util.mapper;
 
 import com.pdclientmanager.model.dto.AttorneyMinimalDto;
 import com.pdclientmanager.model.dto.CaseDto;
+import com.pdclientmanager.model.dto.CaseFormDto;
 import com.pdclientmanager.model.dto.CaseMinimalDto;
 import com.pdclientmanager.model.dto.ChargeDto;
 import com.pdclientmanager.model.dto.ChargedCountDto;
@@ -17,17 +18,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-20T18:23:08-0400",
+    date = "2019-10-24T23:33:42-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
 @Component
 public class CaseMapperImpl implements CaseMapper {
+
+    @Autowired
+    private ClientResolver clientResolver;
+    @Autowired
+    private JudgeResolver judgeResolver;
+    @Autowired
+    private AttorneyResolver attorneyResolver;
 
     @Override
     public Case toCase(CaseDto dto, CycleAvoidingMappingContext context) {
@@ -44,15 +53,15 @@ public class CaseMapperImpl implements CaseMapper {
 
         context.storeMappedInstance( dto, case1 );
 
-        case1.setId( dto.getId() );
+        case1.setAttorney( attorneyMinimalDtoToAttorney( dto.getAttorney(), context ) );
         case1.setCaseNumber( dto.getCaseNumber() );
         case1.setCaseStatus( dto.getCaseStatus() );
-        case1.setDateOpened( dto.getDateOpened() );
-        case1.setDateClosed( dto.getDateClosed() );
-        case1.setClient( clientMinimalDtoToClient( dto.getClient(), context ) );
-        case1.setJudge( judgeDtoToJudge( dto.getJudge(), context ) );
-        case1.setAttorney( attorneyMinimalDtoToAttorney( dto.getAttorney(), context ) );
         case1.setChargedCounts( integerChargedCountDtoMapToIntegerChargedCountMap( dto.getChargedCounts(), context ) );
+        case1.setClient( clientMinimalDtoToClient( dto.getClient(), context ) );
+        case1.setDateClosed( dto.getDateClosed() );
+        case1.setDateOpened( dto.getDateOpened() );
+        case1.setId( dto.getId() );
+        case1.setJudge( judgeDtoToJudge( dto.getJudge(), context ) );
 
         return case1;
     }
@@ -65,15 +74,15 @@ public class CaseMapperImpl implements CaseMapper {
 
         CaseDto caseDto = new CaseDto();
 
-        caseDto.setId( entity.getId() );
+        caseDto.setAttorney( attorneyToAttorneyMinimalDto( entity.getAttorney() ) );
         caseDto.setCaseNumber( entity.getCaseNumber() );
         caseDto.setCaseStatus( entity.getCaseStatus() );
-        caseDto.setDateOpened( entity.getDateOpened() );
-        caseDto.setDateClosed( entity.getDateClosed() );
-        caseDto.setClient( clientToClientMinimalDto( entity.getClient() ) );
-        caseDto.setJudge( judgeToJudgeDto( entity.getJudge() ) );
-        caseDto.setAttorney( attorneyToAttorneyMinimalDto( entity.getAttorney() ) );
         caseDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( entity.getChargedCounts() ) );
+        caseDto.setClient( clientToClientMinimalDto( entity.getClient() ) );
+        caseDto.setDateClosed( entity.getDateClosed() );
+        caseDto.setDateOpened( entity.getDateOpened() );
+        caseDto.setId( entity.getId() );
+        caseDto.setJudge( judgeToJudgeDto( entity.getJudge() ) );
 
         return caseDto;
     }
@@ -114,6 +123,88 @@ public class CaseMapperImpl implements CaseMapper {
     }
 
     @Override
+    public Case toCaseFromCaseFormDto(CaseFormDto dto, CycleAvoidingMappingContext context) {
+        Case target = context.getMappedInstance( dto, Case.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( dto == null ) {
+            return null;
+        }
+
+        Case case1 = new Case();
+
+        context.storeMappedInstance( dto, case1 );
+
+        case1.setClient( clientResolver.resolve( dto.getClientId(), Client.class ) );
+        case1.setJudge( judgeResolver.resolve( dto.getJudgeId(), Judge.class ) );
+        case1.setAttorney( attorneyResolver.resolve( dto.getAttorneyId(), Attorney.class ) );
+        case1.setCaseNumber( dto.getCaseNumber() );
+        case1.setCaseStatus( dto.getCaseStatus() );
+        case1.setDateClosed( dto.getDateClosed() );
+        case1.setDateOpened( dto.getDateOpened() );
+        case1.setId( dto.getId() );
+
+        return case1;
+    }
+
+    @Override
+    public CaseFormDto toCaseFormDtoFromCase(Case entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        CaseFormDto caseFormDto = new CaseFormDto();
+
+        caseFormDto.setAttorneyId( attorneyResolver.toLong( entity.getAttorney() ) );
+        caseFormDto.setClientId( clientResolver.toLong( entity.getClient() ) );
+        caseFormDto.setJudgeId( judgeResolver.toLong( entity.getJudge() ) );
+        caseFormDto.setCaseNumber( entity.getCaseNumber() );
+        caseFormDto.setCaseStatus( entity.getCaseStatus() );
+        caseFormDto.setDateClosed( entity.getDateClosed() );
+        caseFormDto.setDateOpened( entity.getDateOpened() );
+        caseFormDto.setId( entity.getId() );
+
+        return caseFormDto;
+    }
+
+    @Override
+    public List<Case> toCaseListFromCaseFormDtoList(List<CaseFormDto> dtos, CycleAvoidingMappingContext context) {
+        List<Case> target = context.getMappedInstance( dtos, List.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( dtos == null ) {
+            return null;
+        }
+
+        List<Case> list = new ArrayList<Case>( dtos.size() );
+        context.storeMappedInstance( dtos, list );
+
+        for ( CaseFormDto caseFormDto : dtos ) {
+            list.add( toCaseFromCaseFormDto( caseFormDto, context ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<CaseFormDto> toCaseFormDtoListFromCaseList(List<Case> entities) {
+        if ( entities == null ) {
+            return null;
+        }
+
+        List<CaseFormDto> list = new ArrayList<CaseFormDto>( entities.size() );
+        for ( Case case1 : entities ) {
+            list.add( toCaseFormDtoFromCase( case1 ) );
+        }
+
+        return list;
+    }
+
+    @Override
     public CaseMinimalDto toCaseMinimalDto(Case entity) {
         if ( entity == null ) {
             return null;
@@ -121,12 +212,12 @@ public class CaseMapperImpl implements CaseMapper {
 
         CaseMinimalDto caseMinimalDto = new CaseMinimalDto();
 
-        caseMinimalDto.setId( entity.getId() );
         caseMinimalDto.setCaseNumber( entity.getCaseNumber() );
         caseMinimalDto.setCaseStatus( entity.getCaseStatus() );
-        caseMinimalDto.setDateOpened( entity.getDateOpened() );
-        caseMinimalDto.setDateClosed( entity.getDateClosed() );
         caseMinimalDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( entity.getChargedCounts() ) );
+        caseMinimalDto.setDateClosed( entity.getDateClosed() );
+        caseMinimalDto.setDateOpened( entity.getDateOpened() );
+        caseMinimalDto.setId( entity.getId() );
 
         return caseMinimalDto;
     }
@@ -145,45 +236,39 @@ public class CaseMapperImpl implements CaseMapper {
         return list;
     }
 
-    protected Client clientMinimalDtoToClient(ClientMinimalDto clientMinimalDto, CycleAvoidingMappingContext context) {
-        Client target = context.getMappedInstance( clientMinimalDto, Client.class );
-        if ( target != null ) {
-            return target;
-        }
-
-        if ( clientMinimalDto == null ) {
+    @Override
+    public CaseMinimalDto toCaseMinimalDtoFromCaseDto(CaseDto dto) {
+        if ( dto == null ) {
             return null;
         }
 
-        Client client = new Client();
+        CaseMinimalDto caseMinimalDto = new CaseMinimalDto();
 
-        context.storeMappedInstance( clientMinimalDto, client );
+        caseMinimalDto.setCaseNumber( dto.getCaseNumber() );
+        caseMinimalDto.setCaseStatus( dto.getCaseStatus() );
+        Map<Integer, ChargedCountDto> map = dto.getChargedCounts();
+        if ( map != null ) {
+            caseMinimalDto.setChargedCounts( new HashMap<Integer, ChargedCountDto>( map ) );
+        }
+        caseMinimalDto.setDateClosed( dto.getDateClosed() );
+        caseMinimalDto.setDateOpened( dto.getDateOpened() );
+        caseMinimalDto.setId( dto.getId() );
 
-        client.setId( clientMinimalDto.getId() );
-        client.setName( clientMinimalDto.getName() );
-        client.setCustodyStatus( clientMinimalDto.getCustodyStatus() );
-
-        return client;
+        return caseMinimalDto;
     }
 
-    protected Judge judgeDtoToJudge(JudgeDto judgeDto, CycleAvoidingMappingContext context) {
-        Judge target = context.getMappedInstance( judgeDto, Judge.class );
-        if ( target != null ) {
-            return target;
-        }
-
-        if ( judgeDto == null ) {
+    @Override
+    public List<CaseMinimalDto> toCaseMinimalDtoListFromCaseDtoList(List<CaseDto> dtos) {
+        if ( dtos == null ) {
             return null;
         }
 
-        Judge judge = new Judge();
+        List<CaseMinimalDto> list = new ArrayList<CaseMinimalDto>( dtos.size() );
+        for ( CaseDto caseDto : dtos ) {
+            list.add( toCaseMinimalDtoFromCaseDto( caseDto ) );
+        }
 
-        context.storeMappedInstance( judgeDto, judge );
-
-        judge.setId( judgeDto.getId() );
-        judge.setName( judgeDto.getName() );
-
-        return judge;
+        return list;
     }
 
     protected Attorney attorneyMinimalDtoToAttorney(AttorneyMinimalDto attorneyMinimalDto, CycleAvoidingMappingContext context) {
@@ -200,9 +285,9 @@ public class CaseMapperImpl implements CaseMapper {
 
         context.storeMappedInstance( attorneyMinimalDto, attorney );
 
+        attorney.setEmploymentStatus( attorneyMinimalDto.getEmploymentStatus() );
         attorney.setId( attorneyMinimalDto.getId() );
         attorney.setName( attorneyMinimalDto.getName() );
-        attorney.setEmploymentStatus( attorneyMinimalDto.getEmploymentStatus() );
 
         return attorney;
     }
@@ -242,9 +327,9 @@ public class CaseMapperImpl implements CaseMapper {
 
         context.storeMappedInstance( chargedCountDto, chargedCount );
 
-        chargedCount.setId( chargedCountDto.getId() );
-        chargedCount.setCountNumber( chargedCountDto.getCountNumber() );
         chargedCount.setCharge( chargeDtoToCharge( chargedCountDto.getCharge(), context ) );
+        chargedCount.setCountNumber( chargedCountDto.getCountNumber() );
+        chargedCount.setId( chargedCountDto.getId() );
 
         return chargedCount;
     }
@@ -272,31 +357,45 @@ public class CaseMapperImpl implements CaseMapper {
         return map1;
     }
 
-    protected ClientMinimalDto clientToClientMinimalDto(Client client) {
-        if ( client == null ) {
+    protected Client clientMinimalDtoToClient(ClientMinimalDto clientMinimalDto, CycleAvoidingMappingContext context) {
+        Client target = context.getMappedInstance( clientMinimalDto, Client.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( clientMinimalDto == null ) {
             return null;
         }
 
-        ClientMinimalDto clientMinimalDto = new ClientMinimalDto();
+        Client client = new Client();
 
-        clientMinimalDto.setId( client.getId() );
-        clientMinimalDto.setName( client.getName() );
-        clientMinimalDto.setCustodyStatus( client.getCustodyStatus() );
+        context.storeMappedInstance( clientMinimalDto, client );
 
-        return clientMinimalDto;
+        client.setCustodyStatus( clientMinimalDto.getCustodyStatus() );
+        client.setId( clientMinimalDto.getId() );
+        client.setName( clientMinimalDto.getName() );
+
+        return client;
     }
 
-    protected JudgeDto judgeToJudgeDto(Judge judge) {
-        if ( judge == null ) {
+    protected Judge judgeDtoToJudge(JudgeDto judgeDto, CycleAvoidingMappingContext context) {
+        Judge target = context.getMappedInstance( judgeDto, Judge.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( judgeDto == null ) {
             return null;
         }
 
-        JudgeDto judgeDto = new JudgeDto();
+        Judge judge = new Judge();
 
-        judgeDto.setId( judge.getId() );
-        judgeDto.setName( judge.getName() );
+        context.storeMappedInstance( judgeDto, judge );
 
-        return judgeDto;
+        judge.setId( judgeDto.getId() );
+        judge.setName( judgeDto.getName() );
+
+        return judge;
     }
 
     protected AttorneyMinimalDto attorneyToAttorneyMinimalDto(Attorney attorney) {
@@ -306,9 +405,9 @@ public class CaseMapperImpl implements CaseMapper {
 
         AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
 
+        attorneyMinimalDto.setEmploymentStatus( attorney.getEmploymentStatus() );
         attorneyMinimalDto.setId( attorney.getId() );
         attorneyMinimalDto.setName( attorney.getName() );
-        attorneyMinimalDto.setEmploymentStatus( attorney.getEmploymentStatus() );
 
         return attorneyMinimalDto;
     }
@@ -334,11 +433,11 @@ public class CaseMapperImpl implements CaseMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setId( chargedCount.getId() );
+        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
         if ( chargedCount.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
         }
-        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
+        chargedCountDto.setId( chargedCount.getId() );
 
         return chargedCountDto;
     }
@@ -357,5 +456,32 @@ public class CaseMapperImpl implements CaseMapper {
         }
 
         return map1;
+    }
+
+    protected ClientMinimalDto clientToClientMinimalDto(Client client) {
+        if ( client == null ) {
+            return null;
+        }
+
+        ClientMinimalDto clientMinimalDto = new ClientMinimalDto();
+
+        clientMinimalDto.setCustodyStatus( client.getCustodyStatus() );
+        clientMinimalDto.setId( client.getId() );
+        clientMinimalDto.setName( client.getName() );
+
+        return clientMinimalDto;
+    }
+
+    protected JudgeDto judgeToJudgeDto(Judge judge) {
+        if ( judge == null ) {
+            return null;
+        }
+
+        JudgeDto judgeDto = new JudgeDto();
+
+        judgeDto.setId( judge.getId() );
+        judgeDto.setName( judge.getName() );
+
+        return judgeDto;
     }
 }

@@ -31,7 +31,7 @@ public class AttorneyMinimalDtoEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String targetId) throws IllegalArgumentException {
         Long id = Long.valueOf(targetId);
-        AttorneyDto attorney = attorneyService.getById(id);
+        AttorneyDto attorney = attorneyService.findById(id);
         AttorneyMinimalDto minimalDto = mapper.toAttorneyMinimalDtoFromAttorneyDto(attorney);
         super.setValue(minimalDto);
     }

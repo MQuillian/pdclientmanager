@@ -25,7 +25,7 @@ public class InvestigatorDtoEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String targetId) throws IllegalArgumentException {
         Long id = Long.valueOf(targetId);
-        InvestigatorDto investigator = investigatorService.getById(id);
+        InvestigatorDto investigator = investigatorService.findById(id);
         super.setValue(investigator);
     }
 }

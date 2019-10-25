@@ -7,17 +7,15 @@ import com.pdclientmanager.model.dto.AttorneyFormDto;
 
 public interface AttorneyService {
 
-    Long persist(final AttorneyFormDto formDto);
+    Long save(final AttorneyFormDto formDto);
     
-    AttorneyDto getById(final Long targetId);
+    AttorneyDto findById(final Long targetId);
     
-    AttorneyFormDto getFormById(final Long targetId);
+    AttorneyFormDto findFormById(final Long targetId);
         
-    List<AttorneyDto> getAll();
+    List<AttorneyDto> findAll();
     
-    List<AttorneyDto> getAllActive();
-    
-    Long merge(final AttorneyFormDto dto);
+    List<AttorneyDto> findAllActive();
     
     boolean delete(final AttorneyDto dto);
     

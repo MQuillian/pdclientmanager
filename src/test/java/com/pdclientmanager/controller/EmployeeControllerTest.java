@@ -9,7 +9,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +43,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -196,10 +193,10 @@ public class EmployeeControllerTest {
     @Test
     public void employeeManagement_ShouldAddEmployeesToModelAndRenderEmployeeManagementView() throws Exception {
         
-        when(attorneyServiceMock.getAllActive())
+        when(attorneyServiceMock.findAllActive())
             .thenReturn(activeAttorneyDtoList);
         
-        when(investigatorServiceMock.getAllActive())
+        when(investigatorServiceMock.findAllActive())
             .thenReturn(activeInvestigatorDtoList);
                 
         mockMvc.perform(get("/employeeManagement"))
@@ -215,7 +212,7 @@ public class EmployeeControllerTest {
     @Test
     public void showNewAttorneyForm_ShouldAddAttorneyFormDtoAndActiveInvestigatorListToModelAndRenderFormView() throws Exception {
         
-        when(investigatorServiceMock.getAllActive())
+        when(investigatorServiceMock.findAllActive())
             .thenReturn(activeInvestigatorDtoList);
         
         mockMvc.perform(get("/attorneys/add"))
@@ -233,11 +230,11 @@ public class EmployeeControllerTest {
     }
     
     @Test 
-    public void persistOrMergeAttorney_WhenValidNewAttorney_ShouldPersistAttorney() throws Exception {
+    public void save_WhenValidNewAttorney_ShouldSaveAttorney() throws Exception {
         
         attorneyFormDto.setId(null);
         
-        when(attorneyServiceMock.persist(any(AttorneyFormDto.class)))
+        when(attorneyServiceMock.save(any(AttorneyFormDto.class)))
             .thenReturn(1L);
         
         mockMvc.perform(post("/attorneys")
@@ -249,13 +246,13 @@ public class EmployeeControllerTest {
             .andExpect(view().name("redirect:/attorneys/1"))
             .andExpect(redirectedUrl("/attorneys/1"))
             .andExpect(flash().attribute("css", is("success")))
-            .andExpect(flash().attribute("msg", is("Attorney added successfully!")));
+            .andExpect(flash().attribute("msg", is("Attorney saved successfully!")));
     }
     
     @Test
     public void showAllAttorneys_ShouldRenderListAttorneysView() throws Exception {
         
-        when(attorneyServiceMock.getAll())
+        when(attorneyServiceMock.findAll())
             .thenReturn(allAttorneyDtoList);
         
         mockMvc.perform(get("/attorneys"))
@@ -280,7 +277,7 @@ public class EmployeeControllerTest {
     @Test
     public void showAttorney_WhenValidRequest_ShouldRenderAttorneyView() throws Exception {
         
-        when(attorneyServiceMock.getById(1L))
+        when(attorneyServiceMock.findById(1L))
             .thenReturn(activeAttorneyDto);
         
         mockMvc.perform(get("/attorneys/1"))
@@ -293,7 +290,7 @@ public class EmployeeControllerTest {
     @Test
     public void showUpdateAttorneyForm_WhenValidRequest_ShouldRenderUpdateAttorneyForm() throws Exception {
         
-        when(attorneyServiceMock.getFormById(1L))
+        when(attorneyServiceMock.findFormById(1L))
             .thenReturn(attorneyFormDto);
         
         mockMvc.perform(get("/attorneys/1/update"))
@@ -340,7 +337,7 @@ public class EmployeeControllerTest {
     @Test
     public void showNewInvestigatorForm_ShouldAddInvestigatorFormDtoAndActiveAttorneyListToModelAndRenderFormView() throws Exception {
         
-        when(attorneyServiceMock.getAllActive())
+        when(attorneyServiceMock.findAllActive())
             .thenReturn(activeAttorneyDtoList);
         
         mockMvc.perform(get("/investigators/add"))
@@ -360,11 +357,11 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void persistOrMergeInvestigator_WhenValidInvestigator_ShouldPersistInvestigator() throws Exception {
+    public void saveInvestigator_WhenValidInvestigator_ShouldPersistInvestigator() throws Exception {
         
         investigatorFormDto.setId(null);
         
-        when(investigatorServiceMock.persist(any(InvestigatorFormDto.class)))
+        when(investigatorServiceMock.save(any(InvestigatorFormDto.class)))
             .thenReturn(1L);
         
         mockMvc.perform(post("/investigators")
@@ -376,13 +373,13 @@ public class EmployeeControllerTest {
                 .andExpect(view().name("redirect:/investigators/1"))
                 .andExpect(redirectedUrl("/investigators/1"))
                 .andExpect(flash().attribute("css", is("success")))
-                .andExpect(flash().attribute("msg", is("Investigator added successfully!"))); 
+                .andExpect(flash().attribute("msg", is("Investigator saved successfully!"))); 
     }
     
     @Test
     public void viewAllInvestigators_ShouldRenderListInvestigatorsView() throws Exception {
         
-        when(investigatorServiceMock.getAll())
+        when(investigatorServiceMock.findAll())
             .thenReturn(allInvestigatorDtoList);
         
         mockMvc.perform(get("/investigators"))
@@ -407,7 +404,7 @@ public class EmployeeControllerTest {
     @Test
     public void showInvestigator_WhenValidRequest_ShouldRenderInvestigatorView() throws Exception {
         
-        when(investigatorServiceMock.getById(1L))
+        when(investigatorServiceMock.findById(1L))
         .thenReturn(activeInvestigatorDto);
     
         mockMvc.perform(get("/investigators/1"))
@@ -420,7 +417,7 @@ public class EmployeeControllerTest {
     @Test
     public void showUpdateInvestigatorForm_WhenValidRequest_ShouldRenderUpdateInvestigatorForm() throws Exception {
         
-        when(investigatorServiceMock.getById(1L))
+        when(investigatorServiceMock.findById(1L))
         .thenReturn(activeInvestigatorDto);
     
         mockMvc.perform(get("/investigators/1/update"))
@@ -433,9 +430,6 @@ public class EmployeeControllerTest {
     @Test
     public void deleteInvestigatorById_WhenValidRequest_ShouldDeleteAndAddMessage() throws Exception {        
         Long targetId = inactiveInvestigatorDto.getId();
-        
-        when(investigatorServiceMock.deleteById(targetId))
-            .thenReturn(true);
         
         mockMvc.perform(post("/investigators/" + targetId + "/delete")
                 .param("id", targetId.toString()))

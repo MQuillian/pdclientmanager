@@ -47,7 +47,7 @@ public abstract class Employee {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     @Enumerated(EnumType.ORDINAL)
     public EmploymentStatus getEmploymentStatus() {
         return employmentStatus;

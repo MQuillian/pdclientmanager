@@ -2,92 +2,92 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pdclientmanager.dao.CaseDaoImpl;
 import com.pdclientmanager.model.dto.CaseDto;
+import com.pdclientmanager.model.dto.CaseFormDto;
 import com.pdclientmanager.model.entity.Case;
+import com.pdclientmanager.model.entity.CaseStatus;
+import com.pdclientmanager.repository.CaseRepository;
 import com.pdclientmanager.util.mapper.CaseMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 
 @Service
 public class CaseServiceImpl implements CaseService {
-
-    private CaseDaoImpl dao;
-    private CaseMapper caseMapper;
+    
+    private CaseRepository repository;
+    private CaseMapper mapper;
     
     @Autowired
-    public CaseServiceImpl(CaseDaoImpl dao, CaseMapper caseMapper) {
-        this.dao = dao;
-        this.caseMapper = caseMapper;
-    }
-    
-    @Override
-    @Transactional
-    public void persist(CaseDto dto) {
-        
-        Case entity = caseMapper.toCase(dto, new CycleAvoidingMappingContext());
-        dao.persist(entity);
+    public CaseServiceImpl(CaseRepository repository, CaseMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     @Transactional
-    public CaseDto getById(Long targetId) {
-        
-        CaseDto dto = caseMapper.toCaseDto(dao.getById(targetId));
+    public Long save(CaseFormDto formDto) {
+        Case entity = mapper.toCaseFromCaseFormDto(formDto, new CycleAvoidingMappingContext());
+        repository.save(entity);
+        return entity.getId();
+    }
+
+    @Override
+    @Transactional
+    public CaseDto findById(Long targetId) {
+        Case entity = repository.findById(targetId)
+                .orElseThrow(EntityNotFoundException::new);
+        CaseDto dto = mapper.toCaseDto(entity);
         return dto;
     }
 
     @Override
     @Transactional
-    public List<CaseDto> getAll() {
-        
-        List<CaseDto> dtoList = caseMapper.toCaseDtoList(dao.getAll());
+    public CaseFormDto findFormById(Long targetId) {
+        Case entity = repository.findById(targetId)
+                .orElseThrow(EntityNotFoundException::new);
+        CaseFormDto formDto = mapper.toCaseFormDtoFromCase(entity);
+        return formDto;
+    }
+
+    @Override
+    @Transactional
+    public List<CaseDto> findAll() {
+        List<CaseDto> dtoList = mapper.toCaseDtoList(repository.findAll());
         return dtoList;
     }
 
     @Override
     @Transactional
-    public void merge(CaseDto dto) {
-        
-        Case entity = caseMapper.toCase(dto, new CycleAvoidingMappingContext());
-        dao.merge(entity);
-    }
-
-    @Override
-    @Transactional
-    public boolean delete(CaseDto dto) {
-        
-        Case entity = caseMapper.toCase(dto, new CycleAvoidingMappingContext());
-        dao.delete(entity);
-        return true;
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteById(Long targetId) {
-        
-        return delete(getById(targetId));
+    public List<CaseDto> findAllOpen() {
+        List<CaseDto> openDtoList = mapper.toCaseDtoList(
+                repository.findByCaseStatus(CaseStatus.OPEN));
+        return openDtoList;
     }
     
     @Override
     @Transactional
-    public List<CaseDto> getAllWithInitializedClients() {
-        
-        List<CaseDto> dtoList = caseMapper.toCaseDtoList(dao.getAllWithInitializedClients());
-        return dtoList;
+    public List<CaseDto> findAllOpenWithAttorneyId(Long targetId) {
+        List<CaseDto> openDtoList = mapper.toCaseDtoList(
+                repository.findByCaseStatusAndAttorney_Id(CaseStatus.OPEN, targetId));
+        return openDtoList;
     }
-    
+
     @Override
     @Transactional
-    public List<CaseDto> getAllActiveByAttorneyId(Long attorneyId) {
-        
-        List<CaseDto> dtoList = caseMapper.toCaseDtoList(
-                dao.getAllActiveByAttorneyId(attorneyId));
-        return dtoList;
-        
+    public void delete(CaseDto dto) {
+        Case entity = mapper.toCase(dto, new CycleAvoidingMappingContext());
+        repository.delete(entity);
     }
+
+    @Override
+    @Transactional
+    public void deleteById(Long targetId) {
+        repository.deleteById(targetId);
+    }
+
 }

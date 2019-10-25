@@ -15,7 +15,7 @@ import com.pdclientmanager.model.entity.Attorney;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {InvestigatorResolver.class})
 public interface AttorneyMapper {
     
-    //Mapping between AttorneyDto and Attorney entity
+    // Mapping between AttorneyDto and Attorney entity
     
     Attorney toAttorney(final AttorneyDto dto, @Context CycleAvoidingMappingContext context);
     
@@ -26,7 +26,7 @@ public interface AttorneyMapper {
     List<AttorneyDto> toAttorneyDtoList(final List<Attorney> entities);
     
     
-    //Mapping between AttorneyFormDto and Attorney entity
+    // Mapping between AttorneyFormDto and Attorney entity
     
     @Mapping(source = "investigatorId", target = "investigator")
     Attorney toAttorneyFromAttorneyFormDto(final AttorneyFormDto dto, @Context CycleAvoidingMappingContext context);
@@ -34,19 +34,19 @@ public interface AttorneyMapper {
     @Mapping(source = "investigator", target = "investigatorId")
     AttorneyFormDto toAttorneyFormDtoFromAttorney(final Attorney entity);
     
-    List<Attorney> toAttorneyListFromAttorneyFormDtoList(final List<AttorneyFormDto> formDtos, @Context CycleAvoidingMappingContext context);
+    List<Attorney> toAttorneyListFromAttorneyFormDtoList(final List<AttorneyFormDto> dtos, @Context CycleAvoidingMappingContext context);
     
     List<AttorneyFormDto> toAttorneyFormDtoListFromAttorney(final List<Attorney> entities);
     
     
-    //Mapping between AttorneyMinimalDto and Attorney entity
+    // Mapping between AttorneyMinimalDto and Attorney entity
     
     AttorneyMinimalDto toAttorneyMinimalDtoFromAttorney(final Attorney entity);
     
     List<AttorneyMinimalDto> toAttorneyMinimalDtoList(final List<Attorney> entities);
     
     
-    //Mapping between AttorneyDto and AttorneyMinimalDto
+    // Mapping between AttorneyMinimalDto and AttorneyDto
     
     AttorneyMinimalDto toAttorneyMinimalDtoFromAttorneyDto(final AttorneyDto fullDto);
     

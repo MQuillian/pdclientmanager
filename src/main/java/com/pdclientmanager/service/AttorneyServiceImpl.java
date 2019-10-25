@@ -2,83 +2,81 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pdclientmanager.dao.GenericEmployeeDaoImpl;
 import com.pdclientmanager.model.dto.AttorneyDto;
 import com.pdclientmanager.model.dto.AttorneyFormDto;
 import com.pdclientmanager.model.entity.Attorney;
+import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.repository.AttorneyRepository;
 import com.pdclientmanager.util.mapper.AttorneyMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 
 @Service
 public class AttorneyServiceImpl implements AttorneyService {
 
-    private GenericEmployeeDaoImpl<Attorney> dao;
+    private AttorneyRepository repository;
     private AttorneyMapper mapper;
     
     @Autowired
-    public AttorneyServiceImpl(GenericEmployeeDaoImpl<Attorney> dao,
+    public AttorneyServiceImpl(AttorneyRepository repository,
             AttorneyMapper mapper) {
-        this.dao = dao;
-        this.dao.setClass(Attorney.class);
+        this.repository = repository;
         this.mapper = mapper;
     }
     
     @Override
     @Transactional
-    public Long persist(AttorneyFormDto formDto) {
-        
+    public Long save(AttorneyFormDto formDto) {
         Attorney entity = mapper.toAttorneyFromAttorneyFormDto(formDto, new CycleAvoidingMappingContext());
-        dao.persist(entity);
+        repository.save(entity);
         return entity.getId();
     }
 
     @Override
     @Transactional
-    public AttorneyDto getById(Long targetId) {
-        AttorneyDto dto = mapper.toAttorneyDto(dao.getById(targetId));
+    public AttorneyDto findById(Long targetId) {
+        Attorney entity = repository.findById(targetId)
+                .orElseThrow(EntityNotFoundException::new);
+        AttorneyDto dto = mapper.toAttorneyDto(entity);
         return dto;
     }
     
     @Override
     @Transactional
-    public AttorneyFormDto getFormById(Long targetId) {
-        AttorneyFormDto formDto = mapper.toAttorneyFormDtoFromAttorney(dao.getById(targetId));
+    public AttorneyFormDto findFormById(Long targetId) {
+        Attorney entity = repository.findById(targetId)
+                .orElseThrow(EntityNotFoundException::new);
+        AttorneyFormDto formDto = mapper.toAttorneyFormDtoFromAttorney(entity);
         return formDto;
     }
 
     @Override
     @Transactional
-    public List<AttorneyDto> getAll() {
-        List<AttorneyDto> dtoList = mapper.toAttorneyDtoList(dao.getAll());
+    public List<AttorneyDto> findAll() {
+        List<AttorneyDto> dtoList = mapper.toAttorneyDtoList(repository.findAll());
         return dtoList;
     }
 
     @Override
     @Transactional
-    public List<AttorneyDto> getAllActive() {
-        List<AttorneyDto> activeDtoList = mapper.toAttorneyDtoList(dao.getAllActive());
+    public List<AttorneyDto> findAllActive() {
+        List<AttorneyDto> activeDtoList = mapper
+                .toAttorneyDtoList(repository.findByEmploymentStatus(EmploymentStatus.ACTIVE));
         return activeDtoList;
-    }
-
-    @Override
-    @Transactional
-    public Long merge(AttorneyFormDto formDto) {
-        Attorney entity = mapper.toAttorneyFromAttorneyFormDto(formDto, new CycleAvoidingMappingContext());
-        dao.merge(entity);
-        return entity.getId();
     }
 
     @Override
     @Transactional
     public boolean delete(AttorneyDto dto) {
         if(dto.getCaseload().isEmpty()) {
-            Attorney entity = mapper.toAttorney(dto, new CycleAvoidingMappingContext());
-            dao.delete(entity);
+            Attorney entity = mapper
+                    .toAttorney(dto, new CycleAvoidingMappingContext());
+            repository.delete(entity);
             return true;
         } else {
             return false;
@@ -87,10 +85,11 @@ public class AttorneyServiceImpl implements AttorneyService {
 
     @Override
     @Transactional
-    public boolean deleteById(Long id) {
-        Attorney entity = dao.getById(id);
+    public boolean deleteById(Long targetId) {
+        Attorney entity = repository.findById(targetId)
+                .orElseThrow(EntityNotFoundException::new);
         if(entity.getCaseload().isEmpty()) {
-            dao.delete(entity);
+            repository.delete(entity);
             return true;
         } else {
             return false;

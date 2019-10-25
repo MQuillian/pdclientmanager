@@ -35,6 +35,10 @@ public class CaseDto {
         this.attorney = attorney;
         this.chargedCounts = chargedCounts;
     }
+    
+    public void addChargedCount(Integer countNumber, ChargedCountDto chargedCount) {
+        this.chargedCounts.put(countNumber, chargedCount);
+    }
 
     public Long getId() {
         return id;

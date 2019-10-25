@@ -1,4 +1,4 @@
-package com.pdclientmanager.dao;
+package com.pdclientmanager.repository;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class DemoDao {
+    
+    // NOTE: This class is solely for resetting data to an original state for demo purposes
 
     @Autowired
     private Environment environment;

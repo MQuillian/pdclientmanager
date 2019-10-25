@@ -7,17 +7,17 @@ import com.pdclientmanager.model.dto.InvestigatorFormDto;
 
 public interface InvestigatorService {
 
-    Long persist(final InvestigatorFormDto formDto);
+    Long save(final InvestigatorFormDto formDto);
     
-    InvestigatorDto getById(final Long targetId);
+    InvestigatorDto findById(final Long targetId);
+    
+    InvestigatorFormDto findFormById(final Long targetId);
         
-    List<InvestigatorDto> getAll();
+    List<InvestigatorDto> findAll();
     
-    List<InvestigatorDto> getAllActive();
+    List<InvestigatorDto> findAllActive();
     
-    Long merge(final InvestigatorFormDto dto);
+    void delete(final InvestigatorDto dto);
     
-    boolean delete(final InvestigatorDto dto);
-    
-    boolean deleteById(final Long id);
+    void deleteById(final Long id);
 }

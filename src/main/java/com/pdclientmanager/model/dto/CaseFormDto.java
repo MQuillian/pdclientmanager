@@ -13,6 +13,9 @@ public class CaseFormDto {
     private CaseStatus caseStatus;
     private LocalDate dateOpened;
     private LocalDate dateClosed;
+    private Long clientId;
+    private Long judgeId;
+    private Long attorneyId;
     private Map<Integer, Long> chargedCountsIds;
     
     public CaseFormDto() {
@@ -20,15 +23,22 @@ public class CaseFormDto {
     }
 
     public CaseFormDto(Long id, String caseNumber, CaseStatus caseStatus, LocalDate dateOpened, LocalDate dateClosed,
-            Map<Integer, Long> chargedCountsIds) {
+            Long clientId, Long judgeId, Long attorneyId, Map<Integer, Long> chargedCountsIds) {
         this.id = id;
         this.caseNumber = caseNumber;
         this.caseStatus = caseStatus;
         this.dateOpened = dateOpened;
         this.dateClosed = dateClosed;
+        this.clientId = clientId;
+        this.judgeId = judgeId;
+        this.attorneyId = attorneyId;
         this.chargedCountsIds = chargedCountsIds;
     }
-
+    
+    public void addChargedCountId(Integer countNumber, Long id) {
+        this.chargedCountsIds.put(countNumber,id);
+    }
+    
     public Long getId() {
         return id;
     }
@@ -69,6 +79,30 @@ public class CaseFormDto {
         this.dateClosed = dateClosed;
     }
 
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
+
+    public Long getJudgeId() {
+        return judgeId;
+    }
+
+    public void setJudgeId(Long judgeId) {
+        this.judgeId = judgeId;
+    }
+
+    public Long getAttorneyId() {
+        return attorneyId;
+    }
+
+    public void setAttorneyId(Long attorneyId) {
+        this.attorneyId = attorneyId;
+    }
+
     public Map<Integer, Long> getChargedCountsIds() {
         return chargedCountsIds;
     }
@@ -76,7 +110,7 @@ public class CaseFormDto {
     public void setChargedCountsIds(Map<Integer, Long> chargedCountsIds) {
         this.chargedCountsIds = chargedCountsIds;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -132,6 +166,9 @@ public class CaseFormDto {
         private CaseStatus caseStatus = CaseStatus.OPEN;
         private LocalDate dateOpened = LocalDate.of(2000, 01, 01);
         private LocalDate dateClosed = null;
+        private Long clientId = 1L;
+        private Long judgeId = 1L;
+        private Long attorneyId = 1L;
         private Map<Integer, Long> chargedCountsIds = new HashMap<>();
         
         public CaseFormDtoBuilder withId(Long id) {
@@ -159,13 +196,29 @@ public class CaseFormDto {
             return this;
         }
         
+        public CaseFormDtoBuilder withClientId(Long clientId) {
+            this.clientId = clientId;
+            return this;
+        }
+        
+        public CaseFormDtoBuilder withJudgeId(Long judgeId) {
+            this.judgeId = judgeId;
+            return this;
+        }
+        
+        public CaseFormDtoBuilder withAttorneyId(Long attorneyId) {
+            this.attorneyId = attorneyId;
+            return this;
+        }
+        
         public CaseFormDtoBuilder withChargedCountsIds(Map<Integer,Long> chargedCountsIds) {
             this.chargedCountsIds = chargedCountsIds;
             return this;
         }
         
         public CaseFormDto build() {
-            return new CaseFormDto(id, caseNumber, caseStatus, dateOpened, dateClosed, chargedCountsIds);
+            return new CaseFormDto(id, caseNumber, caseStatus, dateOpened, dateClosed,
+                    clientId, judgeId, attorneyId, chargedCountsIds);
         }
     }
 }

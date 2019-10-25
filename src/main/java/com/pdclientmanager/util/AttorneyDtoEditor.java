@@ -22,7 +22,7 @@ public class AttorneyDtoEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String targetId) throws IllegalArgumentException {
         Long id = Long.valueOf(targetId);
-        AttorneyDto attorney = attorneyService.getById(id);
+        AttorneyDto attorney = attorneyService.findById(id);
         super.setValue(attorney);
     }
 }

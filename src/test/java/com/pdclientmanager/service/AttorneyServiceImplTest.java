@@ -3,13 +3,14 @@ package com.pdclientmanager.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +21,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.dao.GenericEmployeeDaoImpl;
 import com.pdclientmanager.model.dto.AttorneyDto;
 import com.pdclientmanager.model.dto.AttorneyFormDto;
 import com.pdclientmanager.model.dto.CaseMinimalDto;
 import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
 import com.pdclientmanager.model.entity.Attorney;
+import com.pdclientmanager.model.entity.Case;
 import com.pdclientmanager.model.entity.Investigator;
+import com.pdclientmanager.repository.AttorneyRepository;
 import com.pdclientmanager.util.mapper.AttorneyMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 
@@ -36,10 +38,10 @@ import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 class AttorneyServiceImplTest {
     
     @Mock
-    private GenericEmployeeDaoImpl<Attorney> attorneyDao;
+    private AttorneyRepository repository;
     
     @Mock
-    AttorneyMapper attorneyMapper;
+    private AttorneyMapper mapper;
     
     private AttorneyService attorneyService;
     
@@ -53,7 +55,7 @@ class AttorneyServiceImplTest {
     public void setUp() {
 
         initMocks(this);
-        attorneyService = new AttorneyServiceImpl(attorneyDao, attorneyMapper);
+        attorneyService = new AttorneyServiceImpl(repository, mapper);
         
         // Creating data for tests
         
@@ -87,85 +89,89 @@ class AttorneyServiceImplTest {
     }
     
     @Test
-    public void persist_WithValidFormDto_CallsDaoPersistMethod() {
+    public void save_WithValidFormDto_CallsRepositorySaveMethod() {
         
-        when(attorneyMapper.toAttorneyFromAttorneyFormDto(
+        when(mapper.toAttorneyFromAttorneyFormDto(
                 eq(attorneyFormDto), any(CycleAvoidingMappingContext.class)))    
             .thenReturn(attorney);
         
-        assertThat(attorneyService.persist(attorneyFormDto)).isEqualTo(attorney.getId());
-        verify(attorneyDao).persist(attorney);
+        Long returnedId = attorneyService.save(attorneyFormDto);
+        
+        assertThat(returnedId).isEqualTo(attorney.getId());
+        verify(mapper).toAttorneyFromAttorneyFormDto(eq(attorneyFormDto),
+                any(CycleAvoidingMappingContext.class));
+        verify(repository).save(attorney);
     }
     
     @Test
-    public void getById_WithValidId_ReturnsAttorney() {
+    public void findById_WithValidId_ReturnsAttorneyDto() {
  
-        when(attorneyDao.getById(1L)).thenReturn(attorney);
-        when(attorneyMapper.toAttorneyDto(
-                eq(attorney)))
+        when(mapper.toAttorneyDto(attorney))
             .thenReturn(attorneyDto);
+        when(repository.findById(1L)).thenReturn(Optional.of(attorney));
         
-        AttorneyDto dtoFromService = attorneyService.getById(1L);
+        AttorneyDto dtoFromService = attorneyService.findById(1L);
         
         assertThat(dtoFromService).isEqualTo(attorneyDto);
-        verify(attorneyDao).getById(1L);
+        verify(mapper).toAttorneyDto(attorney);
+        verify(repository).findById(1L);
     }
     
     @Test
-    public void getAll_ReturnsList() {
+    public void findAll_ReturnsDtoList() {
         
-        when(attorneyDao.getAll()).thenReturn(attorneyList);
-        when(attorneyMapper.toAttorneyDtoList(
-                eq(attorneyList)))
+        when(mapper.toAttorneyDtoList(attorneyList))
             .thenReturn(attorneyDtoList);
+        when(repository.findAll()).thenReturn(attorneyList);
         
-        List<AttorneyDto> listFromService = attorneyService.getAll();
+        List<AttorneyDto> listFromService = attorneyService.findAll();
         
         assertThat(listFromService).isEqualTo(attorneyDtoList);
-        verify(attorneyDao).getAll();
+        verify(mapper).toAttorneyDtoList(attorneyList);
+        verify(repository).findAll();
     }
     
     @Test
-    public void merge_WithValidFormDto_CallsDaoMergeMethod() {
-        
-        when(attorneyMapper.toAttorneyFromAttorneyFormDto(
-                eq(attorneyFormDto), any(CycleAvoidingMappingContext.class)))
-            .thenReturn(attorney);
-        
-        assertThat(attorneyService.merge(attorneyFormDto)).isEqualTo(attorney.getId());
-        verify(attorneyDao).merge(attorney);
-    }
-    
-    @Test
-    public void delete_WithEmptyOpenCaseload_CallsDaoDeleteMethod() {
-        
-        when(attorneyMapper.toAttorney(
+    public void delete_WithEmptyOpenCaseload_CallsRepositoryDeleteMethod() {
+        when(mapper.toAttorney(
                 eq(attorneyDto), any(CycleAvoidingMappingContext.class)))
             .thenReturn(attorney);
-        
-        attorneyDto.setCaseload(new ArrayList<>());
+        attorney.setCaseload(new ArrayList<>());
         
         assertThat(attorneyService.delete(attorneyDto)).isEqualTo(true);
-        verify(attorneyDao).delete(attorney);
+        verify(mapper).toAttorney(eq(attorneyDto),
+                any(CycleAvoidingMappingContext.class));
+        verify(repository).delete(attorney);
     }
     
     @Test
-    public void delete_WithOpenCaseload_DoesNotCallDaoDeleteMethod() {
-        
-        attorneyDto.getCaseload().add(new CaseMinimalDto.CaseMinimalDtoBuilder()
+    public void delete_WithOpenCaseload_DoesNotCallRepositoryDeleteMethod() {
+        when(mapper.toAttorney(
+                eq(attorneyDto), any(CycleAvoidingMappingContext.class)))
+            .thenReturn(attorney);
+        attorney.getCaseload().add(new Case.CaseBuilder()
                 .build());
+        attorneyDto.getCaseload().add(new CaseMinimalDto.CaseMinimalDtoBuilder().build());
         
         assertThat(attorneyService.delete(attorneyDto)).isEqualTo(false);
-        verifyZeroInteractions(attorneyDao);
+        verify(repository, never()).delete(attorney);
     }
     
     @Test
-    public void deleteById_WithValidId_CallsDaoDeleteMethod() {
+    public void deleteById_WithValidIdAndEmptyOpenCaseload_CallsRepositoryDeleteByIdMethod() {
+        when(repository.findById(1L)).thenReturn(Optional.of(attorney));
+        attorney.setCaseload(new ArrayList<>());
         
-        when(attorneyDao.getById(1L)).thenReturn(attorney);
+        assertThat(attorneyService.deleteById(1L)).isEqualTo(true);
+        verify(repository).delete(attorney);
+    }
+    
+    @Test
+    public void deleteById_WithValidIdAndOpenCaseload_DoesNotCallRepositoryDeleteByIdMethod() {
+        when(repository.findById(1L)).thenReturn(Optional.of(attorney));
+        attorney.getCaseload().add(new Case.CaseBuilder().build());
         
-        attorneyService.deleteById(1L);
-        
-        verify(attorneyDao).delete(attorney);
+        assertThat(attorneyService.deleteById(1L)).isEqualTo(false);
+        verify(repository, never()).delete(attorney);
     }
 }

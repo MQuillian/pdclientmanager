@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -19,9 +20,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
-@ComponentScan(basePackages = {
-        "com.pdclientmanager"
-})
+@EnableJpaRepositories(basePackages = "com.pdclientmanager.repository", entityManagerFactoryRef = "sessionFactory")
+@ComponentScan(basePackages = {"com.pdclientmanager"})
 public class PersistenceConfigTest extends PersistenceConfig {
     
     private Environment environment;
@@ -31,7 +31,7 @@ public class PersistenceConfigTest extends PersistenceConfig {
         super(environment);
     }
     
-    @Bean
+    @Bean("sessionFactory")
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(dataSource());
@@ -63,7 +63,7 @@ public class PersistenceConfigTest extends PersistenceConfig {
         return properties;
     }
     
-    @Bean
+    @Bean("transactionManager")
     public HibernateTransactionManager getTransactionManager() {
         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(getSessionFactory().getObject());

@@ -29,6 +29,10 @@ public class CaseMinimalDto {
         this.dateClosed = dateClosed;
         this.chargedCounts = chargedCounts;
     }
+    
+    public void addChargedCount(Integer countNumber, ChargedCountDto chargedCount) {
+        this.chargedCounts.put(countNumber, chargedCount);
+    }
 
     public Long getId() {
         return id;

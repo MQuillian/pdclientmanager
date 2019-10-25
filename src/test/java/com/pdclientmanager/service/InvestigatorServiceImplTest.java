@@ -9,6 +9,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,12 +20,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.dao.GenericEmployeeDaoImpl;
 import com.pdclientmanager.model.dto.AttorneyMinimalDto;
 import com.pdclientmanager.model.dto.InvestigatorDto;
 import com.pdclientmanager.model.dto.InvestigatorFormDto;
 import com.pdclientmanager.model.entity.Attorney;
 import com.pdclientmanager.model.entity.Investigator;
+import com.pdclientmanager.repository.InvestigatorRepository;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 import com.pdclientmanager.util.mapper.InvestigatorMapper;
 
@@ -34,10 +35,10 @@ import com.pdclientmanager.util.mapper.InvestigatorMapper;
 class InvestigatorServiceImplTest {
     
     @Mock
-    private GenericEmployeeDaoImpl<Investigator> investigatorDao;
+    private InvestigatorRepository repository;
     
     @Mock
-    InvestigatorMapper investigatorMapper;
+    private InvestigatorMapper mapper;
     
     private InvestigatorService investigatorService;
     
@@ -51,7 +52,7 @@ class InvestigatorServiceImplTest {
     public void setUp() {
         
         initMocks(this);
-        investigatorService = new InvestigatorServiceImpl(investigatorDao, investigatorMapper);
+        investigatorService = new InvestigatorServiceImpl(repository, mapper);
     
         investigatorDto = new InvestigatorDto.InvestigatorDtoBuilder()
                 .withId(1L)
@@ -80,74 +81,61 @@ class InvestigatorServiceImplTest {
     }
     
     @Test
-    public void persist_WithValidinvestigator_CallsDaoPersistMethod() {
+    public void save_WithValidinvestigator_CallsRepositorySaveMethod() {
         
-        when(investigatorMapper.toInvestigatorFromInvestigatorFormDto(
+        when(mapper.toInvestigatorFromInvestigatorFormDto(
                 eq(investigatorFormDto), any(CycleAvoidingMappingContext.class)))
             .thenReturn(investigator);
         
-        assertThat(investigatorService.persist(investigatorFormDto)).isEqualTo(investigator.getId());
-        verify(investigatorDao).persist(investigator);
+        assertThat(investigatorService.save(investigatorFormDto)).isEqualTo(investigator.getId());
+        verify(repository).save(investigator);
     }
     
     @Test
-    public void getById_WithValidId_ReturnsInvestigatorDto() {
+    public void findById_WithValidId_ReturnsInvestigatorDto() {
         
-        when(investigatorDao.getById(1L)).thenReturn(investigator);
-        when(investigatorMapper.toInvestigatorDto(
+        when(repository.findById(1L)).thenReturn(Optional.of(investigator));
+        when(mapper.toInvestigatorDto(
                 eq(investigator)))
             .thenReturn(investigatorDto);
         
-        InvestigatorDto dtoFromService = investigatorService.getById(1L);
+        InvestigatorDto dtoFromService = investigatorService.findById(1L);
         
         assertThat(dtoFromService).isEqualTo(investigatorDto);
-        verify(investigatorDao).getById(1L);
+        verify(repository).findById(1L);
     }
     
     @Test
-    public void getAll_ReturnsDtoList() {
+    public void findAll_ReturnsDtoList() {
         
-        when(investigatorDao.getAll()).thenReturn(investigatorList);
-        when(investigatorMapper.toInvestigatorDtoList(
+        when(repository.findAll()).thenReturn(investigatorList);
+        when(mapper.toInvestigatorDtoList(
                 eq(investigatorList)))
             .thenReturn(investigatorDtoList);
         
-        List<InvestigatorDto> listFromService = investigatorService.getAll();
+        List<InvestigatorDto> listFromService = investigatorService.findAll();
         
         assertThat(listFromService).isEqualTo(investigatorDtoList);
-        verify(investigatorDao).getAll();
+        verify(repository).findAll();
     }
     
     @Test
-    public void merge_WithValidEntity_CallsDaoMergeMethod() {
+    public void delete_WithValidEntity_CallsRepositoryDeleteMethod() {
         
-        when(investigatorMapper.toInvestigatorFromInvestigatorFormDto(
-                eq(investigatorFormDto), any(CycleAvoidingMappingContext.class)))
-            .thenReturn(investigator);
-        
-        assertThat(investigatorService.merge(investigatorFormDto)).isEqualTo(investigator.getId());
-        verify(investigatorDao).merge(investigator);
-    }
-    
-    @Test
-    public void delete_WithValidEntity_CallsDaoDeleteMethod() {
-        
-        when(investigatorMapper.toInvestigator(
+        when(mapper.toInvestigator(
                 eq(investigatorDto), any(CycleAvoidingMappingContext.class)))
             .thenReturn(investigator);
         
         investigatorService.delete(investigatorDto);
         
-        verify(investigatorDao).delete(investigator);
+        verify(repository).delete(investigator);
     }
     
     @Test
     public void deleteById_WithValidId_CallsDaoDeleteMethod() {
         
-        when(investigatorDao.getById(1L)).thenReturn(investigator);
-        
         investigatorService.deleteById(1L);
         
-        verify(investigatorDao).delete(investigator);
+        verify(repository).deleteById(1L);
     }
 }

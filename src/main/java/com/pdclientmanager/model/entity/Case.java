@@ -17,11 +17,11 @@ import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Case {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotEmpty(message = "Case number")
     private String caseNumber;
     
@@ -70,11 +70,11 @@ public class Case {
     public void addChargedCount(ChargedCount chargedCount) {
         this.chargedCounts.put(chargedCount.getCountNumber(), chargedCount);
     }
-
+    
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }

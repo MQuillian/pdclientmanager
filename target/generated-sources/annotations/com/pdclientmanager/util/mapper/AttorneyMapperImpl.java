@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-20T18:23:07-0400",
+    date = "2019-10-24T13:11:59-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -148,20 +148,20 @@ public class AttorneyMapperImpl implements AttorneyMapper {
     }
 
     @Override
-    public List<Attorney> toAttorneyListFromAttorneyFormDtoList(List<AttorneyFormDto> formDtos, CycleAvoidingMappingContext context) {
-        List<Attorney> target = context.getMappedInstance( formDtos, List.class );
+    public List<Attorney> toAttorneyListFromAttorneyFormDtoList(List<AttorneyFormDto> dtos, CycleAvoidingMappingContext context) {
+        List<Attorney> target = context.getMappedInstance( dtos, List.class );
         if ( target != null ) {
             return target;
         }
 
-        if ( formDtos == null ) {
+        if ( dtos == null ) {
             return null;
         }
 
-        List<Attorney> list = new ArrayList<Attorney>( formDtos.size() );
-        context.storeMappedInstance( formDtos, list );
+        List<Attorney> list = new ArrayList<Attorney>( dtos.size() );
+        context.storeMappedInstance( dtos, list );
 
-        for ( AttorneyFormDto attorneyFormDto : formDtos ) {
+        for ( AttorneyFormDto attorneyFormDto : dtos ) {
             list.add( toAttorneyFromAttorneyFormDto( attorneyFormDto, context ) );
         }
 
