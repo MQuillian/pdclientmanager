@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-24T13:11:59-0400",
+    date = "2019-10-25T01:41:16-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -64,11 +64,11 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         AttorneyDto attorneyDto = new AttorneyDto();
 
-        attorneyDto.setId( entity.getId() );
-        attorneyDto.setName( entity.getName() );
-        attorneyDto.setEmploymentStatus( entity.getEmploymentStatus() );
-        attorneyDto.setInvestigator( investigatorToInvestigatorMinimalDto( entity.getInvestigator() ) );
         attorneyDto.setCaseload( caseListToCaseMinimalDtoList( entity.getCaseload() ) );
+        attorneyDto.setEmploymentStatus( entity.getEmploymentStatus() );
+        attorneyDto.setId( entity.getId() );
+        attorneyDto.setInvestigator( investigatorToInvestigatorMinimalDto( entity.getInvestigator() ) );
+        attorneyDto.setName( entity.getName() );
 
         return attorneyDto;
     }
@@ -190,9 +190,9 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
 
+        attorneyMinimalDto.setEmploymentStatus( entity.getEmploymentStatus() );
         attorneyMinimalDto.setId( entity.getId() );
         attorneyMinimalDto.setName( entity.getName() );
-        attorneyMinimalDto.setEmploymentStatus( entity.getEmploymentStatus() );
 
         return attorneyMinimalDto;
     }
@@ -219,9 +219,9 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
 
+        attorneyMinimalDto.setEmploymentStatus( fullDto.getEmploymentStatus() );
         attorneyMinimalDto.setId( fullDto.getId() );
         attorneyMinimalDto.setName( fullDto.getName() );
-        attorneyMinimalDto.setEmploymentStatus( fullDto.getEmploymentStatus() );
 
         return attorneyMinimalDto;
     }
@@ -370,20 +370,6 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         return list1;
     }
 
-    protected InvestigatorMinimalDto investigatorToInvestigatorMinimalDto(Investigator investigator) {
-        if ( investigator == null ) {
-            return null;
-        }
-
-        InvestigatorMinimalDto investigatorMinimalDto = new InvestigatorMinimalDto();
-
-        investigatorMinimalDto.setId( investigator.getId() );
-        investigatorMinimalDto.setName( investigator.getName() );
-        investigatorMinimalDto.setEmploymentStatus( investigator.getEmploymentStatus() );
-
-        return investigatorMinimalDto;
-    }
-
     protected ChargeDto chargeToChargeDto(Charge charge) {
         if ( charge == null ) {
             return null;
@@ -405,11 +391,11 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setId( chargedCount.getId() );
+        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
         if ( chargedCount.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
         }
-        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
+        chargedCountDto.setId( chargedCount.getId() );
 
         return chargedCountDto;
     }
@@ -458,5 +444,19 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         }
 
         return list1;
+    }
+
+    protected InvestigatorMinimalDto investigatorToInvestigatorMinimalDto(Investigator investigator) {
+        if ( investigator == null ) {
+            return null;
+        }
+
+        InvestigatorMinimalDto investigatorMinimalDto = new InvestigatorMinimalDto();
+
+        investigatorMinimalDto.setEmploymentStatus( investigator.getEmploymentStatus() );
+        investigatorMinimalDto.setId( investigator.getId() );
+        investigatorMinimalDto.setName( investigator.getName() );
+
+        return investigatorMinimalDto;
     }
 }

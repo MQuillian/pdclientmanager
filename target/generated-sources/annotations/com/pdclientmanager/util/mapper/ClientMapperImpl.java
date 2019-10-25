@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-24T13:12:01-0400",
+    date = "2019-10-25T01:41:17-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -56,10 +56,10 @@ public class ClientMapperImpl implements ClientMapper {
 
         ClientDto clientDto = new ClientDto();
 
+        clientDto.setCases( caseListToCaseMinimalDtoList( entity.getCases() ) );
+        clientDto.setCustodyStatus( entity.getCustodyStatus() );
         clientDto.setId( entity.getId() );
         clientDto.setName( entity.getName() );
-        clientDto.setCustodyStatus( entity.getCustodyStatus() );
-        clientDto.setCases( caseListToCaseMinimalDtoList( entity.getCases() ) );
 
         return clientDto;
     }
@@ -107,9 +107,9 @@ public class ClientMapperImpl implements ClientMapper {
 
         ClientMinimalDto clientMinimalDto = new ClientMinimalDto();
 
+        clientMinimalDto.setCustodyStatus( entity.getCustodyStatus() );
         clientMinimalDto.setId( entity.getId() );
         clientMinimalDto.setName( entity.getName() );
-        clientMinimalDto.setCustodyStatus( entity.getCustodyStatus() );
 
         return clientMinimalDto;
     }
@@ -258,11 +258,11 @@ public class ClientMapperImpl implements ClientMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setId( chargedCount.getId() );
+        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
         if ( chargedCount.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
         }
-        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
+        chargedCountDto.setId( chargedCount.getId() );
 
         return chargedCountDto;
     }
