@@ -20,16 +20,16 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Employment Status</th>
+			<th>Working Status</th>
 			<th>Investigator</th>
 		</tr>
 	</thead>
 	<c:forEach items="${attorneyList}" var="attorney">
 		<tr>
 			<td>${attorney.name}</td>
-			<td>${attorney.employmentStatus}</td>
+			<td>${attorney.workingStatus}</td>
 			<c:choose>
-				<c:when test="${attorney.employmentStatus == 'ACTIVE'}">
+				<c:when test="${attorney.workingStatus == 'ACTIVE'}">
 					<td>${attorney.investigator}</td>
 				</c:when>
 				<c:otherwise>

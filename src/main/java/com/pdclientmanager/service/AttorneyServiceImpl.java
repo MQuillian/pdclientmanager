@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.pdclientmanager.model.dto.AttorneyDto;
 import com.pdclientmanager.model.dto.AttorneyFormDto;
 import com.pdclientmanager.model.entity.Attorney;
-import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.WorkingStatus;
 import com.pdclientmanager.repository.AttorneyRepository;
 import com.pdclientmanager.util.mapper.AttorneyMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
@@ -66,7 +66,7 @@ public class AttorneyServiceImpl implements AttorneyService {
     @Transactional
     public List<AttorneyDto> findAllActive() {
         List<AttorneyDto> activeDtoList = mapper
-                .toAttorneyDtoList(repository.findByEmploymentStatus(EmploymentStatus.ACTIVE));
+                .toAttorneyDtoList(repository.findByWorkingStatus(WorkingStatus.ACTIVE));
         return activeDtoList;
     }
 

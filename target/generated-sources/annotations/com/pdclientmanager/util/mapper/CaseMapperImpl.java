@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-25T01:41:16-0400",
+    date = "2019-10-25T21:19:40-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -308,6 +308,7 @@ public class CaseMapperImpl implements CaseMapper {
 
         judge.setId( judgeDto.getId() );
         judge.setName( judgeDto.getName() );
+        judge.setWorkingStatus( judgeDto.getWorkingStatus() );
 
         return judge;
     }
@@ -328,7 +329,6 @@ public class CaseMapperImpl implements CaseMapper {
 
         attorney.setId( attorneyMinimalDto.getId() );
         attorney.setName( attorneyMinimalDto.getName() );
-        attorney.setEmploymentStatus( attorneyMinimalDto.getEmploymentStatus() );
 
         return attorney;
     }
@@ -405,9 +405,9 @@ public class CaseMapperImpl implements CaseMapper {
 
         ClientMinimalDto clientMinimalDto = new ClientMinimalDto();
 
-        clientMinimalDto.setCustodyStatus( client.getCustodyStatus() );
         clientMinimalDto.setId( client.getId() );
         clientMinimalDto.setName( client.getName() );
+        clientMinimalDto.setCustodyStatus( client.getCustodyStatus() );
 
         return clientMinimalDto;
     }
@@ -421,6 +421,7 @@ public class CaseMapperImpl implements CaseMapper {
 
         judgeDto.setId( judge.getId() );
         judgeDto.setName( judge.getName() );
+        judgeDto.setWorkingStatus( judge.getWorkingStatus() );
 
         return judgeDto;
     }
@@ -432,7 +433,6 @@ public class CaseMapperImpl implements CaseMapper {
 
         AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
 
-        attorneyMinimalDto.setEmploymentStatus( attorney.getEmploymentStatus() );
         attorneyMinimalDto.setId( attorney.getId() );
         attorneyMinimalDto.setName( attorney.getName() );
 
@@ -460,11 +460,11 @@ public class CaseMapperImpl implements CaseMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
+        chargedCountDto.setId( chargedCount.getId() );
         if ( chargedCount.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
         }
-        chargedCountDto.setId( chargedCount.getId() );
+        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
 
         return chargedCountDto;
     }

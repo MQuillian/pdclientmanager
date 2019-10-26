@@ -20,13 +20,13 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Employment Status</th>
+			<th>Working Status</th>
 		</tr>
 	</thead>
 	<c:forEach items="${investigatorList}" var="investigator">
 		<tr>
 			<td>${investigator.name}</td>
-			<td>${investigator.employmentStatus}</td>
+			<td>${investigator.workingStatus}</td>
 			<td>
 				<spring:url value="/investigators/${investigator.id}" var="investigatorUrl" />
 				<spring:url value="/investigators/${investigator.id}/update" var="updateUrl" />

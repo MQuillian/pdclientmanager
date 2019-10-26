@@ -22,8 +22,8 @@ public class Attorney extends Employee {
         
     }
 
-    public Attorney(Long id, String name, EmploymentStatus employmentStatus, Investigator investigator, List<Case> caseload) {
-        super(id, name, employmentStatus);
+    public Attorney(Long id, String name, WorkingStatus workingStatus, Investigator investigator, List<Case> caseload) {
+        super(id, name, workingStatus);
         this.investigator = investigator;
         this.caseload = caseload;
     }
@@ -78,7 +78,7 @@ public class Attorney extends Employee {
         
         Long id = 1L;
         String name = "Default Attorney";
-        EmploymentStatus employmentStatus = EmploymentStatus.ACTIVE;
+        WorkingStatus workingStatus = WorkingStatus.ACTIVE;
         Investigator investigator = new Investigator();
         List<Case> caseload = new ArrayList<>();
         
@@ -94,8 +94,8 @@ public class Attorney extends Employee {
             return this;
         }
         
-        public AttorneyBuilder withEmploymentStatus(EmploymentStatus employmentStatus) {
-            this.employmentStatus = employmentStatus;
+        public AttorneyBuilder withWorkingStatus(WorkingStatus workingStatus) {
+            this.workingStatus = workingStatus;
             return this;
         }
         
@@ -110,7 +110,7 @@ public class Attorney extends Employee {
         }
         
         public Attorney build() {
-            return new Attorney (id, name, employmentStatus, investigator, caseload);
+            return new Attorney (id, name, workingStatus, investigator, caseload);
         }
     }
 }

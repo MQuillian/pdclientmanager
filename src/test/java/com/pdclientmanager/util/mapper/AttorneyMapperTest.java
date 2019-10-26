@@ -85,7 +85,7 @@ public class AttorneyMapperTest {
         
         assertThat(attorneyDto.getId()).isEqualTo(entity.getId());
         assertThat(attorneyDto.getName()).isEqualTo(entity.getName());
-        assertThat(attorneyDto.getEmploymentStatus()).isEqualTo(entity.getEmploymentStatus());
+        assertThat(attorneyDto.getWorkingStatus()).isEqualTo(entity.getWorkingStatus());
         assertThat(attorneyDto.getInvestigator().getId()).isEqualTo(entity.getInvestigator().getId());
         assertThat(attorneyDto.getInvestigator().getName()).isEqualTo(entity.getInvestigator().getName());
     }
@@ -100,7 +100,7 @@ public class AttorneyMapperTest {
         
         assertThat(attorney.getId()).isEqualTo(dto.getId());
         assertThat(attorney.getName()).isEqualTo(dto.getName());
-        assertThat(attorney.getEmploymentStatus()).isEqualTo(dto.getEmploymentStatus());
+        assertThat(attorney.getWorkingStatus()).isEqualTo(dto.getWorkingStatus());
         assertThat(attorney.getInvestigator().getId()).isEqualTo(dto.getInvestigator().getId());
         assertThat(attorney.getInvestigator().getName()).isEqualTo(dto.getInvestigator().getName());
     }

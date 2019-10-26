@@ -1,21 +1,21 @@
 package com.pdclientmanager.model.dto;
 
-import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.WorkingStatus;
 
 public class AttorneyMinimalDto {
     
     private Long id;
     private String name;
-    private EmploymentStatus employmentStatus;
+    private WorkingStatus workingStatus;
     
     public AttorneyMinimalDto() {
         
     }
 
-    public AttorneyMinimalDto(Long id, String name, EmploymentStatus employmentStatus) {
+    public AttorneyMinimalDto(Long id, String name, WorkingStatus workingStatus) {
         this.id = id;
         this.name = name;
-        this.employmentStatus = employmentStatus;
+        this.workingStatus = workingStatus;
     }
 
     public Long getId() {
@@ -34,19 +34,19 @@ public class AttorneyMinimalDto {
         this.name = name;
     }
 
-    public EmploymentStatus getEmploymentStatus() {
-        return employmentStatus;
+    public WorkingStatus getWorkingStatus() {
+        return workingStatus;
     }
 
-    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
-        this.employmentStatus = employmentStatus;
+    public void setWorkingStatus(WorkingStatus workingStatus) {
+        this.workingStatus = workingStatus;
     }
 
     public static class AttorneyMinimalDtoBuilder {
         
         private Long id = 1L;
         private String name = "Default AttorneyMinimalDto";
-        private EmploymentStatus employmentStatus = EmploymentStatus.ACTIVE;
+        private WorkingStatus workingStatus = WorkingStatus.ACTIVE;
         
         public AttorneyMinimalDtoBuilder withId(Long id) {
             this.id= id;
@@ -58,13 +58,13 @@ public class AttorneyMinimalDto {
             return this;
         }
         
-        public AttorneyMinimalDtoBuilder withEmploymentStatus(EmploymentStatus employmentStatus) {
-            this.employmentStatus = employmentStatus;
+        public AttorneyMinimalDtoBuilder withWorkingStatus(WorkingStatus workingStatus) {
+            this.workingStatus = workingStatus;
             return this;
         }
         
         public AttorneyMinimalDto build() {
-            return new AttorneyMinimalDto(id, name, employmentStatus);
+            return new AttorneyMinimalDto(id, name, workingStatus);
         }
     }
 }

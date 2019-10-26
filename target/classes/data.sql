@@ -1,13 +1,13 @@
 USE `walton_public_defender` ;
 
-# Insert investigators
+# Insert investigators (id, name, workingStatus)
 INSERT INTO investigators
 	VALUES
     (1, 'Tim Loodle', 0),
     (2, 'Sandra Sanderson', 0),
     (3, 'Debbie Downer', 1);
 
-# Insert attorneys
+# Insert attorneys (id, name, workingStatus, investigator)
 INSERT INTO attorneys
 	VALUES
     (1, 'Matt Quillian', 0, 1),
@@ -15,7 +15,7 @@ INSERT INTO attorneys
     (3, 'Jane Smith', 1, 1),
     (4, 'Matt Schneider', 1, 2);
 
-# Insert clients
+# Insert clients (id, name, custodyStatus)
 INSERT INTO clients
 	VALUES
     (1, 'Eric Hoefle', 0),
@@ -29,14 +29,13 @@ INSERT INTO clients
     (9, 'Jimmy Fallon', 0),
     (10,'Hamilton Holmes', 1);
 
-# Insert judges
-	
+# Insert judges (id, name, workingStatus)
 INSERT INTO judges
 	VALUES
-    (1, 'Horace Johnson'),
-    (2, 'John Mott');
+    (1, 'Horace Johnson', 0),
+    (2, 'John Mott', 0);
     
-# Insert cases
+# Insert cases (id, caseNumber, client, caseStatus, dateOpened, dateClosed, judge, attorney)
 INSERT INTO cases
 	VALUES
     (1, '18J161450', 1, 0, '2018-7-16', null, 1, 1),
@@ -52,7 +51,7 @@ INSERT INTO cases
     (11, '17J742874', 9, 0, '2017-7-20', null, 2, 2),
     (12, '18J851936', 10, 0, '2018-11-5', null, 1, 1);
 
-# Insert charges
+# Insert charges (id, name, statute)
 INSERT INTO charges
 	VALUES
 	(1, 'Simple battery', '16-5-23.1'),
@@ -61,7 +60,7 @@ INSERT INTO charges
 	(4, 'Driving while license suspended', '40-5-21'),
 	(5, 'Possession of controlled substance', '16-13-30');
 
-# Insert charged_counts
+# Insert charged_counts (id, countNumber, courtCase, charge)
 INSERT INTO charged_counts
 	VALUES
     (1, 1, 1, 1),

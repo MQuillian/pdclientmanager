@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Judge {
@@ -16,13 +17,17 @@ public class Judge {
     @NotEmpty(message = "Name")
     private String name;
     
+    @NotNull(message = "Please enter employment status")
+    private WorkingStatus workingStatus;
+    
     public Judge() {
         
     }
 
-    public Judge(Long id, String name) {
+    public Judge(Long id, String name, WorkingStatus workingStatus) {
         this.id = id;
         this.name = name;
+        this.workingStatus = workingStatus;
     }
     
     public Long getId() {
@@ -40,18 +45,31 @@ public class Judge {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public WorkingStatus getWorkingStatus() {
+        return workingStatus;
+    }
+    
+    public void setWorkingStatus(WorkingStatus workingStatus) {
+        this.workingStatus = workingStatus;
+    }
+
+    
 
     @Override
     public String toString() {
-        return "Judge [id=" + id + ", name=" + name + "]";
+        return "Judge [id=" + id + ", name=" + name + ", workingStatus=" + workingStatus + "]";
     }
 
+    
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((workingStatus == null) ? 0 : workingStatus.hashCode());
         return result;
     }
 
@@ -74,13 +92,18 @@ public class Judge {
                 return false;
         } else if (!name.equals(other.name))
             return false;
+        if (workingStatus != other.workingStatus)
+            return false;
         return true;
     }
-    
+
+
+
     public static class JudgeBuilder {
         
-        Long id = 1L;
-        String name = "Default Judge";
+        private Long id = 1L;
+        private String name = "Default Judge";
+        private WorkingStatus workingStatus = WorkingStatus.ACTIVE;
         
         public JudgeBuilder withId(Long id) {
             this.id = id;
@@ -92,8 +115,13 @@ public class Judge {
             return this;
         }
         
+        public JudgeBuilder withWorkingStatus(WorkingStatus workingStatus) {
+            this.workingStatus = workingStatus;
+            return this;
+        }
+        
         public Judge build() {
-            return new Judge(id, name);
+            return new Judge(id, name, workingStatus);
         }
     }
 }

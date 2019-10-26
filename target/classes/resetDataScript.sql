@@ -6,7 +6,7 @@ INSERT INTO attorneys VALUES (1, 'Matt Quillian', 0, 1), (2, 'John Doe', 0, 2), 
 TRUNCATE TABLE clients;
 INSERT INTO clients VALUES (1, 'Eric Hoefle', 0), (2, 'Jason Baddorf', 0), (3, 'Jamie Jameson', 1), (4, 'Marky Mark', 1), (5, 'Phteven McButton', 0), (6, 'Atticus Finch', 1), (7, 'Erica Erickson', 0), (8, 'Fblthp NLN', 0), (9, 'Jimmy Fallon', 0),(10,'Hamilton Holmes', 1);
 TRUNCATE TABLE judges;
-INSERT INTO judges VALUES (1, 'Horace Johnson'), (2, 'John Mott');
+INSERT INTO judges VALUES (1, 'Horace Johnson', 0), (2, 'John Mott', 0);
 TRUNCATE TABLE cases;
 INSERT INTO cases VALUES (1, '18J161450', 1, 0, '2018-7-16', null, 1, 1), (2, '18J141738', 2, 0, '2018-5-14', null, 2, 2), (3, '18J171429', 3, 0, '2018-8-23', null, 1, 1), (4, '17J283757', 4, 0, '2017-10-17', null, 2, 2), (5, '17J172365', 5, 0, '2017-8-16', null, 2, 2), (6, '18J179254', 6, 1, '2018-8-20', '2018-9-17', 1, 1), (7, '18J172979', 6, 1, '2018-6-7', '2018-10-20', 1, 1), (8, '17J281737', 7, 1, '2018-7-16', '2018-1-8', 2, 2), (9, '18J218436', 7, 1, '2018-7-16', '2019-2-5', 2, 1), (10, '18J476421', 8, 0, '2018-3-29', null, 1, 2), (11, '17J742874', 9, 0, '2017-7-20', null, 2, 2), (12, '18J851936', 10, 0, '2018-11-5', null, 1, 1);
 TRUNCATE TABLE charges;

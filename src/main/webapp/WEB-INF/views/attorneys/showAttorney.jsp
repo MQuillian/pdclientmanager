@@ -22,14 +22,14 @@
 </div>
 
 <div class="row">
-	<label class="col-sm-2">Employment Status</label>
-	<div class="col-sm-10">${attorney.employmentStatus}</div>
+	<label class="col-sm-2">Working Status</label>
+	<div class="col-sm-10">${attorney.workingStatus}</div>
 </div>
 
 <div class="row">
 	<label class="col-sm-2">Investigator</label>
 	<c:choose>
-		<c:when test="${attorney.employmentStatus == 'ACTIVE'}">
+		<c:when test="${attorney.workingStatus == 'ACTIVE'}">
 			<div class="col-sm-10">${attorney.investigator}</div>
 		</c:when>
 		<c:otherwise>

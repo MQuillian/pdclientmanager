@@ -56,7 +56,7 @@ import com.pdclientmanager.model.dto.InvestigatorDto;
 import com.pdclientmanager.model.dto.InvestigatorFormDto;
 import com.pdclientmanager.model.dto.InvestigatorFormDto.InvestigatorFormDtoBuilder;
 import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
-import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.WorkingStatus;
 import com.pdclientmanager.service.AttorneyService;
 import com.pdclientmanager.service.AttorneyServiceImpl;
 import com.pdclientmanager.service.CaseService;
@@ -131,13 +131,13 @@ public class EmployeeControllerTest {
         activeInvestigatorDto = new InvestigatorDto.InvestigatorDtoBuilder()
                 .withId(1L)
                 .withName("Active Investigator")
-                .withEmploymentStatus(EmploymentStatus.ACTIVE)
+                .withWorkingStatus(WorkingStatus.ACTIVE)
                 .build();
         
         inactiveInvestigatorDto = new InvestigatorDto.InvestigatorDtoBuilder()
                 .withId(2L)
                 .withName("Inactive Investigator")
-                .withEmploymentStatus(EmploymentStatus.INACTIVE)
+                .withWorkingStatus(WorkingStatus.INACTIVE)
                 .build();
         
         investigatorMinimalDto = new InvestigatorMinimalDto.InvestigatorMinimalDtoBuilder()
@@ -146,14 +146,14 @@ public class EmployeeControllerTest {
         activeAttorneyDto = new AttorneyDto.AttorneyDtoBuilder()
                 .withId(1L)
                 .withName("Active Attorney")
-                .withEmploymentStatus(EmploymentStatus.ACTIVE)
+                .withWorkingStatus(WorkingStatus.ACTIVE)
                 .withInvestigator(investigatorMinimalDto)
                 .build();
         
         inactiveAttorneyDto = new AttorneyDto.AttorneyDtoBuilder()
                 .withId(2L)
                 .withName("Inactive Attorney")
-                .withEmploymentStatus(EmploymentStatus.INACTIVE)
+                .withWorkingStatus(WorkingStatus.INACTIVE)
                 .withInvestigator(investigatorMinimalDto)
                 .build();
         
@@ -225,7 +225,7 @@ public class EmployeeControllerTest {
                     allOf(
                             hasProperty("id", is(1L)),
                             hasProperty("name", is("Active Investigator")),
-                            hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
+                            hasProperty("workingStatus", is(WorkingStatus.ACTIVE)),
                             hasProperty("assignedAttorneys", is(activeInvestigatorDto.getAssignedAttorneys()))))));
     }
     
@@ -239,7 +239,7 @@ public class EmployeeControllerTest {
         
         mockMvc.perform(post("/attorneys")
             .param("name", "Active Attorney")
-            .param("employmentStatus", "ACTIVE")
+            .param("workingStatus", "ACTIVE")
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(attorneyFormDto)))
             .andExpect(status().isFound())
@@ -264,13 +264,13 @@ public class EmployeeControllerTest {
                 allOf(
                     hasProperty("id", is(1L)),
                     hasProperty("name", is("Active Attorney")),
-                    hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
+                    hasProperty("workingStatus", is(WorkingStatus.ACTIVE)),
                     hasProperty("investigator", is(investigatorMinimalDto))))))
             .andExpect(model().attribute("attorneyList", hasItem(
                 allOf(
                     hasProperty("id", is(2L)),
                     hasProperty("name", is("Inactive Attorney")),
-                    hasProperty("employmentStatus", is(EmploymentStatus.INACTIVE)),
+                    hasProperty("workingStatus", is(WorkingStatus.INACTIVE)),
                     hasProperty("investigator", is(investigatorMinimalDto))))));
     }
     
@@ -350,7 +350,7 @@ public class EmployeeControllerTest {
                     allOf(
                             hasProperty("id", is(1L)),
                             hasProperty("name", is("Active Attorney")),
-                            hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
+                            hasProperty("workingStatus", is(WorkingStatus.ACTIVE)),
                             hasProperty("investigator", is(investigatorMinimalDto))
                     )
             )));
@@ -366,7 +366,7 @@ public class EmployeeControllerTest {
         
         mockMvc.perform(post("/investigators")
                 .param("name", "Active Investigator")
-                .param("employmentStatus", "ACTIVE")
+                .param("workingStatus", "ACTIVE")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(investigatorFormDto)))
                 .andExpect(status().isFound())
@@ -391,13 +391,13 @@ public class EmployeeControllerTest {
                         allOf(
                                 hasProperty("id", is(1L)),
                                 hasProperty("name", is("Active Investigator")),
-                                hasProperty("employmentStatus", is(EmploymentStatus.ACTIVE)),
+                                hasProperty("workingStatus", is(WorkingStatus.ACTIVE)),
                                 hasProperty("assignedAttorneys", is(activeInvestigatorDto.getAssignedAttorneys()))))))
                 .andExpect(model().attribute("investigatorList", hasItem(
                         allOf(
                                 hasProperty("id", is(2L)),
                                 hasProperty("name", is("Inactive Investigator")),
-                                hasProperty("employmentStatus", is(EmploymentStatus.INACTIVE)),
+                                hasProperty("workingStatus", is(WorkingStatus.INACTIVE)),
                                 hasProperty("assignedAttorneys", is(inactiveInvestigatorDto.getAssignedAttorneys()))))));
     }
     

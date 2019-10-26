@@ -70,7 +70,7 @@ public class InvestigatorMapperTest {
         
         assertThat(dto.getId()).isEqualTo(entity.getId());
         assertThat(dto.getName()).isEqualTo(entity.getName());
-        assertThat(dto.getEmploymentStatus()).isEqualTo(entity.getEmploymentStatus());
+        assertThat(dto.getWorkingStatus()).isEqualTo(entity.getWorkingStatus());
         assertThat(dto.getAssignedAttorneys().get(0).getId())
             .isEqualTo(entity.getAssignedAttorneys().get(0).getId());
     }
@@ -86,7 +86,7 @@ public class InvestigatorMapperTest {
         
         assertThat(entity.getId()).isEqualTo(dto.getId());
         assertThat(entity.getName()).isEqualTo(dto.getName());
-        assertThat(entity.getEmploymentStatus()).isEqualTo(dto.getEmploymentStatus());
+        assertThat(entity.getWorkingStatus()).isEqualTo(dto.getWorkingStatus());
         assertThat(entity.getAssignedAttorneys().get(0).getId())
             .isEqualTo(dto.getAssignedAttorneys().get(0).getId());
     }
@@ -128,7 +128,7 @@ public class InvestigatorMapperTest {
         
         assertThat(mappedMinimalDto.getId()).isEqualTo(investigator.getId());
         assertThat(mappedMinimalDto.getName()).isEqualTo(investigator.getName());
-        assertThat(mappedMinimalDto.getEmploymentStatus()).isEqualTo(investigator.getEmploymentStatus());
+        assertThat(mappedMinimalDto.getWorkingStatus()).isEqualTo(investigator.getWorkingStatus());
     }
     
     @Test
@@ -138,6 +138,6 @@ public class InvestigatorMapperTest {
         
         assertThat(mappedMinimalDto.getId()).isEqualTo(investigatorDto.getId());
         assertThat(mappedMinimalDto.getName()).isEqualTo(investigatorDto.getName());
-        assertThat(mappedMinimalDto.getEmploymentStatus()).isEqualTo(investigatorDto.getEmploymentStatus());
+        assertThat(mappedMinimalDto.getWorkingStatus()).isEqualTo(investigatorDto.getWorkingStatus());
     }
 }

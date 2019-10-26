@@ -21,5 +21,5 @@ public interface CaseService {
     
     void delete(final CaseDto dto);
     
-    void deleteById(final Long id);
+    void deleteById(final Long targetId);
 }

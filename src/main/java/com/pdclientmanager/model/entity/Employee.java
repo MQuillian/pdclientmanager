@@ -19,17 +19,17 @@ public abstract class Employee {
     @NotEmpty(message = "Please enter name")
     private String name;
     
-    @NotNull(message = "Please enter employment status")
-    private EmploymentStatus employmentStatus;
+    @NotNull(message = "Please enter working status")
+    private WorkingStatus workingStatus;
     
     public Employee() {
         
     }
 
-    public Employee(Long id, String name, EmploymentStatus employmentStatus) {
+    public Employee(Long id, String name, WorkingStatus workingStatus) {
         this.id = id;
         this.name = name;
-        this.employmentStatus = employmentStatus;
+        this.workingStatus = workingStatus;
     }
     
     public Long getId() {
@@ -49,12 +49,12 @@ public abstract class Employee {
     }
 
     @Enumerated(EnumType.ORDINAL)
-    public EmploymentStatus getEmploymentStatus() {
-        return employmentStatus;
+    public WorkingStatus getWorkingStatus() {
+        return workingStatus;
     }
     
-    public void setEmploymentStatus(EmploymentStatus status) {
-        this.employmentStatus = status;
+    public void setWorkingStatus(WorkingStatus workingStatus) {
+        this.workingStatus = workingStatus;
     }
     
     @Override
@@ -66,7 +66,7 @@ public abstract class Employee {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((employmentStatus == null) ? 0 : employmentStatus.hashCode());
+        result = prime * result + ((workingStatus == null) ? 0 : workingStatus.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
@@ -81,7 +81,7 @@ public abstract class Employee {
         if (!(obj instanceof Employee))
             return false;
         Employee other = (Employee) obj;
-        if (employmentStatus != other.employmentStatus)
+        if (workingStatus != other.workingStatus)
             return false;
         if (id == null) {
             if (other.id != null)

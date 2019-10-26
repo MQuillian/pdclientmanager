@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS `investigators` ;
 CREATE TABLE IF NOT EXISTS `investigators` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `employment_status` INT(4) NOT NULL,
+  `working_status` INT(4) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `attorneys` ;
 CREATE TABLE IF NOT EXISTS `attorneys` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `employment_status` INT(4) NOT NULL DEFAULT '0',
+  `working_status` INT(4) NOT NULL DEFAULT '0',
   `investigator` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `investigator` (`investigator` ASC),
@@ -56,6 +56,7 @@ DROP TABLE IF EXISTS `judges` ;
 CREATE TABLE IF NOT EXISTS `judges` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
+  `working_status` INT(4) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;

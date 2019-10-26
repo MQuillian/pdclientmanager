@@ -31,6 +31,7 @@ public class JudgeMapperTest {
         
         assertThat(dto.getId()).isEqualTo(entity.getId());
         assertThat(dto.getName()).isEqualTo(entity.getName());
+        assertThat(dto.getWorkingStatus()).isEqualTo(entity.getWorkingStatus());
     }
     
     @Test
@@ -43,5 +44,6 @@ public class JudgeMapperTest {
         
         assertThat(entity.getId()).isEqualTo(dto.getId());
         assertThat(entity.getName()).isEqualTo(dto.getName());
+        assertThat(entity.getWorkingStatus()).isEqualTo(dto.getWorkingStatus());
     }
 }

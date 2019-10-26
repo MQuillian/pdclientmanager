@@ -22,8 +22,8 @@
 </div>
 
 <div class="row">
-	<label class="col-sm-2">Employment Status</label>
-	<div class="col-sm-10">${investigator.employmentStatus}</div>
+	<label class="col-sm-2">Working Status</label>
+	<div class="col-sm-10">${investigator.workingStatus}</div>
 </div>
 
 <div>

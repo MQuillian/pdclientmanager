@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.model.dto.InvestigatorDto;
 import com.pdclientmanager.model.dto.InvestigatorFormDto;
-import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.WorkingStatus;
 import com.pdclientmanager.model.entity.Investigator;
 import com.pdclientmanager.repository.EmployeeRepository;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
@@ -65,7 +65,7 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Transactional
     public List<InvestigatorDto> findAllActive() {
         List<InvestigatorDto> dtoList = mapper
-                .toInvestigatorDtoList(repository.findByEmploymentStatus(EmploymentStatus.ACTIVE));
+                .toInvestigatorDtoList(repository.findByWorkingStatus(WorkingStatus.ACTIVE));
         return dtoList;
     }
 

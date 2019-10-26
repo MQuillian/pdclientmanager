@@ -16,8 +16,8 @@ public class Investigator extends Employee {
         
     }
     
-    public Investigator(Long id, String name, EmploymentStatus employmentStatus, List<Attorney> assignedAttorneys) {
-        super(id, name, employmentStatus);
+    public Investigator(Long id, String name, WorkingStatus workingStatus, List<Attorney> assignedAttorneys) {
+        super(id, name, workingStatus);
         this.assignedAttorneys = assignedAttorneys;
     }
     
@@ -59,7 +59,7 @@ public class Investigator extends Employee {
         
         Long id = 1L;
         String name = "Default Investigator";
-        EmploymentStatus employmentStatus = EmploymentStatus.ACTIVE;
+        WorkingStatus workingStatus = WorkingStatus.ACTIVE;
         List<Attorney> assignedAttorneys = new ArrayList<>();
         
         public InvestigatorBuilder withId(Long id) {
@@ -72,8 +72,8 @@ public class Investigator extends Employee {
             return this;
         }
         
-        public InvestigatorBuilder withEmploymentStatus(EmploymentStatus employmentStatus) {
-            this.employmentStatus = employmentStatus;
+        public InvestigatorBuilder withEmploymentStatus(WorkingStatus workingStatus) {
+            this.workingStatus = workingStatus;
             return this;
         }
         
@@ -83,7 +83,7 @@ public class Investigator extends Employee {
         }
         
         public Investigator build() {
-            return new Investigator(id, name, employmentStatus, assignedAttorneys);
+            return new Investigator(id, name, workingStatus, assignedAttorneys);
         }
     }
 }

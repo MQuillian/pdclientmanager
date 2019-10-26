@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-25T01:41:15-0400",
+    date = "2019-10-25T21:24:15-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -41,7 +41,7 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         investigator.setId( dto.getId() );
         investigator.setName( dto.getName() );
-        investigator.setEmploymentStatus( dto.getEmploymentStatus() );
+        investigator.setWorkingStatus( dto.getWorkingStatus() );
         investigator.setAssignedAttorneys( attorneyMinimalDtoListToAttorneyList( dto.getAssignedAttorneys(), context ) );
 
         return investigator;
@@ -56,9 +56,9 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
         InvestigatorDto investigatorDto = new InvestigatorDto();
 
         investigatorDto.setAssignedAttorneys( attorneyListToAttorneyMinimalDtoList( entity.getAssignedAttorneys() ) );
-        investigatorDto.setEmploymentStatus( entity.getEmploymentStatus() );
         investigatorDto.setId( entity.getId() );
         investigatorDto.setName( entity.getName() );
+        investigatorDto.setWorkingStatus( entity.getWorkingStatus() );
 
         return investigatorDto;
     }
@@ -116,7 +116,7 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
         investigator.setAssignedAttorneys( longListToAttorneyList( dto.getAssignedAttorneyIds(), context ) );
         investigator.setId( dto.getId() );
         investigator.setName( dto.getName() );
-        investigator.setEmploymentStatus( dto.getEmploymentStatus() );
+        investigator.setWorkingStatus( dto.getWorkingStatus() );
 
         return investigator;
     }
@@ -132,7 +132,7 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
         investigatorFormDto.setAssignedAttorneyIds( attorneyListToLongList( entity.getAssignedAttorneys() ) );
         investigatorFormDto.setId( entity.getId() );
         investigatorFormDto.setName( entity.getName() );
-        investigatorFormDto.setEmploymentStatus( entity.getEmploymentStatus() );
+        investigatorFormDto.setWorkingStatus( entity.getWorkingStatus() );
 
         return investigatorFormDto;
     }
@@ -180,9 +180,9 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         InvestigatorMinimalDto investigatorMinimalDto = new InvestigatorMinimalDto();
 
-        investigatorMinimalDto.setEmploymentStatus( entity.getEmploymentStatus() );
         investigatorMinimalDto.setId( entity.getId() );
         investigatorMinimalDto.setName( entity.getName() );
+        investigatorMinimalDto.setWorkingStatus( entity.getWorkingStatus() );
 
         return investigatorMinimalDto;
     }
@@ -209,9 +209,9 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         InvestigatorMinimalDto investigatorMinimalDto = new InvestigatorMinimalDto();
 
-        investigatorMinimalDto.setEmploymentStatus( fullDto.getEmploymentStatus() );
         investigatorMinimalDto.setId( fullDto.getId() );
         investigatorMinimalDto.setName( fullDto.getName() );
+        investigatorMinimalDto.setWorkingStatus( fullDto.getWorkingStatus() );
 
         return investigatorMinimalDto;
     }
@@ -246,7 +246,7 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         attorney.setId( attorneyMinimalDto.getId() );
         attorney.setName( attorneyMinimalDto.getName() );
-        attorney.setEmploymentStatus( attorneyMinimalDto.getEmploymentStatus() );
+        attorney.setWorkingStatus( attorneyMinimalDto.getWorkingStatus() );
 
         return attorney;
     }
@@ -278,9 +278,9 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         AttorneyMinimalDto attorneyMinimalDto = new AttorneyMinimalDto();
 
-        attorneyMinimalDto.setEmploymentStatus( attorney.getEmploymentStatus() );
         attorneyMinimalDto.setId( attorney.getId() );
         attorneyMinimalDto.setName( attorney.getName() );
+        attorneyMinimalDto.setWorkingStatus( attorney.getWorkingStatus() );
 
         return attorneyMinimalDto;
     }

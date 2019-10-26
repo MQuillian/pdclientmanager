@@ -3,24 +3,24 @@ package com.pdclientmanager.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.WorkingStatus;
 
 public class InvestigatorFormDto {
 
     private Long id;
     private String name;
-    private EmploymentStatus employmentStatus;
+    private WorkingStatus workingStatus;
     private List<Long> assignedAttorneyIds;
     
     public InvestigatorFormDto() {
         
     }
 
-    public InvestigatorFormDto(Long id, String name, EmploymentStatus employmentStatus,
+    public InvestigatorFormDto(Long id, String name, WorkingStatus workingStatus,
             List<Long> assignedAttorneys) {
         this.id = id;
         this.name = name;
-        this.employmentStatus = employmentStatus;
+        this.workingStatus = workingStatus;
         this.assignedAttorneyIds = assignedAttorneys;
     }
     
@@ -44,12 +44,12 @@ public class InvestigatorFormDto {
         this.name = name;
     }
 
-    public EmploymentStatus getEmploymentStatus() {
-        return employmentStatus;
+    public WorkingStatus getWorkingStatus() {
+        return workingStatus;
     }
 
-    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
-        this.employmentStatus = employmentStatus;
+    public void setWorkingStatus(WorkingStatus workingStatus) {
+        this.workingStatus = workingStatus;
     }
 
     public List<Long> getAssignedAttorneyIds() {
@@ -64,7 +64,7 @@ public class InvestigatorFormDto {
         
         private Long id = 1L;
         private String name = "Default InvestigatorFormDto";
-        private EmploymentStatus employmentStatus = EmploymentStatus.ACTIVE;
+        private WorkingStatus workingStatus = WorkingStatus.ACTIVE;
         private List<Long> assignedAttorneys = new ArrayList<>();
         
         public InvestigatorFormDtoBuilder withId(Long id) {
@@ -77,8 +77,8 @@ public class InvestigatorFormDto {
             return this;
         }
         
-        public InvestigatorFormDtoBuilder withEmploymentStatus(EmploymentStatus employmentStatus) {
-            this.employmentStatus = employmentStatus;
+        public InvestigatorFormDtoBuilder withWorkingStatus(WorkingStatus workingStatus) {
+            this.workingStatus = workingStatus;
             return this;
         }
         
@@ -88,7 +88,7 @@ public class InvestigatorFormDto {
         }
         
         public InvestigatorFormDto build() {
-            return new InvestigatorFormDto(id, name, employmentStatus, assignedAttorneys);
+            return new InvestigatorFormDto(id, name, workingStatus, assignedAttorneys);
         }
     }
 }

@@ -19,5 +19,5 @@ public interface AttorneyService {
     
     boolean delete(final AttorneyDto dto);
     
-    boolean deleteById(final Long id);
+    boolean deleteById(final Long targetId);
 }

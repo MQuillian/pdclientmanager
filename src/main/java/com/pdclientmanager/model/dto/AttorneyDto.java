@@ -3,13 +3,13 @@ package com.pdclientmanager.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.WorkingStatus;
 
 public class AttorneyDto {
 
     private Long id;
     private String name;
-    private EmploymentStatus employmentStatus;
+    private WorkingStatus workingStatus;
     private InvestigatorMinimalDto investigator;
     private List<CaseMinimalDto> caseload;
     
@@ -17,11 +17,11 @@ public class AttorneyDto {
         
     }
 
-    public AttorneyDto(Long id, String name, EmploymentStatus employmentStatus,
+    public AttorneyDto(Long id, String name, WorkingStatus workingStatus,
             InvestigatorMinimalDto investigator, List<CaseMinimalDto> caseload) {
         this.id = id;
         this.name = name;
-        this.employmentStatus = employmentStatus;
+        this.workingStatus = workingStatus;
         this.investigator = investigator;
         this.caseload = caseload;
     }
@@ -46,12 +46,12 @@ public class AttorneyDto {
         this.name = name;
     }
     
-    public EmploymentStatus getEmploymentStatus() {
-        return employmentStatus;
+    public WorkingStatus getWorkingStatus() {
+        return workingStatus;
     }
     
-    public void setEmploymentStatus (EmploymentStatus employmentStatus) {
-        this.employmentStatus = employmentStatus;
+    public void setWorkingStatus (WorkingStatus workingStatus) {
+        this.workingStatus = workingStatus;
     }
     
     public InvestigatorMinimalDto getInvestigator() {
@@ -79,7 +79,7 @@ public class AttorneyDto {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((employmentStatus == null) ? 0 : employmentStatus.hashCode());
+        result = prime * result + ((workingStatus == null) ? 0 : workingStatus.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
@@ -94,7 +94,7 @@ public class AttorneyDto {
         if (!(obj instanceof AttorneyDto))
             return false;
         AttorneyDto other = (AttorneyDto) obj;
-        if (employmentStatus != other.employmentStatus)
+        if (workingStatus != other.workingStatus)
             return false;
         if (id == null) {
             if (other.id != null)
@@ -113,7 +113,7 @@ public class AttorneyDto {
         
         private Long id = 1L;
         private String name = "Default AttorneyDto";
-        private EmploymentStatus employmentStatus= EmploymentStatus.ACTIVE;
+        private WorkingStatus workingStatus= WorkingStatus.ACTIVE;
         private InvestigatorMinimalDto investigator = new InvestigatorMinimalDto
                 .InvestigatorMinimalDtoBuilder()
                 .build();
@@ -129,8 +129,8 @@ public class AttorneyDto {
             return this;
         }
         
-        public AttorneyDtoBuilder withEmploymentStatus(EmploymentStatus employmentStatus) {
-            this.employmentStatus = employmentStatus;
+        public AttorneyDtoBuilder withWorkingStatus(WorkingStatus workingStatus) {
+            this.workingStatus = workingStatus;
             return this;
         }
         
@@ -145,7 +145,7 @@ public class AttorneyDto {
         }
         
         public AttorneyDto build() {
-            return new AttorneyDto(id, name, employmentStatus, investigator, caseload);
+            return new AttorneyDto(id, name, workingStatus, investigator, caseload);
         }
     }
 }

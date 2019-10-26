@@ -32,18 +32,18 @@
 		</div>
 	</spring:bind>
 	
-	<spring:bind path="employmentStatus">
+	<spring:bind path="workingStatus">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
-			<label class="col-sm-2 control-label">Employment Status</label>
+			<label class="col-sm-2 control-label">Working Status</label>
 			<div class="col-sm-10">
 				<label class="radio-inline">
-					<form:radiobutton path="employmentStatus" value="ACTIVE" />Active
+					<form:radiobutton path="workingStatus" value="ACTIVE" />Active
 				</label>
 				<label class="radio-inline">
-					<form:radiobutton path="employmentStatus" value="INACTIVE" />Inactive
+					<form:radiobutton path="workingStatus" value="INACTIVE" />Inactive
 				</label>
 				<br />
-				<form:errors path="employmentStatus" class="control-label" />
+				<form:errors path="workingStatus" class="control-label" />
 			</div>
 		</div>
 	</spring:bind>

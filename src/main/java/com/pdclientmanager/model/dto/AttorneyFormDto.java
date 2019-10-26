@@ -1,22 +1,22 @@
 package com.pdclientmanager.model.dto;
 
-import com.pdclientmanager.model.entity.EmploymentStatus;
+import com.pdclientmanager.model.entity.WorkingStatus;
 
 public class AttorneyFormDto {
 
     private Long id;
     private String name;
-    private EmploymentStatus employmentStatus;
+    private WorkingStatus workingStatus;
     private Long investigatorId;
     
     public AttorneyFormDto() {
         
     }
 
-    public AttorneyFormDto(Long id, String name, EmploymentStatus employmentStatus, Long investigatorId) {
+    public AttorneyFormDto(Long id, String name, WorkingStatus workingStatus, Long investigatorId) {
         this.id = id;
         this.name = name;
-        this.employmentStatus = employmentStatus;
+        this.workingStatus = workingStatus;
         this.investigatorId = investigatorId;
     }
     
@@ -40,12 +40,12 @@ public class AttorneyFormDto {
         this.name = name;
     }
 
-    public EmploymentStatus getEmploymentStatus() {
-        return employmentStatus;
+    public WorkingStatus getWorkingStatus() {
+        return workingStatus;
     }
 
-    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
-        this.employmentStatus = employmentStatus;
+    public void setWorkingStatus(WorkingStatus workingStatus) {
+        this.workingStatus = workingStatus;
     }
 
     public Long getInvestigatorId() {
@@ -60,7 +60,7 @@ public class AttorneyFormDto {
         
         private Long id = 1L;
         private String name = "Default AttorneyFormDto";
-        private EmploymentStatus employmentStatus = EmploymentStatus.ACTIVE;
+        private WorkingStatus workingStatus = WorkingStatus.ACTIVE;
         private Long investigatorId = 1L;
         
         public AttorneyFormDtoBuilder withId(Long id) {
@@ -73,8 +73,8 @@ public class AttorneyFormDto {
             return this;
         }
         
-        public AttorneyFormDtoBuilder withEmploymentStatus(EmploymentStatus employmentStatus) {
-            this.employmentStatus = employmentStatus;
+        public AttorneyFormDtoBuilder withWorkingStatus(WorkingStatus workingStatus) {
+            this.workingStatus = workingStatus;
             return this;
         }
         
@@ -84,7 +84,7 @@ public class AttorneyFormDto {
         }
         
         public AttorneyFormDto build() {
-            return new AttorneyFormDto(id, name, employmentStatus, investigatorId);
+            return new AttorneyFormDto(id, name, workingStatus, investigatorId);
         }
     }
 }

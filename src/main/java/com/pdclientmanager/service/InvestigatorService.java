@@ -19,5 +19,5 @@ public interface InvestigatorService {
     
     void delete(final InvestigatorDto dto);
     
-    void deleteById(final Long id);
+    void deleteById(final Long targetId);
 }
