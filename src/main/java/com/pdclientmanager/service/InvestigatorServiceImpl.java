@@ -10,36 +10,44 @@ import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.model.dto.InvestigatorDto;
 import com.pdclientmanager.model.dto.InvestigatorFormDto;
-import com.pdclientmanager.model.entity.WorkingStatus;
+import com.pdclientmanager.model.entity.Attorney;
 import com.pdclientmanager.model.entity.Investigator;
-import com.pdclientmanager.repository.EmployeeRepository;
+import com.pdclientmanager.model.entity.WorkingStatus;
+import com.pdclientmanager.repository.AttorneyRepository;
+import com.pdclientmanager.repository.InvestigatorRepository;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 import com.pdclientmanager.util.mapper.InvestigatorMapper;
 
 @Service
 public class InvestigatorServiceImpl implements InvestigatorService {
     
-    private EmployeeRepository<Investigator> repository;
+    private InvestigatorRepository investigatorRepository;
+    private AttorneyRepository attorneyRepository;
     private InvestigatorMapper mapper;
     
     @Autowired
-    public InvestigatorServiceImpl(EmployeeRepository<Investigator> repository, InvestigatorMapper mapper) {
-        this.repository = repository;
+    public InvestigatorServiceImpl(InvestigatorRepository investigatorRepository,
+            AttorneyRepository attorneyRepository, InvestigatorMapper mapper) {
+        this.investigatorRepository = investigatorRepository;
+        this.attorneyRepository = attorneyRepository;
         this.mapper = mapper;
     }
 
     @Override
     @Transactional
-    public Long save(InvestigatorFormDto dto) {
-        Investigator entity = mapper.toInvestigatorFromInvestigatorFormDto(dto, new CycleAvoidingMappingContext());
-        repository.save(entity);
+    public Long save(InvestigatorFormDto formDto) {
+        if(!formDto.isNew()) {
+            removeUndesiredAttorneyAssignments(formDto);
+        }
+        Investigator entity = mapper.toInvestigatorFromInvestigatorFormDto(formDto, new CycleAvoidingMappingContext());
+        investigatorRepository.save(entity);
         return entity.getId();
     }
 
     @Override
     @Transactional
     public InvestigatorDto findById(Long targetId) {
-        Investigator entity = repository.findById(targetId)
+        Investigator entity = investigatorRepository.findById(targetId)
                 .orElseThrow(EntityNotFoundException::new);
         InvestigatorDto dto = mapper.toInvestigatorDto(entity);
         return dto;
@@ -48,7 +56,7 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Override
     @Transactional
     public InvestigatorFormDto findFormById(Long targetId) {
-        Investigator entity = repository.findById(targetId)
+        Investigator entity = investigatorRepository.findById(targetId)
                 .orElseThrow(EntityNotFoundException::new);
         InvestigatorFormDto formDto = mapper.toInvestigatorFormDtoFromInvestigator(entity);
         return formDto;
@@ -57,7 +65,7 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Override
     @Transactional
     public List<InvestigatorDto> findAll() {
-        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(repository.findAll());
+        List<InvestigatorDto> dtoList = mapper.toInvestigatorDtoList(investigatorRepository.findAll());
         return dtoList;
     }
     
@@ -65,7 +73,7 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Transactional
     public List<InvestigatorDto> findAllActive() {
         List<InvestigatorDto> dtoList = mapper
-                .toInvestigatorDtoList(repository.findByWorkingStatus(WorkingStatus.ACTIVE));
+                .toInvestigatorDtoList(investigatorRepository.findByWorkingStatus(WorkingStatus.ACTIVE));
         return dtoList;
     }
 
@@ -73,12 +81,26 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Transactional
     public void delete(InvestigatorDto dto) {
         Investigator entity = mapper.toInvestigator(dto, new CycleAvoidingMappingContext());
-        repository.delete(entity);
+        investigatorRepository.delete(entity);
     }
 
     @Override
     @Transactional
     public void deleteById(Long targetId) {
-        repository.deleteById(targetId);
+        investigatorRepository.deleteById(targetId);
+    }
+    
+    
+//    Helper method for severing previously existing investigator assignments 
+//      that have been deselected in the update investigatorForm.jsp
+    
+    private void removeUndesiredAttorneyAssignments(InvestigatorFormDto formDto) {
+        List<Attorney> prevAssignedAttorneys = attorneyRepository
+                .findByInvestigator_Id(formDto.getId());
+        for(Attorney attorney : prevAssignedAttorneys) {
+            if(!formDto.getAssignedAttorneysIds().contains(attorney.getId())) {
+                attorney.setInvestigator(null);
+            }
+        }
     }
 }

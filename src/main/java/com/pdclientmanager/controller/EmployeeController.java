@@ -181,15 +181,10 @@ public class EmployeeController {
     }
     
     @GetMapping("/investigators/{id}/update")
-    public String showUpdateInvestigatorForm(@PathVariable("id") Long targetId, Model model,
-            final RedirectAttributes redirectAttributes) {
-        InvestigatorDto investigator = 
-                investigatorService.findById(targetId);
-        if(investigator == null) {
-            redirectAttributes.addFlashAttribute("css", "danger");
-            redirectAttributes.addFlashAttribute("msg", "Investigator could not be found...");
-            return "redirect:/investigators";
-        }
+    public String showUpdateInvestigatorForm(@PathVariable("id") Long targetId,
+            Model model) {
+        InvestigatorFormDto investigator = 
+                investigatorService.findFormById(targetId);
         model.addAttribute("investigatorForm", investigator);
         model.addAttribute("activeAttorneys", attorneyService.findAllActive());
         return "investigators/investigatorForm";

@@ -33,6 +33,9 @@ public class AttorneyServiceImpl implements AttorneyService {
     @Transactional
     public Long save(AttorneyFormDto formDto) {
         Attorney entity = mapper.toAttorneyFromAttorneyFormDto(formDto, new CycleAvoidingMappingContext());
+        if(entity.getWorkingStatus().equals(WorkingStatus.INACTIVE)) {
+            entity.setInvestigator(null);
+        }
         repository.save(entity);
         return entity.getId();
     }

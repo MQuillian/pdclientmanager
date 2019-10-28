@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-25T21:19:40-0400",
+    date = "2019-10-27T23:37:12-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -329,6 +329,7 @@ public class CaseMapperImpl implements CaseMapper {
 
         attorney.setId( attorneyMinimalDto.getId() );
         attorney.setName( attorneyMinimalDto.getName() );
+        attorney.setWorkingStatus( attorneyMinimalDto.getWorkingStatus() );
 
         return attorney;
     }
@@ -435,6 +436,7 @@ public class CaseMapperImpl implements CaseMapper {
 
         attorneyMinimalDto.setId( attorney.getId() );
         attorneyMinimalDto.setName( attorney.getName() );
+        attorneyMinimalDto.setWorkingStatus( attorney.getWorkingStatus() );
 
         return attorneyMinimalDto;
     }

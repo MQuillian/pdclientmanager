@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-25T21:24:15-0400",
+    date = "2019-10-27T23:37:09-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -55,10 +55,10 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         InvestigatorDto investigatorDto = new InvestigatorDto();
 
-        investigatorDto.setAssignedAttorneys( attorneyListToAttorneyMinimalDtoList( entity.getAssignedAttorneys() ) );
         investigatorDto.setId( entity.getId() );
         investigatorDto.setName( entity.getName() );
         investigatorDto.setWorkingStatus( entity.getWorkingStatus() );
+        investigatorDto.setAssignedAttorneys( attorneyListToAttorneyMinimalDtoList( entity.getAssignedAttorneys() ) );
 
         return investigatorDto;
     }
@@ -113,7 +113,7 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         context.storeMappedInstance( dto, investigator );
 
-        investigator.setAssignedAttorneys( longListToAttorneyList( dto.getAssignedAttorneyIds(), context ) );
+        investigator.setAssignedAttorneys( longListToAttorneyList( dto.getAssignedAttorneysIds(), context ) );
         investigator.setId( dto.getId() );
         investigator.setName( dto.getName() );
         investigator.setWorkingStatus( dto.getWorkingStatus() );
@@ -129,7 +129,7 @@ public class InvestigatorMapperImpl implements InvestigatorMapper {
 
         InvestigatorFormDto investigatorFormDto = new InvestigatorFormDto();
 
-        investigatorFormDto.setAssignedAttorneyIds( attorneyListToLongList( entity.getAssignedAttorneys() ) );
+        investigatorFormDto.setAssignedAttorneysIds( attorneyListToLongList( entity.getAssignedAttorneys() ) );
         investigatorFormDto.setId( entity.getId() );
         investigatorFormDto.setName( entity.getName() );
         investigatorFormDto.setWorkingStatus( entity.getWorkingStatus() );

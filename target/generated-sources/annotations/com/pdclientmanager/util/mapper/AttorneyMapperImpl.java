@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-25T21:22:57-0400",
+    date = "2019-10-27T23:37:11-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -50,8 +50,8 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         attorney.setId( dto.getId() );
         attorney.setName( dto.getName() );
         attorney.setWorkingStatus( dto.getWorkingStatus() );
-        attorney.setCaseload( caseMinimalDtoListToCaseList( dto.getCaseload(), context ) );
         attorney.setInvestigator( investigatorMinimalDtoToInvestigator( dto.getInvestigator(), context ) );
+        attorney.setCaseload( caseMinimalDtoListToCaseList( dto.getCaseload(), context ) );
 
         return attorney;
     }
@@ -64,11 +64,11 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         AttorneyDto attorneyDto = new AttorneyDto();
 
-        attorneyDto.setCaseload( caseListToCaseMinimalDtoList( entity.getCaseload() ) );
         attorneyDto.setId( entity.getId() );
-        attorneyDto.setInvestigator( investigatorToInvestigatorMinimalDto( entity.getInvestigator() ) );
         attorneyDto.setName( entity.getName() );
         attorneyDto.setWorkingStatus( entity.getWorkingStatus() );
+        attorneyDto.setInvestigator( investigatorToInvestigatorMinimalDto( entity.getInvestigator() ) );
+        attorneyDto.setCaseload( caseListToCaseMinimalDtoList( entity.getCaseload() ) );
 
         return attorneyDto;
     }
@@ -240,6 +240,27 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         return list;
     }
 
+    protected Investigator investigatorMinimalDtoToInvestigator(InvestigatorMinimalDto investigatorMinimalDto, CycleAvoidingMappingContext context) {
+        Investigator target = context.getMappedInstance( investigatorMinimalDto, Investigator.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( investigatorMinimalDto == null ) {
+            return null;
+        }
+
+        Investigator investigator = new Investigator();
+
+        context.storeMappedInstance( investigatorMinimalDto, investigator );
+
+        investigator.setId( investigatorMinimalDto.getId() );
+        investigator.setName( investigatorMinimalDto.getName() );
+        investigator.setWorkingStatus( investigatorMinimalDto.getWorkingStatus() );
+
+        return investigator;
+    }
+
     protected Charge chargeDtoToCharge(ChargeDto chargeDto, CycleAvoidingMappingContext context) {
         Charge target = context.getMappedInstance( chargeDto, Charge.class );
         if ( target != null ) {
@@ -275,9 +296,9 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         context.storeMappedInstance( chargedCountDto, chargedCount );
 
-        chargedCount.setCharge( chargeDtoToCharge( chargedCountDto.getCharge(), context ) );
-        chargedCount.setCountNumber( chargedCountDto.getCountNumber() );
         chargedCount.setId( chargedCountDto.getId() );
+        chargedCount.setCountNumber( chargedCountDto.getCountNumber() );
+        chargedCount.setCharge( chargeDtoToCharge( chargedCountDto.getCharge(), context ) );
 
         return chargedCount;
     }
@@ -319,12 +340,12 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         context.storeMappedInstance( caseMinimalDto, case1 );
 
+        case1.setId( caseMinimalDto.getId() );
         case1.setCaseNumber( caseMinimalDto.getCaseNumber() );
         case1.setCaseStatus( caseMinimalDto.getCaseStatus() );
-        case1.setChargedCounts( integerChargedCountDtoMapToIntegerChargedCountMap( caseMinimalDto.getChargedCounts(), context ) );
-        case1.setDateClosed( caseMinimalDto.getDateClosed() );
         case1.setDateOpened( caseMinimalDto.getDateOpened() );
-        case1.setId( caseMinimalDto.getId() );
+        case1.setDateClosed( caseMinimalDto.getDateClosed() );
+        case1.setChargedCounts( integerChargedCountDtoMapToIntegerChargedCountMap( caseMinimalDto.getChargedCounts(), context ) );
 
         return case1;
     }
@@ -349,24 +370,18 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         return list1;
     }
 
-    protected Investigator investigatorMinimalDtoToInvestigator(InvestigatorMinimalDto investigatorMinimalDto, CycleAvoidingMappingContext context) {
-        Investigator target = context.getMappedInstance( investigatorMinimalDto, Investigator.class );
-        if ( target != null ) {
-            return target;
-        }
-
-        if ( investigatorMinimalDto == null ) {
+    protected InvestigatorMinimalDto investigatorToInvestigatorMinimalDto(Investigator investigator) {
+        if ( investigator == null ) {
             return null;
         }
 
-        Investigator investigator = new Investigator();
+        InvestigatorMinimalDto investigatorMinimalDto = new InvestigatorMinimalDto();
 
-        context.storeMappedInstance( investigatorMinimalDto, investigator );
+        investigatorMinimalDto.setId( investigator.getId() );
+        investigatorMinimalDto.setName( investigator.getName() );
+        investigatorMinimalDto.setWorkingStatus( investigator.getWorkingStatus() );
 
-        investigator.setId( investigatorMinimalDto.getId() );
-        investigator.setName( investigatorMinimalDto.getName() );
-
-        return investigator;
+        return investigatorMinimalDto;
     }
 
     protected ChargeDto chargeToChargeDto(Charge charge) {
@@ -390,11 +405,11 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
+        chargedCountDto.setId( chargedCount.getId() );
         if ( chargedCount.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
         }
-        chargedCountDto.setId( chargedCount.getId() );
+        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
 
         return chargedCountDto;
     }
@@ -422,12 +437,12 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         CaseMinimalDto caseMinimalDto = new CaseMinimalDto();
 
+        caseMinimalDto.setId( case1.getId() );
         caseMinimalDto.setCaseNumber( case1.getCaseNumber() );
         caseMinimalDto.setCaseStatus( case1.getCaseStatus() );
-        caseMinimalDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( case1.getChargedCounts() ) );
-        caseMinimalDto.setDateClosed( case1.getDateClosed() );
         caseMinimalDto.setDateOpened( case1.getDateOpened() );
-        caseMinimalDto.setId( case1.getId() );
+        caseMinimalDto.setDateClosed( case1.getDateClosed() );
+        caseMinimalDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( case1.getChargedCounts() ) );
 
         return caseMinimalDto;
     }
@@ -443,18 +458,5 @@ public class AttorneyMapperImpl implements AttorneyMapper {
         }
 
         return list1;
-    }
-
-    protected InvestigatorMinimalDto investigatorToInvestigatorMinimalDto(Investigator investigator) {
-        if ( investigator == null ) {
-            return null;
-        }
-
-        InvestigatorMinimalDto investigatorMinimalDto = new InvestigatorMinimalDto();
-
-        investigatorMinimalDto.setId( investigator.getId() );
-        investigatorMinimalDto.setName( investigator.getName() );
-
-        return investigatorMinimalDto;
     }
 }

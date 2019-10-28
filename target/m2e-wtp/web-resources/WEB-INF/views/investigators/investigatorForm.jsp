@@ -48,14 +48,14 @@
 		</div>
 	</spring:bind>
 	
-	<spring:bind path="assignedAttorneys">
+	<spring:bind path="assignedAttorneysIds">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-2 control-label">Assigned Attorneys</label>
 			<div class="col-sm-5">
-				<form:checkboxes path="assignedAttorneys" element="li style='list-style-type:none;'" items="${activeAttorneys}"
+				<form:checkboxes path="assignedAttorneysIds" element="li style='list-style-type:none;'" items="${activeAttorneys}"
 					itemLabel="name" itemValue="id" size="5"
 					cssStyle="margin-right: 5px; margin-left: 5px" />
-				<form:errors path="assignedAttorneys" class="control-label" />
+				<form:errors path="assignedAttorneysIds" class="control-label" />
 			</div>
 			<br />
 		</div>

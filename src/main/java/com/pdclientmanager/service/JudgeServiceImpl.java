@@ -6,6 +6,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.model.dto.JudgeDto;
 import com.pdclientmanager.model.entity.Judge;
@@ -13,6 +14,7 @@ import com.pdclientmanager.model.entity.WorkingStatus;
 import com.pdclientmanager.repository.JudgeRepository;
 import com.pdclientmanager.util.mapper.JudgeMapper;
 
+@Service
 public class JudgeServiceImpl implements JudgeService {
 
     private JudgeRepository repository;
@@ -49,6 +51,7 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
+    @Transactional
     public List<JudgeDto> findAllActive() {
         List<JudgeDto> dtoList = mapper.toJudgeDtoList(
                 repository.findByWorkingStatus(WorkingStatus.ACTIVE));
@@ -56,12 +59,14 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
+    @Transactional
     public void delete(JudgeDto dto) {
         Judge entity = mapper.toJudge(dto);
         repository.delete(entity);
     }
 
     @Override
+    @Transactional
     public void deleteById(Long targetId) {
         repository.deleteById(targetId);
     }

@@ -75,6 +75,8 @@ public class AttorneyMapperTest {
                 .build();
     }
         
+    // Mapping between AttorneyDto and Attorney entity
+    
     @Test
     public void mapper_ShouldMapDtoToEntity() {
         
@@ -105,6 +107,9 @@ public class AttorneyMapperTest {
         assertThat(attorney.getInvestigator().getName()).isEqualTo(dto.getInvestigator().getName());
     }
     
+    
+    // Mapping between AttorneyFormDto and Attorney entity
+    
     @Test
     public void mapper_ShouldMapAttorneyFormDtoToEntity() {
         
@@ -129,6 +134,9 @@ public class AttorneyMapperTest {
         assertThat(mappedFormDto.getInvestigatorId()).isEqualTo(attorney.getInvestigator().getId());
     }
     
+    
+    // Mapping between AttorneyMinimalDto and Attorney entity
+    
     @Test
     public void mapper_ShouldMapEntityToAttorneyMinimalDto() {
         
@@ -137,6 +145,9 @@ public class AttorneyMapperTest {
         assertThat(mappedMinimalDto.getId()).isEqualTo(attorney.getId());
         assertThat(mappedMinimalDto.getName()).isEqualTo(attorney.getName());
     }
+    
+    
+    // Mapping between AttorneyDto and Attorney entity
     
     @Test
     public void mapper_ShouldMapAttorneyDtoToAttorneyMinimalDto() {

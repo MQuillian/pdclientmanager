@@ -29,10 +29,10 @@ public interface InvestigatorMapper {
     
     //Mapping between InvestigatorFormDto and Investigator entity
     
-    @Mapping(source = "assignedAttorneyIds", target = "assignedAttorneys")
+    @Mapping(source = "assignedAttorneysIds", target = "assignedAttorneys")
     Investigator toInvestigatorFromInvestigatorFormDto(final InvestigatorFormDto dto, @Context CycleAvoidingMappingContext context);
 
-    @Mapping(source = "assignedAttorneys", target = "assignedAttorneyIds")
+    @Mapping(source = "assignedAttorneys", target = "assignedAttorneysIds")
     InvestigatorFormDto toInvestigatorFormDtoFromInvestigator(final Investigator entity);
     
     List<Investigator> toInvestigatorListFromInvestigatorFormDtoList(final List<InvestigatorFormDto> formDtos, @Context CycleAvoidingMappingContext context);

@@ -35,6 +35,7 @@
 	<spring:bind path="workingStatus">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-2 control-label">Working Status</label>
+			<label>NOTE: Updating to Inactive status will remove any investigator assignment </label>
 			<div class="col-sm-10">
 				<label class="radio-inline">
 					<form:radiobutton path="workingStatus" value="ACTIVE" />Active
@@ -47,7 +48,6 @@
 			</div>
 		</div>
 	</spring:bind>
-	
 	<spring:bind path="investigatorId">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-2 control-label">Investigator</label>

@@ -12,8 +12,8 @@ INSERT INTO attorneys
 	VALUES
     (1, 'Matt Quillian', 0, 1),
     (2, 'John Doe', 0, 2),
-    (3, 'Jane Smith', 1, 1),
-    (4, 'Matt Schneider', 1, 2);
+    (3, 'Jane Smith', 1, NULL),
+    (4, 'Matt Schneider', 1, NULL);
 
 # Insert clients (id, name, custodyStatus)
 INSERT INTO clients

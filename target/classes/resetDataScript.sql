@@ -2,7 +2,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE investigators;
 INSERT INTO investigators VALUES (1, 'Tim Loodle', 0), (2, 'Sandra Sanderson', 0), (3, 'Debbie Downer', 1);
 TRUNCATE TABLE attorneys;
-INSERT INTO attorneys VALUES (1, 'Matt Quillian', 0, 1), (2, 'John Doe', 0, 2), (3, 'Jane Smith', 1, 1), (4, 'Matt Schneider', 1, 2);
+INSERT INTO attorneys VALUES (1, 'Matt Quillian', 0, 1), (2, 'John Doe', 0, 2), (3, 'Jane Smith', 1, NULL), (4, 'Matt Schneider', 1, NULL);
 TRUNCATE TABLE clients;
 INSERT INTO clients VALUES (1, 'Eric Hoefle', 0), (2, 'Jason Baddorf', 0), (3, 'Jamie Jameson', 1), (4, 'Marky Mark', 1), (5, 'Phteven McButton', 0), (6, 'Atticus Finch', 1), (7, 'Erica Erickson', 0), (8, 'Fblthp NLN', 0), (9, 'Jimmy Fallon', 0),(10,'Hamilton Holmes', 1);
 TRUNCATE TABLE judges;

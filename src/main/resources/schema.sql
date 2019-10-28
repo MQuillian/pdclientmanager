@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `attorneys` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `working_status` INT(4) NOT NULL DEFAULT '0',
-  `investigator` INT(11) NOT NULL,
+  `investigator` INT(11),
   PRIMARY KEY (`id`),
   INDEX `investigator` (`investigator` ASC),
   CONSTRAINT `attorneys_ibfk_1`

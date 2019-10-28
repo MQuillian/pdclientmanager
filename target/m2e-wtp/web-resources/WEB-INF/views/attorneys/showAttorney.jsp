@@ -29,7 +29,7 @@
 <div class="row">
 	<label class="col-sm-2">Investigator</label>
 	<c:choose>
-		<c:when test="${attorney.workingStatus == 'ACTIVE'}">
+		<c:when test="${attorney.investigator != NULL}">
 			<div class="col-sm-10">${attorney.investigator}</div>
 		</c:when>
 		<c:otherwise>

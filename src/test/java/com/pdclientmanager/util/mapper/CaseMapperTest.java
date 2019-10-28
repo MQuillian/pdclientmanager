@@ -55,6 +55,8 @@ public class CaseMapperTest {
         courtCase.addChargedCount(testCount);
     }
     
+    // Mapping between CaseDto and Case entity
+    
     @Test
     public void mapper_ShouldMapDtoToEntity() {
         
@@ -92,6 +94,9 @@ public class CaseMapperTest {
         assertThat(courtCase.getChargedCounts().get(1).getId())
             .isEqualTo(dto.getChargedCounts().get(1).getId());
     }
+    
+    
+    // Mapping between CaseMinimalDto and Case entity
     
     @Test
     public void mapper_ShouldMapEntityToMinimalDto() {

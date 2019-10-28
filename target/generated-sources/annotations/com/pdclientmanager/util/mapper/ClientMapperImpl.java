@@ -4,6 +4,7 @@ import com.pdclientmanager.model.dto.CaseMinimalDto;
 import com.pdclientmanager.model.dto.ChargeDto;
 import com.pdclientmanager.model.dto.ChargedCountDto;
 import com.pdclientmanager.model.dto.ClientDto;
+import com.pdclientmanager.model.dto.ClientFormDto;
 import com.pdclientmanager.model.dto.ClientMinimalDto;
 import com.pdclientmanager.model.entity.Case;
 import com.pdclientmanager.model.entity.Charge;
@@ -13,17 +14,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-25T21:19:40-0400",
+    date = "2019-10-27T23:37:13-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
 @Component
 public class ClientMapperImpl implements ClientMapper {
+
+    @Autowired
+    private CaseResolver caseResolver;
 
     @Override
     public Client toClient(ClientDto dto, CycleAvoidingMappingContext context) {
@@ -97,6 +102,45 @@ public class ClientMapperImpl implements ClientMapper {
         }
 
         return list;
+    }
+
+    @Override
+    public Client toClientFromClientFormDto(ClientFormDto formDto, CycleAvoidingMappingContext context) {
+        Client target = context.getMappedInstance( formDto, Client.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( formDto == null ) {
+            return null;
+        }
+
+        Client client = new Client();
+
+        context.storeMappedInstance( formDto, client );
+
+        client.setCases( longListToCaseList( formDto.getCasesIds(), context ) );
+        client.setId( formDto.getId() );
+        client.setName( formDto.getName() );
+        client.setCustodyStatus( formDto.getCustodyStatus() );
+
+        return client;
+    }
+
+    @Override
+    public ClientFormDto toClientFormDtoFromClient(Client entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        ClientFormDto clientFormDto = new ClientFormDto();
+
+        clientFormDto.setCasesIds( caseListToLongList( entity.getCases() ) );
+        clientFormDto.setId( entity.getId() );
+        clientFormDto.setName( entity.getName() );
+        clientFormDto.setCustodyStatus( entity.getCustodyStatus() );
+
+        return clientFormDto;
     }
 
     @Override
@@ -308,6 +352,39 @@ public class ClientMapperImpl implements ClientMapper {
         List<CaseMinimalDto> list1 = new ArrayList<CaseMinimalDto>( list.size() );
         for ( Case case1 : list ) {
             list1.add( caseToCaseMinimalDto( case1 ) );
+        }
+
+        return list1;
+    }
+
+    protected List<Case> longListToCaseList(List<Long> list, CycleAvoidingMappingContext context) {
+        List<Case> target = context.getMappedInstance( list, List.class );
+        if ( target != null ) {
+            return target;
+        }
+
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Case> list1 = new ArrayList<Case>( list.size() );
+        context.storeMappedInstance( list, list1 );
+
+        for ( Long long1 : list ) {
+            list1.add( caseResolver.resolve( long1, Case.class ) );
+        }
+
+        return list1;
+    }
+
+    protected List<Long> caseListToLongList(List<Case> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Long> list1 = new ArrayList<Long>( list.size() );
+        for ( Case case1 : list ) {
+            list1.add( caseResolver.toLong( case1 ) );
         }
 
         return list1;

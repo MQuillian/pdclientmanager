@@ -29,7 +29,7 @@
 			<td>${attorney.name}</td>
 			<td>${attorney.workingStatus}</td>
 			<c:choose>
-				<c:when test="${attorney.workingStatus == 'ACTIVE'}">
+				<c:when test="${attorney.investigator != NULL}">
 					<td>${attorney.investigator}</td>
 				</c:when>
 				<c:otherwise>
