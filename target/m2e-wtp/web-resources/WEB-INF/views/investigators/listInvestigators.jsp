@@ -28,17 +28,19 @@
 			<td>${investigator.name}</td>
 			<td>${investigator.workingStatus}</td>
 			<td>
-				<spring:url value="/investigators/${investigator.id}" var="investigatorUrl" />
-				<spring:url value="/investigators/${investigator.id}/update" var="updateUrl" />
-				<spring:url value="/investigators/${investigator.id}/delete" var="deleteUrl" />
-				
-				<button class="btn btn-info"
-					onclick="location.href='${investigatorUrl}'">Details</button>
-				<button class="btn btn-primary"
-					onclick="location.href='${updateUrl}'">Update</button>
-				<form:form action="${deleteUrl}" method="post">
-					<button class="btn btn-danger" type="submit">Delete</button>
-				</form:form>
+				<div class="btn-group" role="group">
+					<spring:url value="/investigators/${investigator.id}" var="investigatorUrl" />
+					<spring:url value="/investigators/${investigator.id}/update" var="updateUrl" />
+					<spring:url value="/investigators/${investigator.id}/delete" var="deleteUrl" />
+					
+					<button class="btn btn-info"
+						onclick="location.href='${investigatorUrl}'">Details</button>
+					<button class="btn btn-primary"
+						onclick="location.href='${updateUrl}'">Update</button>
+					<form:form action="${deleteUrl}" method="post">
+						<button class="btn btn-danger" type="submit">Delete</button>
+					</form:form>
+				</div>
 			</td>
 		</tr>
 	</c:forEach>

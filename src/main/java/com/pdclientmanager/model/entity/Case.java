@@ -1,8 +1,8 @@
 package com.pdclientmanager.model.entity;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
@@ -47,7 +48,8 @@ public class Case {
     
     @OneToMany(mappedBy = "courtCase")
     @MapKey(name = "countNumber")
-    private Map<Integer, ChargedCount> chargedCounts;
+    @OrderBy("countNumber ASC")
+    private SortedMap<Integer, ChargedCount> chargedCounts;
     
     public Case() {
         
@@ -55,7 +57,7 @@ public class Case {
 
     public Case(Long id, String caseNumber, 
             CaseStatus caseStatus, LocalDate dateOpened, LocalDate dateClosed,
-            Client client, Judge judge, Attorney attorney, Map<Integer, ChargedCount> chargedCounts) {
+            Client client, Judge judge, Attorney attorney, SortedMap<Integer, ChargedCount> chargedCounts) {
         this.id = id;
         this.caseNumber = caseNumber;
         this.caseStatus = caseStatus;
@@ -135,11 +137,11 @@ public class Case {
         this.attorney = attorney;
     }
 
-    public Map<Integer, ChargedCount> getChargedCounts() {
+    public SortedMap<Integer, ChargedCount> getChargedCounts() {
         return chargedCounts;
     }
 
-    public void setChargedCounts(Map<Integer, ChargedCount> chargedCounts) {
+    public void setChargedCounts(SortedMap<Integer, ChargedCount> chargedCounts) {
         this.chargedCounts = chargedCounts;
     }
 
@@ -184,7 +186,7 @@ public class Case {
         Client client = new Client();
         Judge judge = new Judge();
         Attorney attorney = new Attorney();
-        Map<Integer, ChargedCount> chargedCounts = new HashMap<>();
+        SortedMap<Integer, ChargedCount> chargedCounts = new TreeMap<>();
         
         public CaseBuilder withId(Long id) {
             this.id = id;
@@ -226,7 +228,7 @@ public class Case {
             return this;
         }
         
-        public CaseBuilder withChargedCounts(Map<Integer, ChargedCount> chargedCounts) {
+        public CaseBuilder withChargedCounts(TreeMap<Integer, ChargedCount> chargedCounts) {
             this.chargedCounts = chargedCounts;
             return this;
         }

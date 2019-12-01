@@ -1,8 +1,8 @@
 package com.pdclientmanager.model.dto;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.pdclientmanager.model.entity.CaseStatus;
 
@@ -16,14 +16,14 @@ public class CaseFormDto {
     private Long clientId;
     private Long judgeId;
     private Long attorneyId;
-    private Map<Integer, Long> chargedCountsIds;
+    private SortedMap<Integer, Long> chargedCountsIds;
     
     public CaseFormDto() {
         
     }
 
     public CaseFormDto(Long id, String caseNumber, CaseStatus caseStatus, LocalDate dateOpened, LocalDate dateClosed,
-            Long clientId, Long judgeId, Long attorneyId, Map<Integer, Long> chargedCountsIds) {
+            Long clientId, Long judgeId, Long attorneyId, SortedMap<Integer, Long> chargedCountsIds) {
         this.id = id;
         this.caseNumber = caseNumber;
         this.caseStatus = caseStatus;
@@ -37,6 +37,10 @@ public class CaseFormDto {
     
     public void addChargedCountId(Integer countNumber, Long id) {
         this.chargedCountsIds.put(countNumber,id);
+    }
+    
+    public boolean isNew() {
+        return id == null;
     }
     
     public Long getId() {
@@ -103,11 +107,11 @@ public class CaseFormDto {
         this.attorneyId = attorneyId;
     }
 
-    public Map<Integer, Long> getChargedCountsIds() {
+    public SortedMap<Integer, Long> getChargedCountsIds() {
         return chargedCountsIds;
     }
 
-    public void setChargedCountsIds(Map<Integer, Long> chargedCountsIds) {
+    public void setChargedCountsIds(SortedMap<Integer, Long> chargedCountsIds) {
         this.chargedCountsIds = chargedCountsIds;
     }
 
@@ -169,7 +173,7 @@ public class CaseFormDto {
         private Long clientId = 1L;
         private Long judgeId = 1L;
         private Long attorneyId = 1L;
-        private Map<Integer, Long> chargedCountsIds = new HashMap<>();
+        private SortedMap<Integer, Long> chargedCountsIds = new TreeMap<>();
         
         public CaseFormDtoBuilder withId(Long id) {
             this.id = id;
@@ -211,7 +215,7 @@ public class CaseFormDto {
             return this;
         }
         
-        public CaseFormDtoBuilder withChargedCountsIds(Map<Integer,Long> chargedCountsIds) {
+        public CaseFormDtoBuilder withChargedCountsIds(SortedMap<Integer,Long> chargedCountsIds) {
             this.chargedCountsIds = chargedCountsIds;
             return this;
         }

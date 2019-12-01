@@ -18,13 +18,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-10-27T23:37:12-0400",
+    date = "2019-11-26T21:25:22-0500",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -61,7 +63,7 @@ public class CaseMapperImpl implements CaseMapper {
         case1.setClient( clientMinimalDtoToClient( dto.getClient(), context ) );
         case1.setJudge( judgeDtoToJudge( dto.getJudge(), context ) );
         case1.setAttorney( attorneyMinimalDtoToAttorney( dto.getAttorney(), context ) );
-        case1.setChargedCounts( integerChargedCountDtoMapToIntegerChargedCountMap( dto.getChargedCounts(), context ) );
+        case1.setChargedCounts( integerChargedCountDtoMapToIntegerChargedCountSortedMap( dto.getChargedCounts(), context ) );
 
         return case1;
     }
@@ -82,7 +84,7 @@ public class CaseMapperImpl implements CaseMapper {
         caseDto.setClient( clientToClientMinimalDto( entity.getClient() ) );
         caseDto.setJudge( judgeToJudgeDto( entity.getJudge() ) );
         caseDto.setAttorney( attorneyToAttorneyMinimalDto( entity.getAttorney() ) );
-        caseDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( entity.getChargedCounts() ) );
+        caseDto.setChargedCounts( integerChargedCountSortedMapToIntegerChargedCountDtoMap( entity.getChargedCounts() ) );
 
         return caseDto;
     }
@@ -217,7 +219,7 @@ public class CaseMapperImpl implements CaseMapper {
         caseMinimalDto.setCaseStatus( entity.getCaseStatus() );
         caseMinimalDto.setDateOpened( entity.getDateOpened() );
         caseMinimalDto.setDateClosed( entity.getDateClosed() );
-        caseMinimalDto.setChargedCounts( integerChargedCountMapToIntegerChargedCountDtoMap( entity.getChargedCounts() ) );
+        caseMinimalDto.setChargedCounts( integerChargedCountSortedMapToIntegerChargedCountDtoMap( entity.getChargedCounts() ) );
 
         return caseMinimalDto;
     }
@@ -376,8 +378,8 @@ public class CaseMapperImpl implements CaseMapper {
         return chargedCount;
     }
 
-    protected Map<Integer, ChargedCount> integerChargedCountDtoMapToIntegerChargedCountMap(Map<Integer, ChargedCountDto> map, CycleAvoidingMappingContext context) {
-        Map<Integer, ChargedCount> target = context.getMappedInstance( map, Map.class );
+    protected SortedMap<Integer, ChargedCount> integerChargedCountDtoMapToIntegerChargedCountSortedMap(Map<Integer, ChargedCountDto> map, CycleAvoidingMappingContext context) {
+        SortedMap<Integer, ChargedCount> target = context.getMappedInstance( map, SortedMap.class );
         if ( target != null ) {
             return target;
         }
@@ -386,17 +388,17 @@ public class CaseMapperImpl implements CaseMapper {
             return null;
         }
 
-        Map<Integer, ChargedCount> map1 = new HashMap<Integer, ChargedCount>( Math.max( (int) ( map.size() / .75f ) + 1, 16 ) );
+        SortedMap<Integer, ChargedCount> sortedMap = new TreeMap<Integer, ChargedCount>();
 
-        context.storeMappedInstance( map, map1 );
+        context.storeMappedInstance( map, sortedMap );
 
         for ( java.util.Map.Entry<Integer, ChargedCountDto> entry : map.entrySet() ) {
             Integer key = entry.getKey();
             ChargedCount value = chargedCountDtoToChargedCount( entry.getValue(), context );
-            map1.put( key, value );
+            sortedMap.put( key, value );
         }
 
-        return map1;
+        return sortedMap;
     }
 
     protected ClientMinimalDto clientToClientMinimalDto(Client client) {
@@ -471,19 +473,19 @@ public class CaseMapperImpl implements CaseMapper {
         return chargedCountDto;
     }
 
-    protected Map<Integer, ChargedCountDto> integerChargedCountMapToIntegerChargedCountDtoMap(Map<Integer, ChargedCount> map) {
-        if ( map == null ) {
+    protected Map<Integer, ChargedCountDto> integerChargedCountSortedMapToIntegerChargedCountDtoMap(SortedMap<Integer, ChargedCount> sortedMap) {
+        if ( sortedMap == null ) {
             return null;
         }
 
-        Map<Integer, ChargedCountDto> map1 = new HashMap<Integer, ChargedCountDto>( Math.max( (int) ( map.size() / .75f ) + 1, 16 ) );
+        Map<Integer, ChargedCountDto> map = new HashMap<Integer, ChargedCountDto>( Math.max( (int) ( sortedMap.size() / .75f ) + 1, 16 ) );
 
-        for ( java.util.Map.Entry<Integer, ChargedCount> entry : map.entrySet() ) {
+        for ( java.util.Map.Entry<Integer, ChargedCount> entry : sortedMap.entrySet() ) {
             Integer key = entry.getKey();
             ChargedCountDto value = chargedCountToChargedCountDto( entry.getValue() );
-            map1.put( key, value );
+            map.put( key, value );
         }
 
-        return map1;
+        return map;
     }
 }

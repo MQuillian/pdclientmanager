@@ -11,30 +11,34 @@
 	</div>
 </c:if>
 
-<h1>Full Investigator List</h1>
+<h1>Full Case List</h1>
 <hr />
-<a href="${contextPath}/employeeManagement">Return to Employee Management</a>
+<a href="${contextPath}/caseManagement">Return to Case Management</a>
 <hr />
 
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th>Name</th>
-			<th>Working Status</th>
+			<th>Case Number</th>
+			<th>Client</th>
+			<th>Case Status</th>
+			<th>Attorney</th>
 		</tr>
 	</thead>
-	<c:forEach items="${investigatorList}" var="investigator">
+	<c:forEach items="${openCases}" var="courtCase">
 		<tr>
-			<td>${investigator.name}</td>
-			<td>${investigator.workingStatus}</td>
+			<td>${courtCase.caseNumber}</td>
+			<td>${courtCase.client.name}</td>
+			<td>${courtCase.caseStatus}</td>
+			<td>${courtCase.attorney.name}</td>
 			<td>
 				<div class="btn-group" role="group">
-					<spring:url value="/investigators/${investigator.id}" var="investigatorUrl" />
-					<spring:url value="/investigators/${investigator.id}/update" var="updateUrl" />
-					<spring:url value="/investigators/${investigator.id}/delete" var="deleteUrl" />
+					<spring:url value="/cases/${courtCase.id}" var="courtCaseUrl" />
+					<spring:url value="/cases/${courtCase.id}/update" var="updateUrl" />
+					<spring:url value="/cases/${courtCase.id}/delete" var="deleteUrl" />
 					
 					<button class="btn btn-info"
-						onclick="location.href='${investigatorUrl}'">Details</button>
+						onclick="location.href='${courtCaseUrl}'">Details</button>
 					<button class="btn btn-primary"
 						onclick="location.href='${updateUrl}'">Update</button>
 					<form:form action="${deleteUrl}" method="post">

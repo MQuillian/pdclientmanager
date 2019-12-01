@@ -12,6 +12,8 @@ public interface ChargeService {
         
     List<ChargeDto> findAll();
     
+    List<ChargeDto> findByPartialNameOrStatute(String query);
+    
     void delete(final ChargeDto dto);
     
     void deleteById(final Long targetId);

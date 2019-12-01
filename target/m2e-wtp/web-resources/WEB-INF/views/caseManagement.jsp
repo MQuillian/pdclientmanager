@@ -7,5 +7,9 @@
 CASE SEARCH
 <br>
 CASE CRUD FUNCTIONALITY
+<br>
+<a href="cases">Full case list</a>
+<br>
+<a href="cases/add">Add new case</a>
 
 <%@ include file = "footer.jsp" %>

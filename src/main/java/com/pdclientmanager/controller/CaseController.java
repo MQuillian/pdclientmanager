@@ -1,74 +1,89 @@
 package com.pdclientmanager.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.pdclientmanager.model.dto.AttorneyDto;
-import com.pdclientmanager.model.dto.AttorneyFormDto;
-import com.pdclientmanager.model.dto.AttorneyMinimalDto;
 import com.pdclientmanager.model.dto.CaseDto;
-import com.pdclientmanager.model.dto.InvestigatorDto;
-import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
+import com.pdclientmanager.model.dto.CaseFormDto;
+import com.pdclientmanager.model.dto.ChargedCountMinimalDto;
 import com.pdclientmanager.service.AttorneyService;
 import com.pdclientmanager.service.CaseService;
-import com.pdclientmanager.service.InvestigatorService;
-import com.pdclientmanager.util.AttorneyDtoEditor;
-import com.pdclientmanager.util.AttorneyMinimalDtoEditor;
-import com.pdclientmanager.util.InvestigatorDtoEditor;
-import com.pdclientmanager.util.InvestigatorMinimalDtoEditor;
-import com.pdclientmanager.util.mapper.AttorneyMapper;
-import com.pdclientmanager.util.mapper.InvestigatorMapper;
+import com.pdclientmanager.service.ChargeService;
+
+// First figure out how to list for one, and THEN add rows
 
 @Controller
 public class CaseController {
     
     private CaseService caseService;
+    private AttorneyService attorneyService;
+    private ChargeService chargeService;
     
     @Autowired
-    public CaseController(CaseService caseService) {
+    public CaseController(CaseService caseService, AttorneyService attorneyService,
+            ChargeService chargeService) {
         this.caseService = caseService;
+        this.attorneyService = attorneyService;
+        this.chargeService = chargeService;
     }
     
-//    @GetMapping("/cases/add")
-//    public String showNewCaseForm(Model model) {
-//        CaseFormDto courtCase = new CaseFormDto();
-//        model.addAttribute("courtCase", courtCase);
-//    }
-//    
-//    persistOrMergeCase
-//    
-//    @GetMapping("/cases")
-//    public String showAllCases(Model model) {
-//        model.addAttribute("cases", caseService.getAllWithInitializedClients());
-//        return "cases/listCases";
-//    }
-//    
-//    @GetMapping("/cases/{id}")
-//    public String showCase(@PathVariable("id") Long id, Model model,
-//            final RedirectAttributes redirectAttributes) {
-//        CaseDto courtCase = caseService.getById(id);
-//        if(courtCase == null) {
-//            redirectAttributes.addAttribute("css", "danger");
-//            redirectAttributes.addAttribute("msg", "Case could not be found...");
-//            return "redirect:/cases";
-//        }
-//        model.addAttribute("case", courtCase);
-//        return "cases/showCase";
-//    }
+    
+    @GetMapping("/cases/add")
+    public String showNewCaseForm(Model model) {
+        CaseFormDto caseForm = new CaseFormDto();
+//        List<AttorneyDto> activeAttorneys = attorneyService.findAllActive();
+        model.addAttribute("caseForm", caseForm);
+        List<ChargedCountMinimalDto> chargedCounts = new ArrayList<>();
+        model.addAttribute("chargedCountsList", chargedCounts);
+//        model.addAttribute("activeAttorneys", activeAttorneys);
+        return "cases/caseForm";
+    }
+
+    @PostMapping(path="/cases")
+    public String saveCase(
+            @ModelAttribute("caseForm") @Valid CaseFormDto caseForm, 
+            BindingResult result, Model model,
+            final RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()) {
+            return "cases/caseForm";
+        } else {
+            System.out.println("You've successfully hit the save point");
+            if(caseForm.getChargedCountsIds() != null) {
+                System.out.println(caseForm.getChargedCountsIds().size());
+            }
+            return "cases/listCases";
+            
+//            Long entityId = attorneyService.save(attorneyForm);
+//            redirectAttributes.addFlashAttribute("css", "success");
+//            redirectAttributes.addFlashAttribute("msg", "Attorney saved successfully!");
+//            return "redirect:/attorneys/" + entityId;
+        }
+    }
+    
+    @GetMapping("/cases")
+    public String showAllCases(Model model) {
+        model.addAttribute("openCases", caseService.findAllOpen());
+        return "cases/listCases";
+    }
+    
+    @GetMapping("/cases/{id}")
+    public String showCase(@PathVariable("id") Long id, Model model) {
+        CaseDto courtCase = caseService.findById(id);
+        model.addAttribute("courtCase", courtCase);
+        return "cases/showCase";
+    }
 //    
 //    showUpdateCaseForm
 //    
