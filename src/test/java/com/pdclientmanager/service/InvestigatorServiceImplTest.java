@@ -25,6 +25,7 @@ import com.pdclientmanager.model.dto.InvestigatorDto;
 import com.pdclientmanager.model.dto.InvestigatorFormDto;
 import com.pdclientmanager.model.entity.Attorney;
 import com.pdclientmanager.model.entity.Investigator;
+import com.pdclientmanager.repository.AttorneyRepository;
 import com.pdclientmanager.repository.InvestigatorRepository;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 import com.pdclientmanager.util.mapper.InvestigatorMapper;
@@ -35,7 +36,10 @@ import com.pdclientmanager.util.mapper.InvestigatorMapper;
 class InvestigatorServiceImplTest {
     
     @Mock
-    private InvestigatorRepository repository;
+    private InvestigatorRepository investigatorRepository;
+    
+    @Mock
+    private AttorneyRepository attorneyRepository;
     
     @Mock
     private InvestigatorMapper mapper;
@@ -52,7 +56,8 @@ class InvestigatorServiceImplTest {
     public void setUp() {
         
         initMocks(this);
-        investigatorService = new InvestigatorServiceImpl(repository, mapper);
+        investigatorService = new InvestigatorServiceImpl(investigatorRepository,
+                attorneyRepository, mapper);
     
         investigatorDto = new InvestigatorDto.InvestigatorDtoBuilder()
                 .withId(1L)
@@ -88,13 +93,13 @@ class InvestigatorServiceImplTest {
             .thenReturn(investigator);
         
         assertThat(investigatorService.save(investigatorFormDto)).isEqualTo(investigator.getId());
-        verify(repository).save(investigator);
+        verify(investigatorRepository).save(investigator);
     }
     
     @Test
     public void findById_WithValidId_ReturnsInvestigatorDto() {
         
-        when(repository.findById(1L)).thenReturn(Optional.of(investigator));
+        when(investigatorRepository.findById(1L)).thenReturn(Optional.of(investigator));
         when(mapper.toInvestigatorDto(
                 eq(investigator)))
             .thenReturn(investigatorDto);
@@ -102,13 +107,13 @@ class InvestigatorServiceImplTest {
         InvestigatorDto dtoFromService = investigatorService.findById(1L);
         
         assertThat(dtoFromService).isEqualTo(investigatorDto);
-        verify(repository).findById(1L);
+        verify(investigatorRepository).findById(1L);
     }
     
     @Test
     public void findAll_ReturnsDtoList() {
         
-        when(repository.findAll()).thenReturn(investigatorList);
+        when(investigatorRepository.findAll()).thenReturn(investigatorList);
         when(mapper.toInvestigatorDtoList(
                 eq(investigatorList)))
             .thenReturn(investigatorDtoList);
@@ -116,7 +121,7 @@ class InvestigatorServiceImplTest {
         List<InvestigatorDto> listFromService = investigatorService.findAll();
         
         assertThat(listFromService).isEqualTo(investigatorDtoList);
-        verify(repository).findAll();
+        verify(investigatorRepository).findAll();
     }
     
     @Test
@@ -128,7 +133,7 @@ class InvestigatorServiceImplTest {
         
         investigatorService.delete(investigatorDto);
         
-        verify(repository).delete(investigator);
+        verify(investigatorRepository).delete(investigator);
     }
     
     @Test
@@ -136,6 +141,6 @@ class InvestigatorServiceImplTest {
         
         investigatorService.deleteById(1L);
         
-        verify(repository).deleteById(1L);
+        verify(investigatorRepository).deleteById(1L);
     }
 }

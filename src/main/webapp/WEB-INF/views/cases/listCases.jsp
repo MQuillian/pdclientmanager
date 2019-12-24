@@ -13,7 +13,7 @@
 
 <h1>Full Case List</h1>
 <hr />
-<a href="${contextPath}/caseManagement">Return to Case Management</a>
+<a href="${contextPath}/cases">Return to Case Management</a>
 <hr />
 
 <table class="table table-striped">
@@ -25,11 +25,20 @@
 			<th>Attorney</th>
 		</tr>
 	</thead>
-	<c:forEach items="${openCases}" var="courtCase">
+	
+	<c:forEach items="${cases}" var="courtCase">
 		<tr>
 			<td>${courtCase.caseNumber}</td>
 			<td>${courtCase.client.name}</td>
-			<td>${courtCase.caseStatus}</td>
+			<td>
+				<c:choose>
+					<c:when test="${empty courtCase.dateClosed}">
+						Open
+					</c:when>
+					<c:otherwise>
+						Closed
+					</c:otherwise>
+				</c:choose>
 			<td>${courtCase.attorney.name}</td>
 			<td>
 				<div class="btn-group" role="group">
@@ -50,6 +59,16 @@
 	</c:forEach>
 </table>
 
+<hr>
+<div class="panel-footer" id="page-links-footer"></div>
+
 </div>
+
+<script>	
+	var size = ${size};
+	var page = ${page};
+	var totalPages = ${totalPages};
+</script>
+<script src="<spring:url value="/resources/js/pageLinkScript.js" />"></script>
 
 <%@ include file="../footer.jsp" %>

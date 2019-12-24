@@ -4,13 +4,10 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.pdclientmanager.model.entity.CaseStatus;
-
 public class CaseMinimalDto {
 
     private Long id;
     private String caseNumber;
-    private CaseStatus caseStatus;
     private LocalDate dateOpened;
     private LocalDate dateClosed;
     private Map<Integer, ChargedCountDto> chargedCounts;
@@ -19,12 +16,11 @@ public class CaseMinimalDto {
         
     }
 
-    public CaseMinimalDto(Long id, String caseNumber, CaseStatus caseStatus,
+    public CaseMinimalDto(Long id, String caseNumber,
             LocalDate dateOpened, LocalDate dateClosed,
             Map<Integer, ChargedCountDto> chargedCounts) {
         this.id = id;
         this.caseNumber = caseNumber;
-        this.caseStatus = caseStatus;
         this.dateOpened = dateOpened;
         this.dateClosed = dateClosed;
         this.chargedCounts = chargedCounts;
@@ -48,14 +44,6 @@ public class CaseMinimalDto {
 
     public void setCaseNumber(String caseNumber) {
         this.caseNumber = caseNumber;
-    }
-
-    public CaseStatus getCaseStatus() {
-        return caseStatus;
-    }
-
-    public void setCaseStatus(CaseStatus caseStatus) {
-        this.caseStatus = caseStatus;
     }
 
     public LocalDate getDateOpened() {
@@ -87,7 +75,6 @@ public class CaseMinimalDto {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((caseNumber == null) ? 0 : caseNumber.hashCode());
-        result = prime * result + ((caseStatus == null) ? 0 : caseStatus.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
@@ -106,8 +93,6 @@ public class CaseMinimalDto {
                 return false;
         } else if (!caseNumber.equals(other.caseNumber))
             return false;
-        if (caseStatus != other.caseStatus)
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -122,7 +107,6 @@ public class CaseMinimalDto {
         
         private Long id = 1L;
         private String caseNumber = "00J0001";
-        private CaseStatus caseStatus = CaseStatus.OPEN;
         private LocalDate dateOpened = LocalDate.of(2000, 01, 01);
         private LocalDate dateClosed = null;
         private Map<Integer, ChargedCountDto> chargedCounts = new HashMap<>();
@@ -134,11 +118,6 @@ public class CaseMinimalDto {
         
         public CaseMinimalDtoBuilder withCaseNumber(String caseNumber) {
             this.caseNumber = caseNumber;
-            return this;
-        }
-        
-        public CaseMinimalDtoBuilder withCaseStatus(CaseStatus caseStatus) {
-            this.caseStatus = caseStatus;
             return this;
         }
         
@@ -158,7 +137,7 @@ public class CaseMinimalDto {
         }
         
         public CaseMinimalDto build() {
-            return new CaseMinimalDto(id, caseNumber, caseStatus, dateOpened, 
+            return new CaseMinimalDto(id, caseNumber, dateOpened, 
                     dateClosed, chargedCounts);
         }
     }

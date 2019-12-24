@@ -17,9 +17,13 @@ CASE SEARCH UI
 <br>
 PENDING CT DATE UI
 <br>
+<a href="admin">System Management</a>
+<br>
 <a href="pendingCourt">Pending Court Dates</a>
 <br>
-<a href="caseManagement">Case Management</a>
+<a href="cases">Case Management</a>
+<br>
+<a href="clients">Client Management</a>
 <br>
 <a href="employeeManagement">Employee Management</a>
 <br>

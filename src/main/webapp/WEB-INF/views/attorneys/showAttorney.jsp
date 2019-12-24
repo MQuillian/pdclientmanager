@@ -23,7 +23,7 @@
 
 <div class="row">
 	<label class="col-sm-2">Working Status</label>
-	<div class="col-sm-10">${attorney.workingStatus}</div>
+	<div class="col-sm-10">${attorney.workingStatus.displayText}</div>
 </div>
 
 <div class="row">

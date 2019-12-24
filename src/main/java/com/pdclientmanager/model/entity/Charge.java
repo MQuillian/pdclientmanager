@@ -55,7 +55,7 @@ public class Charge {
 
     @Override
     public String toString() {
-        return "Charge [id=" + id + ", name=" + name + ", statute=" + statute + "]";
+        return statute + " - " + name;
     }
 
     @Override

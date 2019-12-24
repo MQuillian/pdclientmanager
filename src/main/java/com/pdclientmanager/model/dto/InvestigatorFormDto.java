@@ -3,13 +3,21 @@ package com.pdclientmanager.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import com.pdclientmanager.model.entity.WorkingStatus;
 
 public class InvestigatorFormDto {
 
     private Long id;
+    
+    @NotEmpty
     private String name;
+    
+    @NotNull
     private WorkingStatus workingStatus;
+    
     private List<Long> assignedAttorneysIds;
     
     public InvestigatorFormDto() {

@@ -1,42 +1,88 @@
 package com.pdclientmanager.model.dto;
 
-import java.time.LocalDate;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.pdclientmanager.model.entity.CaseStatus;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+import com.pdclientmanager.model.entity.ChargedCount;
+import com.pdclientmanager.util.validator.CaseNumberConstraint;
+import com.pdclientmanager.util.validator.ConsistentDatesConstraint;
+import com.pdclientmanager.util.validator.DateClosedConstraint;
+import com.pdclientmanager.util.validator.DateOpenedConstraint;
+
+@ConsistentDatesConstraint
 public class CaseFormDto {
 
     private Long id;
+    
+    @CaseNumberConstraint
     private String caseNumber;
-    private CaseStatus caseStatus;
-    private LocalDate dateOpened;
-    private LocalDate dateClosed;
+    
+    @DateOpenedConstraint
+    private String dateOpened;
+    
+    @DateClosedConstraint
+    private String dateClosed;
+    
+    @NotNull
     private Long clientId;
+    
+    private String clientName;
+    
+    @NotNull
     private Long judgeId;
+    
+    @NotNull
     private Long attorneyId;
+    
+    @NotEmpty
     private SortedMap<Integer, Long> chargedCountsIds;
+    
+    private SortedMap<Integer, String> chargedCountsStrings;
     
     public CaseFormDto() {
         
     }
 
-    public CaseFormDto(Long id, String caseNumber, CaseStatus caseStatus, LocalDate dateOpened, LocalDate dateClosed,
-            Long clientId, Long judgeId, Long attorneyId, SortedMap<Integer, Long> chargedCountsIds) {
+    public CaseFormDto(Long id, String caseNumber, String dateOpened, String dateClosed,
+            Long clientId, String clientName, Long judgeId, Long attorneyId, SortedMap<Integer, Long> chargedCountsIds,
+            SortedMap<Integer, String> chargedCountsStrings) {
         this.id = id;
         this.caseNumber = caseNumber;
-        this.caseStatus = caseStatus;
         this.dateOpened = dateOpened;
         this.dateClosed = dateClosed;
         this.clientId = clientId;
+        this.clientName = clientName;
         this.judgeId = judgeId;
         this.attorneyId = attorneyId;
         this.chargedCountsIds = chargedCountsIds;
+        this.chargedCountsStrings = chargedCountsStrings;
     }
     
-    public void addChargedCountId(Integer countNumber, Long id) {
+    public void addChargedCount(Integer countNumber, Long id, String name) {
         this.chargedCountsIds.put(countNumber,id);
+        this.chargedCountsStrings.put(countNumber, name);
+    }
+    
+    public void addChargedCount(ChargedCount chargedCount) {
+        this.chargedCountsIds.put(chargedCount.getCountNumber(),
+                chargedCount.getCharge().getId());
+        this.chargedCountsStrings.put(chargedCount.getCountNumber(),
+                chargedCount.getCharge().toString());
+    }
+    
+    public void removeChargedCount(Integer countNumber, Long id, String name) {
+        this.chargedCountsIds.remove(countNumber, id);
+        this.chargedCountsStrings.remove(countNumber, name);
+    }
+    
+    public void removeChargedCount(ChargedCount chargedCount) {
+        this.chargedCountsIds.remove(chargedCount.getCountNumber(),
+                chargedCount.getCharge().getId());
+        this.chargedCountsStrings.remove(chargedCount.getCountNumber(),
+                chargedCount.getCharge().toString());
     }
     
     public boolean isNew() {
@@ -59,27 +105,19 @@ public class CaseFormDto {
         this.caseNumber = caseNumber;
     }
 
-    public CaseStatus getCaseStatus() {
-        return caseStatus;
-    }
-
-    public void setCaseStatus(CaseStatus caseStatus) {
-        this.caseStatus = caseStatus;
-    }
-
-    public LocalDate getDateOpened() {
+    public String getDateOpened() {
         return dateOpened;
     }
 
-    public void setDateOpened(LocalDate dateOpened) {
+    public void setDateOpened(String dateOpened) {
         this.dateOpened = dateOpened;
     }
 
-    public LocalDate getDateClosed() {
+    public String getDateClosed() {
         return dateClosed;
     }
 
-    public void setDateClosed(LocalDate dateClosed) {
+    public void setDateClosed(String dateClosed) {
         this.dateClosed = dateClosed;
     }
 
@@ -89,6 +127,14 @@ public class CaseFormDto {
 
     public void setClientId(Long clientId) {
         this.clientId = clientId;
+    }
+    
+    public String getClientName() {
+        return clientName;
+    }
+    
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     public Long getJudgeId() {
@@ -114,17 +160,33 @@ public class CaseFormDto {
     public void setChargedCountsIds(SortedMap<Integer, Long> chargedCountsIds) {
         this.chargedCountsIds = chargedCountsIds;
     }
+    
+    public SortedMap<Integer, String> getChargedCountsStrings() {
+        return chargedCountsStrings;
+    }
+    
+    public void setChargedCountsStrings(SortedMap<Integer, String> chargedCountsStrings) {
+        this.chargedCountsStrings = chargedCountsStrings;
+    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((caseNumber == null) ? 0 : caseNumber.hashCode());
-        result = prime * result + ((caseStatus == null) ? 0 : caseStatus.hashCode());
         result = prime * result + ((dateClosed == null) ? 0 : dateClosed.hashCode());
         result = prime * result + ((dateOpened == null) ? 0 : dateOpened.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
+    }
+    
+    
+
+    @Override
+    public String toString() {
+        return "CaseFormDto [id=" + id + ", caseNumber=" + caseNumber + ", dateOpened=" + dateOpened + ", dateClosed="
+                + dateClosed + ", clientId=" + clientId + ", judgeId=" + judgeId + ", attorneyId=" + attorneyId
+                + ", chargedCountsIds=" + chargedCountsIds + "]" +", chargedCountsStrings=" + chargedCountsStrings + "]";
     }
 
     @Override
@@ -140,8 +202,6 @@ public class CaseFormDto {
             if (other.caseNumber != null)
                 return false;
         } else if (!caseNumber.equals(other.caseNumber))
-            return false;
-        if (caseStatus != other.caseStatus)
             return false;
         if (dateClosed == null) {
             if (other.dateClosed != null)
@@ -167,13 +227,14 @@ public class CaseFormDto {
         
         private Long id = 1L;
         private String caseNumber = "00J0001";
-        private CaseStatus caseStatus = CaseStatus.OPEN;
-        private LocalDate dateOpened = LocalDate.of(2000, 01, 01);
-        private LocalDate dateClosed = null;
+        private String dateOpened = "01/01/2000";
+        private String dateClosed = "";
         private Long clientId = 1L;
+        private String clientName = "Client Name";
         private Long judgeId = 1L;
         private Long attorneyId = 1L;
         private SortedMap<Integer, Long> chargedCountsIds = new TreeMap<>();
+        private SortedMap<Integer, String> chargedCountsStrings = new TreeMap<>();
         
         public CaseFormDtoBuilder withId(Long id) {
             this.id = id;
@@ -185,23 +246,23 @@ public class CaseFormDto {
             return this;
         }
         
-        public CaseFormDtoBuilder withCaseStatus(CaseStatus caseStatus) {
-            this.caseStatus = caseStatus;
-            return this;
-        }
-        
-        public CaseFormDtoBuilder withDateOpened(LocalDate dateOpened) {
+        public CaseFormDtoBuilder withDateOpened(String dateOpened) {
             this.dateOpened = dateOpened;
             return this;
         }
         
-        public CaseFormDtoBuilder withDateClosed(LocalDate dateClosed) {
+        public CaseFormDtoBuilder withDateClosed(String dateClosed) {
             this.dateClosed = dateClosed;
             return this;
         }
         
         public CaseFormDtoBuilder withClientId(Long clientId) {
             this.clientId = clientId;
+            return this;
+        }
+        
+        public CaseFormDtoBuilder withClientName(String clientName) {
+            this.clientName = clientName;
             return this;
         }
         
@@ -220,9 +281,15 @@ public class CaseFormDto {
             return this;
         }
         
+        public CaseFormDtoBuilder withChargedCountsStrings(SortedMap<Integer, String> chargedCountsStrings) {
+            this.chargedCountsStrings = chargedCountsStrings;
+            return this;
+        }
+        
         public CaseFormDto build() {
-            return new CaseFormDto(id, caseNumber, caseStatus, dateOpened, dateClosed,
-                    clientId, judgeId, attorneyId, chargedCountsIds);
+            return new CaseFormDto(id, caseNumber, dateOpened, dateClosed,
+                    clientId, clientName, judgeId, attorneyId,
+                    chargedCountsIds, chargedCountsStrings);
         }
     }
 }

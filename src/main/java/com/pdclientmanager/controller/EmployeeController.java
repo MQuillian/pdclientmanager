@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,18 +17,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pdclientmanager.model.dto.AttorneyDto;
 import com.pdclientmanager.model.dto.AttorneyFormDto;
-import com.pdclientmanager.model.dto.AttorneyMinimalDto;
 import com.pdclientmanager.model.dto.CaseDto;
 import com.pdclientmanager.model.dto.InvestigatorDto;
 import com.pdclientmanager.model.dto.InvestigatorFormDto;
-import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
 import com.pdclientmanager.service.AttorneyService;
 import com.pdclientmanager.service.CaseService;
 import com.pdclientmanager.service.InvestigatorService;
-import com.pdclientmanager.util.AttorneyDtoEditor;
-import com.pdclientmanager.util.AttorneyMinimalDtoEditor;
-import com.pdclientmanager.util.InvestigatorDtoEditor;
-import com.pdclientmanager.util.InvestigatorMinimalDtoEditor;
 import com.pdclientmanager.util.mapper.AttorneyMapper;
 import com.pdclientmanager.util.mapper.InvestigatorMapper;
 
@@ -51,20 +43,8 @@ public class EmployeeController {
         this.caseService = caseService;
     }
     
-    @InitBinder 
-    public void initBinder(WebDataBinder b) {
-        b.registerCustomEditor(AttorneyDto.class,
-                new AttorneyDtoEditor(attorneyService));
-        b.registerCustomEditor(AttorneyMinimalDto.class,
-                new AttorneyMinimalDtoEditor(attorneyService));
-        b.registerCustomEditor(InvestigatorDto.class, 
-                new InvestigatorDtoEditor(investigatorService));
-        b.registerCustomEditor(InvestigatorMinimalDto.class,
-                new InvestigatorMinimalDtoEditor(investigatorService));
-    } 
-    
     @GetMapping("/employeeManagement")
-    public String employeeManagement(Model model) {
+    public String showEmployeeManagement(Model model) {
         model.addAttribute("activeAttorneys", attorneyService.findAllActive());
         model.addAttribute("activeInvestigators", investigatorService.findAllActive());
         return "employeeManagement";

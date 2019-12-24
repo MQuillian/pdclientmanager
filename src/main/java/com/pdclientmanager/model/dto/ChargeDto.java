@@ -15,6 +15,10 @@ public class ChargeDto {
         this.name = name;
         this.statute = statute;
     }
+    
+    public boolean isNew() {
+        return id == null;
+    }
 
     public Long getId() {
         return id;
@@ -38,6 +42,11 @@ public class ChargeDto {
 
     public void setStatute(String statute) {
         this.statute = statute;
+    }
+    
+    @Override
+    public String toString() {
+        return statute + " - " + name;
     }
 
     @Override

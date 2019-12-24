@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-11-26T21:25:21-0500",
+    date = "2020-01-18T23:05:09-0500",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -344,7 +344,6 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         case1.setId( caseMinimalDto.getId() );
         case1.setCaseNumber( caseMinimalDto.getCaseNumber() );
-        case1.setCaseStatus( caseMinimalDto.getCaseStatus() );
         case1.setDateOpened( caseMinimalDto.getDateOpened() );
         case1.setDateClosed( caseMinimalDto.getDateClosed() );
         case1.setChargedCounts( integerChargedCountDtoMapToIntegerChargedCountSortedMap( caseMinimalDto.getChargedCounts(), context ) );
@@ -441,7 +440,6 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         caseMinimalDto.setId( case1.getId() );
         caseMinimalDto.setCaseNumber( case1.getCaseNumber() );
-        caseMinimalDto.setCaseStatus( case1.getCaseStatus() );
         caseMinimalDto.setDateOpened( case1.getDateOpened() );
         caseMinimalDto.setDateClosed( case1.getDateClosed() );
         caseMinimalDto.setChargedCounts( integerChargedCountSortedMapToIntegerChargedCountDtoMap( case1.getChargedCounts() ) );

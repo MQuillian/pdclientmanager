@@ -1,5 +1,7 @@
 package com.pdclientmanager.controller;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,17 +22,13 @@ public class HomeController {
     
     @GetMapping("/")
     public String showHome() {
-        return "homePage";
+        throw new EntityNotFoundException();
+//        return "homePage";
     }
     
     @GetMapping("/searchPage")
     public String searchPage() {
         return "searchPage";
-    }
-    
-    @GetMapping("/caseManagement")
-    public String caseManagement() {
-        return "caseManagement";
     }
     
     @GetMapping("/individualStats")

@@ -1,50 +1,99 @@
 package com.pdclientmanager.controller;
 
-import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.pdclientmanager.model.dto.ChargeDto;
 import com.pdclientmanager.service.ChargeService;
-import com.pdclientmanager.util.CustomChargeDtoSerializer;
 
 @Controller
 public class ChargeController {
 
-    private ChargeService chargeService;
+private ChargeService chargeService;
     
     @Autowired
     public ChargeController(ChargeService chargeService) {
         this.chargeService = chargeService;
     }
     
-    @GetMapping("/charges/autocomplete_req")
-    public ResponseEntity<String> chargeTest(@RequestParam("q") final String input) {
-        List<ChargeDto> charges = chargeService.findByPartialNameOrStatute(input);
-
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = 
-                new SimpleModule("CustomChargeDtoSerializer", new Version(1, 0, 0, null, null, null));
-              module.addSerializer(ChargeDto.class, new CustomChargeDtoSerializer());
-              mapper.registerModule(module);
-        String resp = "";
-
-        try {
-            resp = mapper.writeValueAsString(charges);
-            System.out.println(resp);
-        } catch (JsonProcessingException e) {
-            
-        }
+    @GetMapping("/charges")
+    public String showChargeManagement() {
+        return "charges/chargeManagement";
+    }
+    
+    @GetMapping("/charges/add")
+    public String showNewChargeForm(Model model) {
+        model.addAttribute("chargeForm", new ChargeDto());
         
-        return new ResponseEntity<String>(resp, HttpStatus.OK);
+        return "charges/chargeForm";
+    }
+    
+    @PostMapping("/charges")
+    public String saveCharge(@ModelAttribute("chargeForm") @Valid ChargeDto chargeForm,
+            BindingResult result, Model model,
+            final RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()) {
+            return "charges/chargeForm";
+        } else {
+            Long entityId = chargeService.save(chargeForm);
+            
+            redirectAttributes.addFlashAttribute("css", "success");
+            redirectAttributes.addFlashAttribute("msg", "Charge saved successfully!");
+            
+            return "redirect:/charges" + entityId;
+        }
+    }
+    
+    @GetMapping("/charges/list")
+    public String showAllCharges(Model model) {
+        model.addAttribute("chargeList", chargeService.findAll());
+        
+        return "charges/listCharges";
+    }
+    
+    @GetMapping("/charges/{id}")
+    public String showCharge(@PathVariable("id") Long targetId, Model model,
+            final RedirectAttributes redirectAttributes) {
+        ChargeDto charge = chargeService.findById(targetId);
+        
+        if(charge == null) {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", "Charge could not be found");
+            
+            return "redirect:/charges/list";
+        } else {
+            model.addAttribute("charge", charge);
+            
+            return "charges/showCharge";
+        }
+    }
+    
+    @GetMapping("/charges/{id}/update")
+    public String updateCharge(@PathVariable("id") Long targetId, Model model) {
+        ChargeDto chargeForm = chargeService.findById(targetId);
+        
+        model.addAttribute("chargeForm", chargeForm);
+            
+        return "charges/chargeForm";
+    }
+    
+    @PostMapping("/charges/{id}/delete")
+    public String deleteCharge(@PathVariable("id") Long targetId,
+            final RedirectAttributes redirectAttributes) {
+        chargeService.deleteById(targetId);
+        
+        redirectAttributes.addFlashAttribute("css", "success");
+        redirectAttributes.addFlashAttribute("msg", "Charge deleted successfully!");
+        
+        return "redirect:/charges/list";
     }
 }

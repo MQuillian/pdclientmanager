@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Case {
@@ -26,27 +28,29 @@ public class Case {
     @NotEmpty(message = "Case number")
     private String caseNumber;
     
-    @NotEmpty(message = "Case status")
-    private CaseStatus caseStatus;
-    
-    @NotEmpty(message = "Date opened")
+    @NotNull(message = "Date opened")
     private LocalDate dateOpened;
     
     private LocalDate dateClosed;
     
+    @NotNull
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "client", nullable = false)
     private Client client;
     
+    @NotNull
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "judge", nullable = false)
     private Judge judge;
     
+    @NotNull
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "attorney", nullable = false)
     private Attorney attorney;
     
-    @OneToMany(mappedBy = "courtCase")
+    @NotEmpty
+    @OneToMany(mappedBy = "courtCase", cascade = CascadeType.ALL,
+        orphanRemoval = true)
     @MapKey(name = "countNumber")
     @OrderBy("countNumber ASC")
     private SortedMap<Integer, ChargedCount> chargedCounts;
@@ -55,12 +59,10 @@ public class Case {
         
     }
 
-    public Case(Long id, String caseNumber, 
-            CaseStatus caseStatus, LocalDate dateOpened, LocalDate dateClosed,
+    public Case(Long id, String caseNumber, LocalDate dateOpened, LocalDate dateClosed,
             Client client, Judge judge, Attorney attorney, SortedMap<Integer, ChargedCount> chargedCounts) {
         this.id = id;
         this.caseNumber = caseNumber;
-        this.caseStatus = caseStatus;
         this.dateOpened = dateOpened;
         this.dateClosed = dateClosed;
         this.client = client;
@@ -71,6 +73,12 @@ public class Case {
     
     public void addChargedCount(ChargedCount chargedCount) {
         this.chargedCounts.put(chargedCount.getCountNumber(), chargedCount);
+        chargedCount.setCourtCase(this);
+    }
+    
+    public void removeChargedCount(ChargedCount chargedCount) {
+        this.chargedCounts.remove(chargedCount.getCountNumber());
+        chargedCount.setCourtCase(null);
     }
     
     public Long getId() {
@@ -87,14 +95,6 @@ public class Case {
 
     public void setCaseNumber(String caseNumber) {
         this.caseNumber = caseNumber;
-    }
-
-    public CaseStatus getCaseStatus() {
-        return caseStatus;
-    }
-
-    public void setCaseStatus(CaseStatus status) {
-        this.caseStatus = status;
     }
 
     public LocalDate getDateOpened() {
@@ -180,7 +180,6 @@ public class Case {
         
         Long id = 1L;
         String caseNumber = "00J000000";
-        CaseStatus caseStatus = CaseStatus.OPEN;
         LocalDate dateOpened = LocalDate.of(2000, 1, 1);
         LocalDate dateClosed = null;
         Client client = new Client();
@@ -195,11 +194,6 @@ public class Case {
         
         public CaseBuilder withCaseNumber(String caseNumber) {
             this.caseNumber = caseNumber;
-            return this;
-        }
-        
-        public CaseBuilder withCaseStatus(CaseStatus caseStatus) {
-            this.caseStatus = caseStatus;
             return this;
         }
         
@@ -234,7 +228,7 @@ public class Case {
         }
         
         public Case build() {
-            return new Case(id, caseNumber, caseStatus, dateOpened, dateClosed,
+            return new Case(id, caseNumber, dateOpened, dateClosed,
                     client, judge, attorney, chargedCounts);
         }
     }

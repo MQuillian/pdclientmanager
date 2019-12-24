@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -28,7 +29,7 @@ public class ClientMapperTest {
     
     @Autowired
     @InjectMocks
-    ClientMapper mapper;
+    private ClientMapper mapper;
     
     @Mock
     private CaseResolver resolver;
@@ -40,6 +41,8 @@ public class ClientMapperTest {
     
     @BeforeEach
     public void setUp() {
+        
+        MockitoAnnotations.initMocks(this);
         
         client = new Client.ClientBuilder().build();
         

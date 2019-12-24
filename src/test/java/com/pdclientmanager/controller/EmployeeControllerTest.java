@@ -417,14 +417,14 @@ public class EmployeeControllerTest {
     @Test
     public void showUpdateInvestigatorForm_WhenValidRequest_ShouldRenderUpdateInvestigatorForm() throws Exception {
         
-        when(investigatorServiceMock.findById(1L))
-        .thenReturn(activeInvestigatorDto);
+        when(investigatorServiceMock.findFormById(1L))
+        .thenReturn(investigatorFormDto);
     
         mockMvc.perform(get("/investigators/1/update"))
             .andExpect(status().isOk())
             .andExpect(view().name("investigators/investigatorForm"))
             .andExpect(forwardedUrl("/WEB-INF/views/investigators/investigatorForm.jsp"))
-            .andExpect(model().attribute("investigatorForm", samePropertyValuesAs(activeInvestigatorDto)));
+            .andExpect(model().attribute("investigatorForm", samePropertyValuesAs(investigatorFormDto)));
     }
     
     @Test

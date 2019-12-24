@@ -26,7 +26,7 @@
 	<c:forEach items="${investigatorList}" var="investigator">
 		<tr>
 			<td>${investigator.name}</td>
-			<td>${investigator.workingStatus}</td>
+			<td>${investigator.workingStatus.displayText}</td>
 			<td>
 				<div class="btn-group" role="group">
 					<spring:url value="/investigators/${investigator.id}" var="investigatorUrl" />

@@ -54,7 +54,7 @@ public class InvestigatorMapperTest {
         investigatorDto = new InvestigatorDto.InvestigatorDtoBuilder().build();
         
         investigatorFormDto = new InvestigatorFormDto.InvestigatorFormDtoBuilder().build();
-        investigatorFormDto.getAssignedAttorneyIds().add(1L);
+        investigatorFormDto.getAssignedAttorneysIds().add(1L);
         
     }
     
@@ -100,9 +100,9 @@ public class InvestigatorMapperTest {
     
         assertThat(entity.getId()).isEqualTo(investigatorFormDto.getId());
         assertThat(entity.getName()).isEqualTo(investigatorFormDto.getName());
-        assertThat(entity.getAssignedAttorneys().size()).isEqualTo(investigatorFormDto.getAssignedAttorneyIds().size());
+        assertThat(entity.getAssignedAttorneys().size()).isEqualTo(investigatorFormDto.getAssignedAttorneysIds().size());
         assertThat(entity.getAssignedAttorneys().get(0).getId())
-            .isEqualTo(investigatorFormDto.getAssignedAttorneyIds().get(0));
+            .isEqualTo(investigatorFormDto.getAssignedAttorneysIds().get(0));
     }
     
     @Test
@@ -115,9 +115,9 @@ public class InvestigatorMapperTest {
         
         assertThat(formDto.getId()).isEqualTo(investigator.getId());
         assertThat(formDto.getName()).isEqualTo(investigator.getName());
-        assertThat(formDto.getAssignedAttorneyIds().size())
+        assertThat(formDto.getAssignedAttorneysIds().size())
             .isEqualTo(investigator.getAssignedAttorneys().size());
-        assertThat(formDto.getAssignedAttorneyIds().get(0))
+        assertThat(formDto.getAssignedAttorneysIds().get(0))
             .isEqualTo(investigator.getAssignedAttorneys().get(0).getId());
     }
     

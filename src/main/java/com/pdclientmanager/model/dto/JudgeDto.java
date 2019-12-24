@@ -17,6 +17,10 @@ public class JudgeDto {
         this.name = name;
         this.workingStatus = workingStatus;
     }
+    
+    public boolean isNew() {
+        return id == null;
+    }
 
     public Long getId() {
         return id;

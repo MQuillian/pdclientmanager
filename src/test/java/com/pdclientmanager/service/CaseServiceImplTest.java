@@ -86,14 +86,13 @@ public class CaseServiceImplTest {
         caseFormDto = new CaseFormDto.CaseFormDtoBuilder()
                 .withId(1L)
                 .withCaseNumber("00J0001")
-                .withCaseStatus(CaseStatus.OPEN)
-                .withDateOpened(LocalDate.of(2000, 01, 01))
-                .withDateClosed(null)
+                .withDateOpened("01/01/2000")
+                .withDateClosed("")
                 .withClientId(1L)
                 .withJudgeId(1L)
                 .withAttorneyId(1L)
                 .build();
-        caseFormDto.addChargedCountId(1, 1L);
+        caseFormDto.addChargedCount(1, 1L);
         
         courtCase = new Case.CaseBuilder()
                 .withId(1L)

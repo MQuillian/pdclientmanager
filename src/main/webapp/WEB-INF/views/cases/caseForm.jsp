@@ -1,4 +1,7 @@
 <%@ include file="../header.jsp" %>
+
+<fmt:setBundle basename="/pdclientmanager/src/main/resources/messages.properties" var="lang"/>
+
 <div class="container">
 
 <c:choose>
@@ -10,36 +13,107 @@
 	</c:otherwise>
 </c:choose>
 <hr />
-<a href="${contextPath}/caseManagement">Return to Case Management</a>
+<a href="${contextPath}/cases">Return to Case Management</a>
 <hr />
 
 <spring:url value="/cases" var="caseActionUrl" />
 
-<form class="form-horizontal" method="post" action="${caseActionUrl}">
+<form:form class="form-horizontal" modelAttribute="caseForm" method="post" action="${caseActionUrl}">
+    
+    <fmt:bundle basename="messages">
+    
+    <form:input type="hidden" path="id" name="id" id="formId" />
+    
+    <div class="row">
+    	<form:errors cssClass="error"/>
+    </div>
+    
+    <div class="row">
+    	<label for="dateOpened">Date Opened: </label>
+    	<form:input type="text" path="dateOpened" name="dateOpened" id="dateOpened" />
+    	<form:errors path="dateOpened" cssClass="error"/>
+    </div>
+    
+    <div class="row">
+    	<label for="dateClosed">Date Closed: </label>
+    	<form:input type="text" path="dateClosed" name="dateClosed" id="dateClosed" />
+    	<form:errors path="dateClosed" cssClass="error" />
+    </div>
+    
+    <div class="row">
+    	<label for="caseNumber">Case Number: </label>
+    	<form:input type="text" path="caseNumber" name="caseNumber" id="caseNumber" />
+    	<form:errors path="caseNumber" cssClass="error"/>
+   	</div>
+    
+    <div class="row">
+    	<label for="clientId">Client Name: </label>
+    	<form:input type="text" path="clientName" id="clientName"/>
+    	<form:input type="hidden" path="clientId" id="clientHiddenField" />
+    	<form:errors path="clientId" cssClass="error"/>
+    </div>
+    
+    <div class="row">
+    	<label for="judgeId">Judge Name: </label>
+    	<form:select path="judgeId" id="judgeId" items="${activeJudges}"
+    		itemLabel="name" itemValue="id" />
+    	<form:errors path="judgeId" cssClass="error" />
+   	</div>
+   	
+   	<div class="row">
+   		<label for="attorneyId">Attorney Name: </label>
+   		<form:select path="attorneyId" id="attorneyId" items="${activeAttorneys}"
+   			itemLabel="name" itemValue="id" />
+   		<form:errors path="attorneyId" cssClass="error" />
+ 	</div>
 	
-		<div class="row">
-	        <div class="large-8 large-offset-2 columns">
-	            <h2>This is the table</h2>
-                    <table id="myTable" class="hover large-12 columns">
-                      <thead>
-                        <tr>
-                          <th>Charged Counts</th>
-                        </tr>
-                      </thead>
-                      <tbody id="bannerTable">
-                      </tbody>
-                    </table>
-	        </div>    
-	    </div>       
-	      
-	    <div class="row">
-	        <div class="large-4 large-offset-2 columns">
-	            <button type="button" class="button expanded" onclick="newRow()">Add new row</button>
-	        </div>
-	        <div class=" large-4 large-offeset-2 columns">
-	            <button type="button" class="button expanded" onclick="deleteRow()">Delete latest row</button>
-	        </div>
-	    </div>
+	<div class="row">
+        <div class="large-8 large-offset-2 columns">
+        	<form:errors path="chargedCountsIds" cssClass="error" />
+	            <table id="myTable" class="hover large-12 columns">
+	              <thead>
+	                <tr>
+	                  <th>Charged Counts</th>
+	                </tr>
+	              </thead>
+	              <tbody id="chargeTable">
+	              	<c:forEach items="${caseForm.chargedCountsIds}" var="chargedCount" varStatus="status">
+	              		<tr>
+	              			<td>
+	              				<c:set var="countNumber" value="${chargedCount.key}" />
+	              				<label for="count${countNumber}">Count ${countNumber}</label>
+	              				<input id="count${chargedCount.key}"
+	              					name="chargedCountsStrings[${countNumber}]" 
+	              					class="charge-input ui-autocomplete-input"
+	              					autocomplete="off"
+	              					value="${caseForm.chargedCountsStrings[countNumber]}">
+              					<input id="count${countNumber}hidden" type="hidden"
+              						name="chargedCountsIds[${countNumber}]"
+              						class="hidden-charge-input"
+              						value="${chargedCount.value}">
+           						<c:choose>
+	              					<c:when test="${chargedCount.value == null }">
+	              						<span id="count${countNumber}.errors" class="error">
+	              							<fmt:message key="NotEmpty.caseForm.chargedCountsIds" />
+	              						</span>
+	              					</c:when>
+	              				</c:choose>
+	              			</td>
+              			</tr>
+	              	</c:forEach>
+	              </tbody>
+	            </table>
+        </div>    
+    </div>       
+      
+    <div class="row">
+        <div class="large-4 large-offset-2 columns">
+            <button type="button" class="button expanded" onclick="newRow()">Add new row</button>
+        </div>
+        <div class=" large-4 large-offeset-2 columns">
+            <button type="button" class="button expanded" onclick="deleteRow()">Delete latest row</button>
+        </div>
+    </div>
 <br>
 	
 	<div class="form-group">
@@ -54,135 +128,15 @@
 			</c:choose>
 		</div>
 	</div>
-</form>
+	
+	<div>
+		<label>"${clientNameJson}"</label>
+	</div>
+	
+	</fmt:bundle>
+</form:form>
 
 </div>
 
-
-<script>
-	var options = {
-		source : function(request, response) {
-			$.ajax({
-				url : "${pageContext.request.contextPath}/charges/autocomplete_req",
-				dataType : "json",
-				data : {
-					q : request.term
-				},
-				success : function(data) {
-					//alert(data);
-					console.log(data);
-					response(data);
-				}
-			});
-		},
-		minLength : 4,
-		focus: function( event, ui ) {
-		      event.preventDefault();
-		      $(this).val(ui.item.label);
-	    },
-	    change: function (event, ui) {
-	        if (!ui.item) {
-	            this.value = '';
-	            var hiddenField = this.id + "hidden";
-	            $('#' + hiddenField).val('');
-	            $(this).after("<span id='" + this.id + "error' style='color:red'>Please enter a charge</span>");
-        	}
-	    },
-	    select: function( event, ui ) {
-		     event.preventDefault();
-		     $(this).val(ui.item.label);
-		     var hiddenField = this.id + "hidden";
-		     console.log(hiddenField + " - " + ui.item.value);
-		     $('#' + hiddenField).val(ui.item.value);
-		     var errorField = this.id + "error";
-		     document.getElementById(this.id + 'error').innerHTML = '';
-	    }
-	}
-	
-	$(function() {
-		$(".charge-input").autocomplete(options);
-	});
-
-	function newRow() {
-	    var table = document.getElementById("bannerTable");
-	    var row = table.insertRow(table.getElementsByTagName("tr").length);
-	    
-	    var cell1 = row.insertCell(0);    
-	    var label = document.createElement('LABEL');
-	    		label.htmlFor = "count" + table.getElementsByTagName("tr").length;
-	    		label.innerText = "Count " + table.getElementsByTagName("tr").length + ": ";
-	        cell1.appendChild(label); 
-
-	    var input = document.createElement('INPUT');
-	        input.id="count" + table.getElementsByTagName("tr").length;
-	        input.classList.add('charge-input');
-	        $(input).autocomplete(options);
-	        cell1.appendChild(input);
-	        
-        var chargeIdInput = document.createElement('INPUT');
-        	chargeIdInput.id = "count" + table.getElementsByTagName("tr").length + "hidden";
-        	chargeIdInput.type="hidden";
-        	chargeIdInput.classList.add('hidden-charge-input');
-        	cell1.appendChild(chargeIdInput);
-        	
-       	var errorField = document.createElement('DIV');
-        	errorField.id = "count" + table.getElementsByTagName("tr").length + "error";
-        	cell1.appendChild(errorField);
-	        
-	        console.log($( "#count" +table.getElementsByTagName("tr").length).autocomplete( "instance" ));
-	}
-	
-	//CREATE NEW BANNER - DELETE ROW
-	function deleteRow(){
-	    var table = document.getElementById("bannerTable");
-	    var rowCount = table.rows.length;
-	
-	    if(rowCount>1){            
-	        table.deleteRow(-1);
-	    }
-	}
-	
-	function validateForm() {
-		console.log("WE VALIDIN NOW BITCH");
-		$("form").find('.hidden-charge-input').each(function() {
-			console.log("CHECKING INPUT OF " + this.id);
-			if(this.value == "") {
-				alert("YOU DUN FUCKED UP A-ARON");
-				return false;
-			}
-			
-			return true;
-		});
-	}
-	
-	function createJson() {
-		var data = $('body').map(function() {
-			var obj = {};
-			
-			var charges = [];
-			$(this).find('.hidden-charge-input').each(function() {
-				charges.push(this.value);
-			});
-			
-			obj.charges = charges;
-			return obj;
-		}).get();
-		console.log(JSON.stringify(data));
-	}
-	
-	function handleSubmit() {
-		$(document).on('click', '#save', function(event) {
-			event.preventDefault();
-			if(validateForm()) {
-				createJson();
-			}
-			return false;
-		});
-	}
-	
-	(function(){
-		newRow();
-		handleSubmit();
-	})();
-</script>
+<script src="<spring:url value="/resources/js/caseFormScript.js" />"></script>
 <%@ include file="../footer.jsp" %>

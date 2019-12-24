@@ -6,12 +6,13 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.model.dto.CaseDto;
 import com.pdclientmanager.model.dto.CaseFormDto;
 import com.pdclientmanager.model.entity.Case;
-import com.pdclientmanager.model.entity.CaseStatus;
 import com.pdclientmanager.repository.CaseRepository;
 import com.pdclientmanager.util.mapper.CaseMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
@@ -60,12 +61,21 @@ public class CaseServiceImpl implements CaseService {
         List<CaseDto> dtoList = mapper.toCaseDtoList(repository.findAll());
         return dtoList;
     }
+    
+    @Override
+    @Transactional
+    public Page<CaseDto> findAll(Pageable pageRequest) {
+        Page<Case> casePage = repository.findAll(pageRequest);
+        Page<CaseDto> dtoPage = casePage.map(mapper::toCaseDto);
+
+        return dtoPage;
+    }
 
     @Override
     @Transactional
     public List<CaseDto> findAllOpen() {
         List<CaseDto> openDtoList = mapper.toCaseDtoList(
-                repository.findByCaseStatus(CaseStatus.OPEN));
+                repository.findByDateClosedIsNull());
         return openDtoList;
     }
     
@@ -73,7 +83,7 @@ public class CaseServiceImpl implements CaseService {
     @Transactional
     public List<CaseDto> findAllOpenWithAttorneyId(Long targetId) {
         List<CaseDto> openDtoList = mapper.toCaseDtoList(
-                repository.findByCaseStatusAndAttorney_Id(CaseStatus.OPEN, targetId));
+                repository.findByDateClosedIsNullAndAttorney_Id(targetId));
         return openDtoList;
     }
 

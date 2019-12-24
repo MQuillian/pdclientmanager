@@ -1,11 +1,18 @@
 package com.pdclientmanager.model.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import com.pdclientmanager.model.entity.CustodyStatus;
 
 public class ClientMinimalDto {
 
     private Long id;
+    
+    @NotEmpty
     private String name;
+    
+    @NotNull
     private CustodyStatus custodyStatus;
     
     public ClientMinimalDto() {
@@ -16,6 +23,10 @@ public class ClientMinimalDto {
         this.id = id;
         this.name = name;
         this.custodyStatus = custodyStatus;
+    }
+    
+    public boolean isNew() {
+        return id == null;
     }
 
     public Long getId() {

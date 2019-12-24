@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-11-26T21:25:15-0500",
+    date = "2020-01-18T23:17:54-0500",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class ChargedCountMapperImpl implements ChargedCountMapper {
 
     @Override
-    public ChargedCount toChargedCount(ChargedCountDto dto) {
+    public ChargedCount toChargedCountFromChargedCountDto(ChargedCountDto dto) {
         if ( dto == null ) {
             return null;
         }
@@ -34,45 +34,45 @@ public class ChargedCountMapperImpl implements ChargedCountMapper {
     }
 
     @Override
-    public ChargedCountDto toChargedCountDto(ChargedCount entity) {
+    public ChargedCountDto toChargedCountDtoFromChargedCount(ChargedCount entity) {
         if ( entity == null ) {
             return null;
         }
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setId( entity.getId() );
+        chargedCountDto.setCharge( chargeToChargeDto( entity.getCharge() ) );
         if ( entity.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( entity.getCountNumber() );
         }
-        chargedCountDto.setCharge( chargeToChargeDto( entity.getCharge() ) );
+        chargedCountDto.setId( entity.getId() );
 
         return chargedCountDto;
     }
 
     @Override
-    public List<ChargedCount> toChargedCountList(List<ChargedCountDto> dtos) {
+    public List<ChargedCount> toChargedCountListFromDtoList(List<ChargedCountDto> dtos) {
         if ( dtos == null ) {
             return null;
         }
 
         List<ChargedCount> list = new ArrayList<ChargedCount>( dtos.size() );
         for ( ChargedCountDto chargedCountDto : dtos ) {
-            list.add( toChargedCount( chargedCountDto ) );
+            list.add( toChargedCountFromChargedCountDto( chargedCountDto ) );
         }
 
         return list;
     }
 
     @Override
-    public List<ChargedCountDto> toChargedCountDtoList(List<ChargedCount> entities) {
+    public List<ChargedCountDto> toChargedCountDtoListFromEntityList(List<ChargedCount> entities) {
         if ( entities == null ) {
             return null;
         }
 
         List<ChargedCountDto> list = new ArrayList<ChargedCountDto>( entities.size() );
         for ( ChargedCount chargedCount : entities ) {
-            list.add( toChargedCountDto( chargedCount ) );
+            list.add( toChargedCountDtoFromChargedCount( chargedCount ) );
         }
 
         return list;

@@ -10,6 +10,7 @@ ${error.message}
 <br>
 ${error.debugMessage}
 <br>
+${error.stackTrace}
 
 
 <%@ include file = "footer.jsp" %>

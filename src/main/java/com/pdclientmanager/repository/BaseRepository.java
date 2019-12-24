@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 @NoRepositoryBean
-public interface BaseRepository<T> extends JpaRepository<T, Long> {
+public interface BaseRepository<T> extends PagingAndSortingRepository<T, Long> {
 
     // Wrapper for JpaRepository - selectively exposes only the below methods
     // Spring will create proxy instances for injected interfaces of this type

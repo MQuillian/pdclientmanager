@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.model.dto.AttorneyDto;
 import com.pdclientmanager.model.dto.AttorneyFormDto;
+import com.pdclientmanager.model.dto.AttorneyMinimalDto;
 import com.pdclientmanager.model.entity.Attorney;
 import com.pdclientmanager.model.entity.WorkingStatus;
 import com.pdclientmanager.repository.AttorneyRepository;
@@ -71,6 +72,14 @@ public class AttorneyServiceImpl implements AttorneyService {
         List<AttorneyDto> activeDtoList = mapper
                 .toAttorneyDtoList(repository.findByWorkingStatus(WorkingStatus.ACTIVE));
         return activeDtoList;
+    }
+    
+    @Override
+    @Transactional
+    public List<AttorneyMinimalDto> findAllActiveMinimalDtos() {
+        List<AttorneyMinimalDto> minimalDtoList = mapper
+                .toAttorneyMinimalDtoList(repository.findByWorkingStatus(WorkingStatus.ACTIVE));
+        return minimalDtoList;
     }
 
     @Override

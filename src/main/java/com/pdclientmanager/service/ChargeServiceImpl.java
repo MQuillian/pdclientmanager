@@ -40,19 +40,19 @@ public class ChargeServiceImpl implements ChargeService {
         ChargeDto dto = mapper.toChargeDto(entity);
         return dto;
     }
+    
+    @Override
+    @Transactional
+    public List<ChargeDto> findByNameOrStatute(String query) {
+        List<ChargeDto> dtoList = mapper.toChargeDtoList(repository.
+                findFirst10ByNameContainingOrStatuteContaining(query, query));
+        return dtoList;
+    }
 
     @Override
     @Transactional
     public List<ChargeDto> findAll() {
         List<ChargeDto> dtoList = mapper.toChargeDtoList(repository.findAll());
-        return dtoList;
-    }
-    
-    @Override
-    @Transactional
-    public List<ChargeDto> findByPartialNameOrStatute(String query) {
-        List<ChargeDto> dtoList = mapper.toChargeDtoList(repository
-                .findFirst10ByNameContainingOrStatuteContaining(query, query));
         return dtoList;
     }
 

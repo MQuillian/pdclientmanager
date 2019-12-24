@@ -4,13 +4,10 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.pdclientmanager.model.entity.CaseStatus;
-
 public class CaseDto {
 
     private Long id;
     private String caseNumber;
-    private CaseStatus caseStatus;
     private LocalDate dateOpened;
     private LocalDate dateClosed;
     private ClientMinimalDto client;
@@ -22,12 +19,11 @@ public class CaseDto {
         
     }
 
-    public CaseDto(Long id, String caseNumber, CaseStatus caseStatus, LocalDate dateOpened, LocalDate dateClosed,
+    public CaseDto(Long id, String caseNumber, LocalDate dateOpened, LocalDate dateClosed,
             ClientMinimalDto client, JudgeDto judge, AttorneyMinimalDto attorney,
             Map<Integer, ChargedCountDto> chargedCounts) {
         this.id = id;
         this.caseNumber = caseNumber;
-        this.caseStatus = caseStatus;
         this.dateOpened = dateOpened;
         this.dateClosed = dateClosed;
         this.client = client;
@@ -54,14 +50,6 @@ public class CaseDto {
 
     public void setCaseNumber(String caseNumber) {
         this.caseNumber = caseNumber;
-    }
-
-    public CaseStatus getCaseStatus() {
-        return caseStatus;
-    }
-
-    public void setCaseStatus(CaseStatus caseStatus) {
-        this.caseStatus = caseStatus;
     }
 
     public LocalDate getDateOpened() {
@@ -121,7 +109,6 @@ public class CaseDto {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((caseNumber == null) ? 0 : caseNumber.hashCode());
-        result = prime * result + ((caseStatus == null) ? 0 : caseStatus.hashCode());
         result = prime * result + ((chargedCounts == null) ? 0 : chargedCounts.hashCode());
         result = prime * result + ((dateClosed == null) ? 0 : dateClosed.hashCode());
         result = prime * result + ((dateOpened == null) ? 0 : dateOpened.hashCode());
@@ -142,8 +129,6 @@ public class CaseDto {
             if (other.caseNumber != null)
                 return false;
         } else if (!caseNumber.equals(other.caseNumber))
-            return false;
-        if (caseStatus != other.caseStatus)
             return false;
         if (chargedCounts == null) {
             if (other.chargedCounts != null)
@@ -172,7 +157,6 @@ public class CaseDto {
         
         private Long id = 1L;
         private String caseNumber = "00J000000";
-        private CaseStatus caseStatus = CaseStatus.OPEN;
         private LocalDate dateOpened = LocalDate.of(2000, 01, 01);
         private LocalDate dateClosed = null;
         private ClientMinimalDto client = new ClientMinimalDto.ClientMinimalDtoBuilder()
@@ -190,11 +174,6 @@ public class CaseDto {
         
         public CaseDtoBuilder withCaseNumber(String caseNumber) {
             this.caseNumber = caseNumber;
-            return this;
-        }
-        
-        public CaseDtoBuilder withCaseStatus(CaseStatus status) {
-            this.caseStatus = status;
             return this;
         }
         
@@ -229,7 +208,7 @@ public class CaseDto {
         }
         
         public CaseDto build() {
-            return new CaseDto(id, caseNumber, caseStatus, dateOpened, dateClosed, client,
+            return new CaseDto(id, caseNumber, dateOpened, dateClosed, client,
                     judge, attorney, chargedCounts);
         }
     }

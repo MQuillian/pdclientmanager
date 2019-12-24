@@ -37,7 +37,7 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Transactional
     public Long save(InvestigatorFormDto formDto) {
         if(!formDto.isNew()) {
-            removeUndesiredAttorneyAssignments(formDto);
+            removeUndesiredAttorneyAssignmentsIfUpdated(formDto);
         }
         Investigator entity = mapper.toInvestigatorFromInvestigatorFormDto(formDto, new CycleAvoidingMappingContext());
         investigatorRepository.save(entity);
@@ -81,26 +81,36 @@ public class InvestigatorServiceImpl implements InvestigatorService {
     @Transactional
     public void delete(InvestigatorDto dto) {
         Investigator entity = mapper.toInvestigator(dto, new CycleAvoidingMappingContext());
+        removeAttorneyAssignments(dto.getId());
         investigatorRepository.delete(entity);
     }
 
     @Override
     @Transactional
     public void deleteById(Long targetId) {
+        removeAttorneyAssignments(targetId);
         investigatorRepository.deleteById(targetId);
     }
     
     
-//    Helper method for severing previously existing investigator assignments 
-//      that have been deselected in the update investigatorForm.jsp
+//    Helper methods for severing previously existing investigator assignments 
+//      when updating/deleting investigators
     
-    private void removeUndesiredAttorneyAssignments(InvestigatorFormDto formDto) {
+    private void removeUndesiredAttorneyAssignmentsIfUpdated(InvestigatorFormDto formDto) {
         List<Attorney> prevAssignedAttorneys = attorneyRepository
                 .findByInvestigator_Id(formDto.getId());
         for(Attorney attorney : prevAssignedAttorneys) {
             if(!formDto.getAssignedAttorneysIds().contains(attorney.getId())) {
                 attorney.setInvestigator(null);
             }
+        }
+    }
+    
+    private void removeAttorneyAssignments(Long investigatorId) {
+        List<Attorney> prevAssignedAttorneys = attorneyRepository
+                .findByInvestigator_Id(investigatorId);
+        for(Attorney attorney : prevAssignedAttorneys) {
+            attorney.setInvestigator(null);
         }
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.model.dto.ClientDto;
-import com.pdclientmanager.model.dto.ClientFormDto;
+import com.pdclientmanager.model.dto.ClientMinimalDto;
 import com.pdclientmanager.model.entity.Client;
 import com.pdclientmanager.repository.ClientRepository;
 import com.pdclientmanager.util.mapper.ClientMapper;
@@ -29,8 +29,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public Long save(ClientFormDto formDto) {
-        Client entity = mapper.toClientFromClientFormDto(formDto, new CycleAvoidingMappingContext());
+    public Long save(ClientMinimalDto formDto) {
+        Client entity = mapper.toClientFromClientMinimalDto(formDto, new CycleAvoidingMappingContext());
         repository.save(entity);
         return entity.getId();
     }
@@ -45,10 +45,18 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public ClientFormDto findFormById(Long targetId) {
+    public ClientMinimalDto findFormById(Long targetId) {
         Client entity = repository.findById(targetId).orElseThrow(EntityNotFoundException::new);
-        ClientFormDto formDto = mapper.toClientFormDtoFromClient(entity);
+        ClientMinimalDto formDto = mapper.toClientMinimalDto(entity);
         return formDto;
+    }
+    
+    @Override
+    @Transactional
+    public List<ClientDto> findByName(String query) {
+        List<ClientDto> dtoList = mapper.toClientDtoList(repository.
+                findFirst10ByNameContaining(query));
+        return dtoList;
     }
 
     @Override

@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `cases` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `case_number` VARCHAR(45) UNIQUE NOT NULL,
   `client` INT(11) NOT NULL,
-  `case_status` INT(4) NOT NULL DEFAULT '0',
   `date_opened` DATE NOT NULL,
   `date_closed` DATE,
   `judge` INT(11) NOT NULL,
@@ -115,20 +114,18 @@ DROP TABLE IF EXISTS `charged_counts` ;
 CREATE TABLE IF NOT EXISTS `charged_counts` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `count_number` INT(11) NOT NULL,
-  `court_case` INT(11) NOT NULL,
   `charge` INT(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `count_number` (`count_number`, `court_case`),
-  INDEX `court_case` (`court_case` ASC),
+  `court_case` INT(11) NOT NULL,
   INDEX `charge` (`charge` ASC),
+  PRIMARY KEY (`id`),
   CONSTRAINT `counts_ibfk_1`
-    FOREIGN KEY (`court_case`)
-    REFERENCES `cases` (`id`)
+    FOREIGN KEY (`charge`)
+    REFERENCES `charges` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `counts_ibfk_2`
-    FOREIGN KEY (`charge`)
-    REFERENCES `charges` (`id`)
+	FOREIGN KEY (`court_case`)
+    REFERENCES `cases` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB

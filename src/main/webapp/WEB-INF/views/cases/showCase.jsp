@@ -13,7 +13,7 @@
 
 <h1>Case Details</h1>
 <hr />
-<a href="${contextPath}/caseManagement">Return to Case Management</a>
+<a href="${contextPath}/cases">Return to Case Management</a>
 <hr />
 
 <div class="row">
@@ -30,15 +30,18 @@
 </div>
 
 <div class="row">
-	<label class="col-sm-2">Case Status</label>
-	<div class="col-sm-10">${courtCase.caseStatus}</div>
-</div>
-
-<div class="row">
 	<label class="col-sm-2">Attorney</label>
 	<spring:url value="/attorneys/${courtCase.attorney.id}" var="attorneyUrl" />
 	<div class="col-sm-10">
 		<a href="${attorneyUrl}">${courtCase.attorney.name}</a>
+	</div>
+</div>
+
+<div class="row">
+	<label class="col-sm-2">Judge</label>
+	<spring:url value="/judges/${courtCase.judge.id}" var="judgeUrl" />
+	<div class="col-sm-10">
+		<a href="${judgeUrl}">${courtCase.judge.name}</a>
 	</div>
 </div>
 

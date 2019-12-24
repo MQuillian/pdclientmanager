@@ -9,10 +9,10 @@ public interface ChargeService {
     Long save(final ChargeDto dto);
     
     ChargeDto findById(final Long targetId);
+    
+    List<ChargeDto> findByNameOrStatute(String query);
         
     List<ChargeDto> findAll();
-    
-    List<ChargeDto> findByPartialNameOrStatute(String query);
     
     void delete(final ChargeDto dto);
     

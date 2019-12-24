@@ -1,12 +1,20 @@
 package com.pdclientmanager.model.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import com.pdclientmanager.model.entity.WorkingStatus;
 
 public class AttorneyFormDto {
 
     private Long id;
+    
+    @NotEmpty
     private String name;
+    
+    @NotNull
     private WorkingStatus workingStatus;
+    
     private Long investigatorId;
     
     public AttorneyFormDto() {

@@ -1,7 +1,5 @@
 package com.pdclientmanager.model.dto;
 
-import com.pdclientmanager.model.dto.ChargedCountDto.ChargedCountDtoBuilder;
-
 public class ChargedCountMinimalDto {
     
     private Long id;

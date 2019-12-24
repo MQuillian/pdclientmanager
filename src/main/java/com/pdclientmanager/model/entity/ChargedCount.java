@@ -1,6 +1,7 @@
 package com.pdclientmanager.model.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,16 +21,15 @@ public class ChargedCount {
     @JoinColumn(name = "charge")
     private Charge charge;
     
-    @ManyToOne
-    @JoinColumn(name = "court_case", insertable = false, updatable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "court_case")
     private Case courtCase;
     
     public ChargedCount() {
         
     }
 
-    public ChargedCount(Long id, Integer countNumber, Charge charge, Case courtCase) {
-        this.id = id;
+    public ChargedCount(Integer countNumber, Charge charge, Case courtCase) {
         this.countNumber = countNumber;
         this.charge = charge;
         this.courtCase = courtCase;
@@ -42,7 +42,7 @@ public class ChargedCount {
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     public Integer getCountNumber() {
         return countNumber;
     }
@@ -62,22 +62,16 @@ public class ChargedCount {
     public Case getCourtCase() {
         return courtCase;
     }
-
+    
     public void setCourtCase(Case courtCase) {
         this.courtCase = courtCase;
     }
     
     public static class ChargedCountBuilder {
         
-        Long id = 1L;
         Integer countNumber = 1;
         Charge charge = new Charge();
         Case courtCase = new Case();
-        
-        public ChargedCountBuilder withId(Long id) {
-            this.id = id;
-            return this;
-        }
         
         public ChargedCountBuilder withCountNumber(Integer countNumber) {
             this.countNumber = countNumber;
@@ -89,13 +83,13 @@ public class ChargedCount {
             return this;
         }
         
-        public ChargedCountBuilder withCourtCase(Case courtCase) {
+        public ChargedCountBuilder withCase(Case courtCase) {
             this.courtCase = courtCase;
             return this;
         }
         
         public ChargedCount build() {
-            return new ChargedCount(id, countNumber, charge, courtCase);
+            return new ChargedCount(countNumber, charge, courtCase);
         }
     }
 }
