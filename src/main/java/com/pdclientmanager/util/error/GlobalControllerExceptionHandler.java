@@ -29,17 +29,7 @@ public class GlobalControllerExceptionHandler {
     
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ModelAndView handleEntityNotFound(HttpServletRequest req, EntityNotFoundException ex) {
-        System.out.println(warningLogger.getName() + " = " + warningLogger.getLevel() + " - " + warningLogger.isInfoEnabled());
-        System.out.println(debugLogger.getName() + " = " + debugLogger.getLevel() + " - " + debugLogger.isInfoEnabled());
-        System.out.println(infoLogger.getName() + " = " + infoLogger.getLevel() + " - " + infoLogger.isWarnEnabled() + " - " + infoLogger.isDebugEnabled());
-        debugLogger.warn("This better not show up");
-        debugLogger.info("This better not show up");
-        debugLogger.debug("Better be there");
-        debugLogger.trace("This is a trace");
-        infoLogger.warn("This better not show up");
-        infoLogger.info("Better be there");
-        infoLogger.debug("This better not show up");
-        warningLogger.warn("Entity could not be found");
+        warningLogger.warn("Entity could not be found", ex);
         ApiError error = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Oops! The entity you are searching for could not be found", ex);
         return createDefaultErrorModelAndView(error, req);
     }

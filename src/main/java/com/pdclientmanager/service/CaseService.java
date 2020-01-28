@@ -24,6 +24,8 @@ public interface CaseService {
     
     List<CaseDto> findAllOpenWithAttorneyId(final Long targetId);
     
+    Page<CaseDto> findAllWithClientName(Pageable pageRequest, final String clientName);
+    
     void delete(final CaseDto dto);
     
     void deleteById(final Long targetId);

@@ -1,7 +1,5 @@
 <%@ include file="../header.jsp" %>
 
-<div class="container">
-
 <c:choose>
 	<c:when test="${attorneyForm['new']}">
 		<h1>Add Attorney</h1>
@@ -10,6 +8,7 @@
 		<h1>Update Attorney</h1>
 	</c:otherwise>
 </c:choose>
+
 <hr />
 <a href="${contextPath}/employeeManagement">Return to Employee Management</a>
 <hr />
@@ -74,5 +73,4 @@
 	</div>
 </form:form>
 
-</div>
 <%@ include file="../footer.jsp" %>

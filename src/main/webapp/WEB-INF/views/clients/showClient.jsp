@@ -1,16 +1,5 @@
 <%@ include file="../header.jsp" %>
 
-<div class="container">
-
-<c:if test="${not empty msg}">
-	<div class="alert alert-${css} alert-dismissible" role="alert">
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-			<span aria-hidden="true">x</span>
-		</button>
-		<strong>${msg}</strong>
-	</div>
-</c:if>
-
 <h1>Client Details</h1>
 <hr />
 <a href="${contextPath}/clients">Return to Client Management</a>
@@ -49,4 +38,4 @@
 	</table>
 </div>
 	
-</div>
+<%@ include file="../footer.jsp" %>

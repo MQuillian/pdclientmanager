@@ -2,8 +2,6 @@
 
 <fmt:setBundle basename="/pdclientmanager/src/main/resources/messages.properties" var="lang"/>
 
-<div class="container">
-
 <c:choose>
 	<c:when test="${caseForm['new']}">
 		<h1>Add Case</h1>
@@ -135,8 +133,6 @@
 	
 	</fmt:bundle>
 </form:form>
-
-</div>
 
 <script src="<spring:url value="/resources/js/caseFormScript.js" />"></script>
 <%@ include file="../footer.jsp" %>

@@ -86,6 +86,14 @@ public class CaseServiceImpl implements CaseService {
                 repository.findByDateClosedIsNullAndAttorney_Id(targetId));
         return openDtoList;
     }
+    
+    @Override
+    @Transactional
+    public Page<CaseDto> findAllWithClientName(Pageable pageRequest, String clientName) {
+        Page<Case> casePage = repository.findByClient_NameContaining(pageRequest, clientName);
+        Page<CaseDto> dtoPage = casePage.map(mapper::toCaseDto);
+        return dtoPage;
+    }
 
     @Override
     @Transactional

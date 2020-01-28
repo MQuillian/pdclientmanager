@@ -2,6 +2,7 @@ package com.pdclientmanager.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,6 +27,7 @@ import com.pdclientmanager.model.dto.JudgeDto;
 import com.pdclientmanager.service.AttorneyService;
 import com.pdclientmanager.service.CaseService;
 import com.pdclientmanager.service.JudgeService;
+import com.pdclientmanager.util.ControllerUtils;
 
 @Controller
 public class CaseController {
@@ -84,7 +87,7 @@ public class CaseController {
     }
     
     @GetMapping("/cases/list")
-    public String showAllCases(@PageableDefault(page = 0, sort = {"client.name", "caseNumber"})
+    public String showAllCases(@PageableDefault(page = 0, sort = {"dateClosed", "client.name", "caseNumber"})
             Pageable pageRequest, Model model) {
         Page<CaseDto> dtoPage = caseService.findAll(pageRequest);
         
@@ -103,6 +106,25 @@ public class CaseController {
         model.addAttribute("courtCase", courtCase);
         
         return "cases/showCase";
+    }
+    
+    @GetMapping("/cases/list/searchResults")
+    public String showSearchedCases(@RequestParam("q") String searchTerm, 
+            @PageableDefault(page = 0, sort = {"dateClosed", "client.name", "caseNumber"})
+            Pageable pageRequest, HttpServletRequest request,
+            Model model, final RedirectAttributes redirectAttributes) {
+        if(searchTerm.length() <2) {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", "Please enter a search term 3 or more characters");
+            return ControllerUtils.getPreviousPage(request).orElse("/");
+        }
+        Page<CaseDto> dtoPage = caseService.findAllWithClientName(pageRequest, searchTerm);
+        model.addAttribute("cases", dtoPage.getContent());
+        model.addAttribute("page", dtoPage.getNumber());
+        model.addAttribute("totalPages", dtoPage.getTotalPages());
+        model.addAttribute("size", dtoPage.getSize());
+        
+        return "cases/listCases";
     }
     
     @GetMapping("/cases/{id}/update")

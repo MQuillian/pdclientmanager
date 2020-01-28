@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2020-01-18T23:17:54-0500",
+    date = "2020-01-24T18:10:47-0500",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -46,10 +46,10 @@ public class ClientMapperImpl implements ClientMapper {
 
         context.storeMappedInstance( dto, client );
 
-        client.setCases( caseMinimalDtoListToCaseList( dto.getCases(), context ) );
-        client.setCustodyStatus( dto.getCustodyStatus() );
         client.setId( dto.getId() );
         client.setName( dto.getName() );
+        client.setCustodyStatus( dto.getCustodyStatus() );
+        client.setCases( caseMinimalDtoListToCaseList( dto.getCases(), context ) );
 
         return client;
     }
@@ -62,10 +62,10 @@ public class ClientMapperImpl implements ClientMapper {
 
         ClientDto clientDto = new ClientDto();
 
-        clientDto.setCases( caseListToCaseMinimalDtoList( entity.getCases() ) );
-        clientDto.setCustodyStatus( entity.getCustodyStatus() );
         clientDto.setId( entity.getId() );
         clientDto.setName( entity.getName() );
+        clientDto.setCustodyStatus( entity.getCustodyStatus() );
+        clientDto.setCases( caseListToCaseMinimalDtoList( entity.getCases() ) );
 
         return clientDto;
     }
@@ -128,9 +128,9 @@ public class ClientMapperImpl implements ClientMapper {
 
         context.storeMappedInstance( dto, client );
 
-        client.setCustodyStatus( dto.getCustodyStatus() );
         client.setId( dto.getId() );
         client.setName( dto.getName() );
+        client.setCustodyStatus( dto.getCustodyStatus() );
 
         return client;
     }
@@ -292,11 +292,11 @@ public class ClientMapperImpl implements ClientMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
+        chargedCountDto.setId( chargedCount.getId() );
         if ( chargedCount.getCountNumber() != null ) {
             chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
         }
-        chargedCountDto.setId( chargedCount.getId() );
+        chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
 
         return chargedCountDto;
     }
@@ -426,10 +426,10 @@ public class ClientMapperImpl implements ClientMapper {
 
         Client client = new Client();
 
-        client.setCases( caseMinimalDtoListToCaseList1( clientDto.getCases() ) );
-        client.setCustodyStatus( clientDto.getCustodyStatus() );
         client.setId( clientDto.getId() );
         client.setName( clientDto.getName() );
+        client.setCustodyStatus( clientDto.getCustodyStatus() );
+        client.setCases( caseMinimalDtoListToCaseList1( clientDto.getCases() ) );
 
         return client;
     }
@@ -441,9 +441,9 @@ public class ClientMapperImpl implements ClientMapper {
 
         Client client = new Client();
 
-        client.setCustodyStatus( clientMinimalDto.getCustodyStatus() );
         client.setId( clientMinimalDto.getId() );
         client.setName( clientMinimalDto.getName() );
+        client.setCustodyStatus( clientMinimalDto.getCustodyStatus() );
 
         return client;
     }

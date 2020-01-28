@@ -1,16 +1,5 @@
 <%@ include file="../header.jsp" %>
 
-<div class="container">
-
-<c:if test="${not empty msg}">
-	<div class="alert alert-${css} alert-dismissible" role="alert">
-	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-		<span aria-hidden="true">x</span>
-	</button>
-	<strong>${msg}</strong>
-	</div>
-</c:if>
-
 <h1>Full Case List</h1>
 <hr />
 <a href="${contextPath}/cases">Return to Case Management</a>
@@ -61,8 +50,6 @@
 
 <hr>
 <div class="panel-footer" id="page-links-footer"></div>
-
-</div>
 
 <script>	
 	var size = ${size};

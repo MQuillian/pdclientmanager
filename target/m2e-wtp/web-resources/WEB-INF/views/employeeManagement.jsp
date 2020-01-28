@@ -1,7 +1,5 @@
 <%@ include file = "header.jsp" %>
 
-<div class="container" >
-
 <h1>Employee Management</h1>
 <hr>
 <a href="${contextPath}/">Return to Home</a>
@@ -37,6 +35,5 @@ Current investigators
 <br>
 	<a href="investigators/add">Add new investigator</a>
 	<a href="investigators">View all investigators</a>
-</div>
 
 <%@ include file = "footer.jsp" %>

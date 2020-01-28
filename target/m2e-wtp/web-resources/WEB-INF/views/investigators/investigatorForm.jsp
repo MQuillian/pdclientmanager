@@ -1,7 +1,5 @@
 <%@ include file="../header.jsp" %>
 
-<div class="container">
-
 <c:choose>
 	<c:when test="${investigatorForm['new']}">
 		<h1>Add Investigator</h1>
@@ -75,5 +73,4 @@
 	</div>
 </form:form>
 
-</div>
 <%@ include file="../footer.jsp" %>
