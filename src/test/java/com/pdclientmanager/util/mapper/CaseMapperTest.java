@@ -64,7 +64,6 @@ public class CaseMapperTest {
         
         assertThat(caseDto.getId()).isEqualTo(entity.getId());
         assertThat(caseDto.getCaseNumber()).isEqualTo(entity.getCaseNumber());
-        assertThat(caseDto.getCaseStatus()).isEqualTo(entity.getCaseStatus());
         assertThat(caseDto.getDateOpened()).isEqualTo(entity.getDateOpened());
         assertThat(caseDto.getDateClosed()).isEqualTo(entity.getDateClosed());
         assertThat(caseDto.getClient().getId()).isEqualTo(entity.getClient().getId());
@@ -83,7 +82,6 @@ public class CaseMapperTest {
                 
         assertThat(courtCase.getId()).isEqualTo(dto.getId());
         assertThat(courtCase.getCaseNumber()).isEqualTo(dto.getCaseNumber());
-        assertThat(courtCase.getCaseStatus()).isEqualTo(dto.getCaseStatus());
         assertThat(courtCase.getDateOpened()).isEqualTo(dto.getDateOpened());
         assertThat(courtCase.getDateClosed()).isEqualTo(dto.getDateClosed());
         assertThat(courtCase.getClient().getId()).isEqualTo(dto.getClient().getId());
@@ -105,7 +103,6 @@ public class CaseMapperTest {
         
         assertThat(courtCase.getId()).isEqualTo(minimalDto.getId());
         assertThat(courtCase.getCaseNumber()).isEqualTo(minimalDto.getCaseNumber());
-        assertThat(courtCase.getCaseStatus()).isEqualTo(minimalDto.getCaseStatus());
         assertThat(courtCase.getDateOpened()).isEqualTo(minimalDto.getDateOpened());
         assertThat(courtCase.getDateClosed()).isEqualTo(minimalDto.getDateClosed());
         assertThat(courtCase.getChargedCounts().size())

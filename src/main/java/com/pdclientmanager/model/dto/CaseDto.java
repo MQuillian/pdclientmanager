@@ -105,6 +105,13 @@ public class CaseDto {
     }
 
     @Override
+    public String toString() {
+        return "CaseDto [id=" + id + ", caseNumber=" + caseNumber + ", dateOpened=" + dateOpened + ", dateClosed="
+                + dateClosed + ", client=" + client + ", judge=" + judge + ", attorney=" + attorney + ", chargedCounts="
+                + chargedCounts + "]";
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

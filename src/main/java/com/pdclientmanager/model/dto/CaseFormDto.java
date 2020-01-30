@@ -67,9 +67,9 @@ public class CaseFormDto {
     }
     
     public void addChargedCount(ChargedCount chargedCount) {
-        this.chargedCountsIds.put(chargedCount.getCountNumber(),
+        this.chargedCountsIds.put(chargedCount.getId().getCountNumber(),
                 chargedCount.getCharge().getId());
-        this.chargedCountsStrings.put(chargedCount.getCountNumber(),
+        this.chargedCountsStrings.put(chargedCount.getId().getCountNumber(),
                 chargedCount.getCharge().toString());
     }
     
@@ -79,9 +79,9 @@ public class CaseFormDto {
     }
     
     public void removeChargedCount(ChargedCount chargedCount) {
-        this.chargedCountsIds.remove(chargedCount.getCountNumber(),
+        this.chargedCountsIds.remove(chargedCount.getId().getCountNumber(),
                 chargedCount.getCharge().getId());
-        this.chargedCountsStrings.remove(chargedCount.getCountNumber(),
+        this.chargedCountsStrings.remove(chargedCount.getId().getCountNumber(),
                 chargedCount.getCharge().toString());
     }
     

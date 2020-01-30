@@ -30,7 +30,7 @@ public class ChargedCountMapperTest {
                 .withCharge(new ChargeDto.ChargeDtoBuilder().build())
                 .build();
         
-        ChargedCount entity = chargedCountMapper.toChargedCount(dto);
+        ChargedCount entity = chargedCountMapper.toChargedCountFromChargedCountDto(dto);
                 
         assertThat(dto.getId()).isEqualTo(entity.getId());
         assertThat(dto.getCountNumber()).isEqualTo(entity.getCountNumber());
@@ -44,7 +44,7 @@ public class ChargedCountMapperTest {
                 .withCharge(new Charge.ChargeBuilder().build())
                 .build();
         
-        ChargedCountDto dto = chargedCountMapper.toChargedCountDto(entity);
+        ChargedCountDto dto = chargedCountMapper.toChargedCountDtoFromChargedCount(entity);
         
         assertThat(dto.getId()).isEqualTo(entity.getId());
         assertThat(dto.getCountNumber()).isEqualTo(entity.getCountNumber());

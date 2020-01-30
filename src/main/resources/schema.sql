@@ -112,12 +112,11 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `charged_counts` ;
 
 CREATE TABLE IF NOT EXISTS `charged_counts` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `count_number` INT(11) NOT NULL,
   `charge` INT(11) NOT NULL,
   `court_case` INT(11) NOT NULL,
-  INDEX `charge` (`charge` ASC),
-  PRIMARY KEY (`id`),
+  INDEX `court_case` (`court_case` ASC),
+  PRIMARY KEY (`count_number`, `court_case`),
   CONSTRAINT `counts_ibfk_1`
     FOREIGN KEY (`charge`)
     REFERENCES `charges` (`id`)

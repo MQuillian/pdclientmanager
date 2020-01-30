@@ -4,6 +4,7 @@ import com.pdclientmanager.model.dto.ChargeDto;
 import com.pdclientmanager.model.dto.ChargedCountDto;
 import com.pdclientmanager.model.entity.Charge;
 import com.pdclientmanager.model.entity.ChargedCount;
+import com.pdclientmanager.model.entity.ChargedCountId;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2020-01-24T18:10:42-0500",
+    date = "2020-01-29T13:58:59-0500",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -26,8 +27,6 @@ public class ChargedCountMapperImpl implements ChargedCountMapper {
 
         ChargedCount chargedCount = new ChargedCount();
 
-        chargedCount.setId( dto.getId() );
-        chargedCount.setCountNumber( dto.getCountNumber() );
         chargedCount.setCharge( chargeDtoToCharge( dto.getCharge() ) );
 
         return chargedCount;
@@ -41,9 +40,9 @@ public class ChargedCountMapperImpl implements ChargedCountMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setId( entity.getId() );
-        if ( entity.getCountNumber() != null ) {
-            chargedCountDto.setCountNumber( entity.getCountNumber() );
+        Integer countNumber = entityIdCountNumber( entity );
+        if ( countNumber != null ) {
+            chargedCountDto.setCountNumber( countNumber );
         }
         chargedCountDto.setCharge( chargeToChargeDto( entity.getCharge() ) );
 
@@ -90,6 +89,21 @@ public class ChargedCountMapperImpl implements ChargedCountMapper {
         charge.setStatute( chargeDto.getStatute() );
 
         return charge;
+    }
+
+    private Integer entityIdCountNumber(ChargedCount chargedCount) {
+        if ( chargedCount == null ) {
+            return null;
+        }
+        ChargedCountId id = chargedCount.getId();
+        if ( id == null ) {
+            return null;
+        }
+        Integer countNumber = id.getCountNumber();
+        if ( countNumber == null ) {
+            return null;
+        }
+        return countNumber;
     }
 
     protected ChargeDto chargeToChargeDto(Charge charge) {

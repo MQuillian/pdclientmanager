@@ -42,7 +42,9 @@ public class CaseServiceImpl implements CaseService {
     public CaseDto findById(Long targetId) {
         Case entity = repository.findById(targetId)
                 .orElseThrow(EntityNotFoundException::new);
+        //Problem is 100% mapper - use debug to walk bore down to method that does the mapping
         CaseDto dto = mapper.toCaseDto(entity);
+        System.out.println(dto);
         return dto;
     }
 

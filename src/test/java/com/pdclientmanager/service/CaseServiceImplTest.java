@@ -30,7 +30,6 @@ import com.pdclientmanager.model.dto.ClientMinimalDto;
 import com.pdclientmanager.model.dto.JudgeDto;
 import com.pdclientmanager.model.entity.Attorney;
 import com.pdclientmanager.model.entity.Case;
-import com.pdclientmanager.model.entity.CaseStatus;
 import com.pdclientmanager.model.entity.Charge;
 import com.pdclientmanager.model.entity.ChargedCount;
 import com.pdclientmanager.model.entity.Client;
@@ -67,7 +66,6 @@ public class CaseServiceImplTest {
         caseDto = new CaseDto.CaseDtoBuilder()
                 .withId(1L)
                 .withCaseNumber("00J0001")
-                .withCaseStatus(CaseStatus.OPEN)
                 .withDateOpened(LocalDate.of(2000, 01, 01))
                 .withDateClosed(null)
                 .withClient(new ClientMinimalDto.ClientMinimalDtoBuilder()
@@ -92,12 +90,11 @@ public class CaseServiceImplTest {
                 .withJudgeId(1L)
                 .withAttorneyId(1L)
                 .build();
-        caseFormDto.addChargedCount(1, 1L);
+        caseFormDto.addChargedCount(1, 1L, "Default");
         
         courtCase = new Case.CaseBuilder()
                 .withId(1L)
                 .withCaseNumber("00J0001")
-                .withCaseStatus(CaseStatus.OPEN)
                 .withDateOpened(LocalDate.of(2000, 01, 01))
                 .withDateClosed(null)
                 .withClient(new Client.ClientBuilder()
@@ -160,6 +157,14 @@ public class CaseServiceImplTest {
         when(repository.findAll()).thenReturn(caseList);
         
         List<CaseDto> listFromService = caseService.findAll();
+        
+        for(CaseDto courtCase : listFromService) {
+            System.out.println(courtCase.getChargedCounts().get(1));
+        }
+        System.out.println("Entity = " + caseList.get(0));
+        for(Case courtCase : caseList) {
+            System.out.println(courtCase.getChargedCounts().get(1));
+        }
         
         assertThat(listFromService.size()).isEqualTo(caseList.size());
         assertThat(listFromService.get(0).getId()).isEqualTo(caseList.get(0).getId());

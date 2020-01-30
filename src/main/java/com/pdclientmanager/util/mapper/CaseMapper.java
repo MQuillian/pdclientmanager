@@ -18,7 +18,7 @@ import com.pdclientmanager.model.entity.Case;
 import com.pdclientmanager.util.CustomDateTimeFormatter;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {ClientResolver.class, JudgeResolver.class, AttorneyResolver.class})
+    uses = {ClientResolver.class, JudgeResolver.class, AttorneyResolver.class, ChargedCountMapper.class})
 @DecoratedWith(CaseMapperDecorator.class)
 public interface CaseMapper {
     

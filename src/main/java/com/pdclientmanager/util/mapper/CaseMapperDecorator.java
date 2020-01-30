@@ -62,7 +62,7 @@ public class CaseMapperDecorator implements CaseMapper {
             Charge charge = chargeRepository.findById(entry.getValue())
                     .orElseThrow(EntityNotFoundException::new);
             
-            ChargedCount chargedCount = new ChargedCount(entry.getKey(), charge, null);
+            ChargedCount chargedCount = new ChargedCount(entry.getKey(), null, charge);
             
             entity.addChargedCount(chargedCount);
         }

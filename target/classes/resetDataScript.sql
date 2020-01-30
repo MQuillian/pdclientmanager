@@ -12,5 +12,5 @@ INSERT INTO cases VALUES (1, '18J1614', 1, '2018-7-16', NULL, 1, 1), (2, '18J141
 TRUNCATE TABLE charges;
 INSERT INTO charges VALUES (1, 'Simple battery', '16-5-23'), (2, 'Battery', '16-5-23.1'), (3, 'Theft by taking', '16-8-2'),(4, 'Driving while license suspended', '40-5-21'), (5, 'Possession of controlled substance', '16-13-30');
 TRUNCATE TABLE charged_counts;
-INSERT INTO charged_counts VALUES (1, 1, 1, 1), (2, 1, 3, 2), (3, 1, 4, 3), (4, 2, 5, 3), (5, 1, 3, 4), (6, 1, 2, 5), (7, 1, 4, 6), (8, 1, 1, 7), (9, 1, 5, 8), (10, 1, 2, 9), (11, 1, 1, 10), (12, 1, 3, 11), (13, 1, 5, 12);
+INSERT INTO charged_counts VALUES (1, 1, 1), (1, 3, 2), (1, 4, 3), (2, 5, 3), (1, 3, 4), (1, 2, 5), (1, 4, 6), (1, 1, 7), (1, 5, 8), (1, 2, 9), (1, 1, 10), (1, 3, 11), (1, 5, 12);
 SET FOREIGN_KEY_CHECKS = 1;

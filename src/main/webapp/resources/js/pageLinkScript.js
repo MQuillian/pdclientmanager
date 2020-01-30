@@ -1,8 +1,4 @@
 (function(){
-	console.log("Running pageLinkScript");
-	console.log(page);
-	console.log(totalPages);
-	console.log(size);
 	
 	var pageLinks = document.createElement("ul");
 	pageLinks.classList.add('pagination');

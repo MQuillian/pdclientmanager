@@ -1,8 +1,7 @@
 package com.pdclientmanager.model.dto;
 
 public class ChargedCountMinimalDto {
-    
-    private Long id;
+
     private int countNumber;
     private Long chargeId;
     
@@ -10,18 +9,9 @@ public class ChargedCountMinimalDto {
         
     }
 
-    public ChargedCountMinimalDto(Long id, int countNumber, Long chargeId) {
-        this.id = id;
+    public ChargedCountMinimalDto(int countNumber, Long chargeId) {
         this.countNumber = countNumber;
         this.chargeId = chargeId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getCountNumber() {
@@ -46,7 +36,6 @@ public class ChargedCountMinimalDto {
         int result = 1;
         result = prime * result + ((chargeId == null) ? 0 : chargeId.hashCode());
         result = prime * result + countNumber;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -66,24 +55,13 @@ public class ChargedCountMinimalDto {
             return false;
         if (countNumber != other.countNumber)
             return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
         return true;
     }
     
     public static class ChargedCountMinimalDtoBuilder {
         
-        private Long id = 1L;
         private Integer countNumber = 1;
         private Long chargeId = 1L;
-        
-        public ChargedCountMinimalDtoBuilder withId(Long id) {
-            this.id = id;
-            return this;
-        }
         
         public ChargedCountMinimalDtoBuilder withCountNumber(Integer countNumber) {
             this.countNumber = countNumber;
@@ -96,7 +74,7 @@ public class ChargedCountMinimalDto {
         }
         
         public ChargedCountMinimalDto build() {
-            return new ChargedCountMinimalDto(id, countNumber, chargeId);
+            return new ChargedCountMinimalDto(countNumber, chargeId);
         }
     }
 

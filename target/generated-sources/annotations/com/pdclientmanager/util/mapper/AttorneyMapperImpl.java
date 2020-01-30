@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2020-01-24T18:10:44-0500",
+    date = "2020-01-28T23:41:23-0500",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -298,8 +298,6 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         context.storeMappedInstance( chargedCountDto, chargedCount );
 
-        chargedCount.setId( chargedCountDto.getId() );
-        chargedCount.setCountNumber( chargedCountDto.getCountNumber() );
         chargedCount.setCharge( chargeDtoToCharge( chargedCountDto.getCharge(), context ) );
 
         return chargedCount;
@@ -406,10 +404,6 @@ public class AttorneyMapperImpl implements AttorneyMapper {
 
         ChargedCountDto chargedCountDto = new ChargedCountDto();
 
-        chargedCountDto.setId( chargedCount.getId() );
-        if ( chargedCount.getCountNumber() != null ) {
-            chargedCountDto.setCountNumber( chargedCount.getCountNumber() );
-        }
         chargedCountDto.setCharge( chargeToChargeDto( chargedCount.getCharge() ) );
 
         return chargedCountDto;

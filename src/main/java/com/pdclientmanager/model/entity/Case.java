@@ -49,10 +49,10 @@ public class Case {
     private Attorney attorney;
     
     @NotEmpty
-    @OneToMany(mappedBy = "courtCase", cascade = CascadeType.ALL,
+    @OneToMany(mappedBy = "id.courtCase", cascade = CascadeType.ALL,
         orphanRemoval = true)
-    @MapKey(name = "countNumber")
-    @OrderBy("countNumber ASC")
+    @MapKey(name = "id.countNumber")
+    @OrderBy("id.countNumber ASC")
     private SortedMap<Integer, ChargedCount> chargedCounts;
     
     public Case() {
@@ -72,13 +72,13 @@ public class Case {
     }
     
     public void addChargedCount(ChargedCount chargedCount) {
-        this.chargedCounts.put(chargedCount.getCountNumber(), chargedCount);
-        chargedCount.setCourtCase(this);
+        this.chargedCounts.put(chargedCount.getId().getCountNumber(), chargedCount);
+        chargedCount.getId().setCourtCase(this);
     }
     
     public void removeChargedCount(ChargedCount chargedCount) {
-        this.chargedCounts.remove(chargedCount.getCountNumber());
-        chargedCount.setCourtCase(null);
+        this.chargedCounts.remove(chargedCount.getId().getCountNumber());
+        chargedCount.getId().setCourtCase(null);
     }
     
     public Long getId() {
@@ -143,12 +143,6 @@ public class Case {
 
     public void setChargedCounts(SortedMap<Integer, ChargedCount> chargedCounts) {
         this.chargedCounts = chargedCounts;
-    }
-
-    @Override
-    public String toString() {
-        return "Case [id=" + id + ", caseNumber=" + caseNumber + ", client=" + client + ", judge=" + judge
-                + ", attorney=" + attorney + ", chargedCounts=" + chargedCounts + "]";
     }
 
     @Override
