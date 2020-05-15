@@ -26,7 +26,7 @@
         <jsp.version>2.3.3</jsp.version>
         <expression-language.version>3.0.0</expression-language.version>
         <glassfish.version>3.0.0</glassfish.version>
-        <jackson.version>2.9.9</jackson.version>
+        <jackson.version>2.11.0</jackson.version>
         <mapstruct.version>1.3.0.Final</mapstruct.version>
         <mysql.version>5.1.6</mysql.version>
         <log4j.version>2.13.0</log4j.version>
