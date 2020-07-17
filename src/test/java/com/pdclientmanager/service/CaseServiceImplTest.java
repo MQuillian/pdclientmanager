@@ -16,25 +16,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.AttorneyMinimalDto;
-import com.pdclientmanager.model.dto.CaseDto;
-import com.pdclientmanager.model.dto.CaseFormDto;
-import com.pdclientmanager.model.dto.ChargeDto;
-import com.pdclientmanager.model.dto.ChargedCountDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto;
-import com.pdclientmanager.model.dto.JudgeDto;
-import com.pdclientmanager.model.entity.Attorney;
-import com.pdclientmanager.model.entity.Case;
-import com.pdclientmanager.model.entity.Charge;
-import com.pdclientmanager.model.entity.ChargedCount;
-import com.pdclientmanager.model.entity.Client;
-import com.pdclientmanager.model.entity.Judge;
+import com.pdclientmanager.model.form.CaseForm;
+import com.pdclientmanager.model.projection.CaseProjection;
+import com.pdclientmanager.repository.AttorneyRepository;
 import com.pdclientmanager.repository.CaseRepository;
+import com.pdclientmanager.repository.entity.Attorney;
+import com.pdclientmanager.repository.entity.Case;
+import com.pdclientmanager.repository.entity.Charge;
+import com.pdclientmanager.repository.entity.ChargedCount;
+import com.pdclientmanager.repository.entity.ChargedCountId;
+import com.pdclientmanager.repository.entity.Client;
+import com.pdclientmanager.repository.entity.Judge;
 import com.pdclientmanager.util.mapper.CaseMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 
@@ -44,44 +43,36 @@ import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 public class CaseServiceImplTest {
     
     @Mock
-    private CaseRepository repository;
+    private CaseRepository caseRepository;
+    
+    @Mock
+    private AttorneyRepository attorneyRepository;
     
     @Mock
     private CaseMapper mapper;
     
     private CaseService caseService;
     
-    private CaseDto caseDto;
-    private CaseFormDto caseFormDto;
+    private ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+    
+    private CaseProjection caseProj;
+    private CaseForm caseFormDto;
     private Case courtCase;
-    private List<CaseDto> caseDtoList;
+    private List<CaseProjection> caseProjList;
     private List<Case> caseList;
     
     @BeforeEach
     public void setUp() {
 
         initMocks(this);
-        caseService = new CaseServiceImpl(repository, mapper);
+        caseService = new CaseServiceImpl(caseRepository, attorneyRepository, mapper);
         
-        caseDto = new CaseDto.CaseDtoBuilder()
-                .withId(1L)
-                .withCaseNumber("00J0001")
-                .withDateOpened(LocalDate.of(2000, 01, 01))
-                .withDateClosed(null)
-                .withClient(new ClientMinimalDto.ClientMinimalDtoBuilder()
-                        .build())
-                .withJudge(new JudgeDto.JudgeDtoBuilder()
-                        .build())
-                .withAttorney(new AttorneyMinimalDto.AttorneyMinimalDtoBuilder()
-                        .build())
-                .build();
-        caseDto.addChargedCount(new ChargedCountDto.ChargedCountDtoBuilder()
-                .withCountNumber(1)
-                .withCharge(new ChargeDto.ChargeDtoBuilder()
-                        .build())
-                .build());
+        caseProj = factory.createProjection(CaseProjection.class);
+        caseProj.setId(1L);
+        caseProj.setCaseNumber("20J0001");
+        caseProj.setDateOpened(LocalDate.of(2020, 1, 5));
         
-        caseFormDto = new CaseFormDto.CaseFormDtoBuilder()
+        caseFormDto = new CaseForm.CaseFormDtoBuilder()
                 .withId(1L)
                 .withCaseNumber("00J0001")
                 .withDateOpened("01/01/2000")
@@ -105,13 +96,13 @@ public class CaseServiceImplTest {
                         .build())
                 .build();
         courtCase.addChargedCount(new ChargedCount.ChargedCountBuilder()
-                .withCountNumber(1)
+                .withId(new ChargedCountId(1, courtCase))
                 .withCharge(new Charge.ChargeBuilder()
                         .build())
                 .build());
         
-        caseDtoList = new ArrayList<>();
-        caseDtoList.add(caseDto);
+        caseProjList = new ArrayList<>();
+        caseProjList.add(caseProj);
         
         caseList = new ArrayList<>();
         caseList.add(courtCase);
@@ -129,74 +120,43 @@ public class CaseServiceImplTest {
         assertThat(returnedId).isEqualTo(courtCase.getId());
         verify(mapper).toCaseFromCaseFormDto(eq(caseFormDto),
                 any(CycleAvoidingMappingContext.class));
-        verify(repository).save(courtCase);
+        verify(caseRepository).save(courtCase);
         
     }
     
     @Test
-    public void findById_WithValidId_ReturnsCaseDto() {
+    public void findById_WithValidId_ReturnsCaseProjection() {
         
-        when(mapper.toCaseDto(courtCase)).thenReturn(caseDto);
-        when(repository.findById(1L)).thenReturn(Optional.of(courtCase));
+        when(caseRepository.findById(1L, CaseProjection.class))
+            .thenReturn(Optional.of(caseProj));
         
-        CaseDto dtoFromService = caseService.findById(1L);
-        
-        assertThat(dtoFromService.getId()).isEqualTo(courtCase.getId());
-        assertThat(dtoFromService.getClient().getId()).isEqualTo(courtCase.getClient().getId());
-        assertThat(dtoFromService.getAttorney().getId()).isEqualTo(courtCase.getAttorney().getId());
-        assertThat(dtoFromService.getChargedCounts().get(1).getId())
-            .isEqualTo(courtCase.getChargedCounts().get(1).getId());
-        verify(mapper).toCaseDto(courtCase);
-        verify(repository).findById(1L);
+        assertThat(caseService.findById(1L, CaseProjection.class)).isEqualTo(caseProj);
+        verify(caseRepository).findById(1L, CaseProjection.class);
     }
     
     @Test
-    public void findAll_ReturnsDtoList() {
+    public void findAll_ReturnsProjectionList() {
         
-        when(mapper.toCaseDtoList(caseList)).thenReturn(caseDtoList);
-        when(repository.findAll()).thenReturn(caseList);
+        when(caseRepository.findAllBy(CaseProjection.class)).thenReturn(caseProjList);
         
-        List<CaseDto> listFromService = caseService.findAll();
-        
-        for(CaseDto courtCase : listFromService) {
-            System.out.println(courtCase.getChargedCounts().get(1));
-        }
-        System.out.println("Entity = " + caseList.get(0));
-        for(Case courtCase : caseList) {
-            System.out.println(courtCase.getChargedCounts().get(1));
-        }
-        
-        assertThat(listFromService.size()).isEqualTo(caseList.size());
-        assertThat(listFromService.get(0).getId()).isEqualTo(caseList.get(0).getId());
-        assertThat(listFromService.get(0).getClient().getId())
-            .isEqualTo(caseList.get(0).getClient().getId());
-        assertThat(listFromService.get(0).getAttorney().getId())
-            .isEqualTo(caseList.get(0).getAttorney().getId());
-        assertThat(listFromService.get(0).getChargedCounts().get(1).getId())
-            .isEqualTo(caseList.get(0).getChargedCounts().get(1).getId());
-        verify(mapper).toCaseDtoList(caseList);
-        verify(repository).findAll();
+        assertThat(caseService.findAll(CaseProjection.class)).isEqualTo(caseProjList);
+
+        verify(caseRepository).findAllBy(CaseProjection.class);
     }
     
     @Test
-    public void delete_WithValidEntity_CallsRepositoryDeleteMethod() {
+    public void delete_WithValidEntity_CallsRepositoryDeleteByIdMethod() {
         
-        when(mapper.toCase(eq(caseDto), any(CycleAvoidingMappingContext.class)))
-            .thenReturn(courtCase);
+        caseService.delete(caseProj);
         
-        caseService.delete(caseDto);
-        
-        verify(mapper).toCase(eq(caseDto), any(CycleAvoidingMappingContext.class));
-        verify(repository).delete(courtCase);
+        verify(caseRepository).deleteById(caseProj.getId());
     }
     
     @Test
     public void deleteById_WithValidId_CallsRepositoryDeleteByIdMethod() {
         
-        when(repository.findById(1L)).thenReturn(Optional.of(courtCase));
-        
         caseService.deleteById(1L);
         
-        verify(repository).deleteById(1L);
+        verify(caseRepository).deleteById(1L);
     }
 }

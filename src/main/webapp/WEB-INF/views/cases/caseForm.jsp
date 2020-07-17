@@ -127,10 +127,6 @@
 		</div>
 	</div>
 	
-	<div>
-		<label>"${clientNameJson}"</label>
-	</div>
-	
 	</fmt:bundle>
 </form:form>
 

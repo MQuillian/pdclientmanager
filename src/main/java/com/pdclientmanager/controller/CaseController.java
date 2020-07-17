@@ -20,10 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.pdclientmanager.model.dto.AttorneyMinimalDto;
-import com.pdclientmanager.model.dto.CaseDto;
-import com.pdclientmanager.model.dto.CaseFormDto;
-import com.pdclientmanager.model.dto.JudgeDto;
+import com.pdclientmanager.model.form.CaseForm;
+import com.pdclientmanager.model.projection.AttorneyLightProjection;
+import com.pdclientmanager.model.projection.CaseLightProjection;
+import com.pdclientmanager.model.projection.CaseProjection;
+import com.pdclientmanager.model.projection.JudgeProjection;
 import com.pdclientmanager.service.AttorneyService;
 import com.pdclientmanager.service.CaseService;
 import com.pdclientmanager.service.JudgeService;
@@ -51,9 +52,9 @@ public class CaseController {
     
     @GetMapping("/cases/add")
     public String showNewCaseForm(Model model) {
-        CaseFormDto caseForm = new CaseFormDto();
-        List<AttorneyMinimalDto> activeAttorneys = attorneyService.findAllActiveMinimalDtos();
-        List<JudgeDto> activeJudges = judgeService.findAllActive();
+        CaseForm caseForm = new CaseForm();
+        List<AttorneyLightProjection> activeAttorneys = attorneyService.findAllActive();
+        List<JudgeProjection> activeJudges = judgeService.findAllActive();
         
         model.addAttribute("caseForm", caseForm);
         model.addAttribute("activeAttorneys", activeAttorneys);
@@ -63,12 +64,12 @@ public class CaseController {
     }
     
     @PostMapping(path = "/cases")
-    public String saveCase(@ModelAttribute("caseForm") @Valid CaseFormDto caseForm, 
+    public String saveCase(@ModelAttribute("caseForm") @Valid CaseForm caseForm, 
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
-            List<AttorneyMinimalDto> activeAttorneys = attorneyService.findAllActiveMinimalDtos();
-            List<JudgeDto> activeJudges = judgeService.findAllActive();
+            List<AttorneyLightProjection> activeAttorneys = attorneyService.findAllActive();
+            List<JudgeProjection> activeJudges = judgeService.findAllActive();
             
             model.addAttribute("caseForm", caseForm);
             model.addAttribute("activeAttorneys", activeAttorneys);
@@ -87,21 +88,21 @@ public class CaseController {
     }
     
     @GetMapping("/cases/list")
-    public String showAllCases(@PageableDefault(page = 0, sort = {"dateClosed", "client.name", "caseNumber"})
+    public String showAllCases(@PageableDefault(page = 0, sort = {"client.name", "dateClosed", "caseNumber"})
             Pageable pageRequest, Model model) {
-        Page<CaseDto> dtoPage = caseService.findAll(pageRequest);
+        Page<CaseLightProjection> casePage = caseService.findAll(pageRequest, CaseLightProjection.class);
         
-        model.addAttribute("cases", dtoPage.getContent());
-        model.addAttribute("page", dtoPage.getNumber());
-        model.addAttribute("totalPages", dtoPage.getTotalPages());
-        model.addAttribute("size", dtoPage.getSize());
+        model.addAttribute("cases", casePage.getContent());
+        model.addAttribute("page", casePage.getNumber());
+        model.addAttribute("totalPages", casePage.getTotalPages());
+        model.addAttribute("size", casePage.getSize());
         
         return "cases/listCases";
     }
     
     @GetMapping("/cases/{id}")
     public String showCase(@PathVariable("id") Long id, Model model) {
-        CaseDto courtCase = caseService.findById(id);
+        CaseProjection courtCase = caseService.findById(id, CaseProjection.class);
         
         model.addAttribute("courtCase", courtCase);
         
@@ -118,11 +119,11 @@ public class CaseController {
             redirectAttributes.addFlashAttribute("msg", "Please enter a search term 3 or more characters");
             return ControllerUtils.getPreviousPage(request).orElse("/");
         }
-        Page<CaseDto> dtoPage = caseService.findAllWithClientName(pageRequest, searchTerm);
-        model.addAttribute("cases", dtoPage.getContent());
-        model.addAttribute("page", dtoPage.getNumber());
-        model.addAttribute("totalPages", dtoPage.getTotalPages());
-        model.addAttribute("size", dtoPage.getSize());
+        Page<CaseProjection> casePage = caseService.findAllWithClientName(pageRequest, searchTerm, CaseProjection.class);
+        model.addAttribute("cases", casePage.getContent());
+        model.addAttribute("page", casePage.getNumber());
+        model.addAttribute("totalPages", casePage.getTotalPages());
+        model.addAttribute("size", casePage.getSize());
         
         return "cases/listCases";
     }
@@ -130,15 +131,46 @@ public class CaseController {
     @GetMapping("/cases/{id}/update")
     public String showUpdateCaseForm(@PathVariable("id") Long id, Model model)
             throws JsonProcessingException {
-        CaseFormDto caseForm = caseService.findFormById(id);
-        List<AttorneyMinimalDto> activeAttorneys = attorneyService.findAllActiveMinimalDtos();
-        List<JudgeDto> activeJudges = judgeService.findAllActive();
+        CaseForm caseForm = caseService.findFormById(id);
+        List<AttorneyLightProjection> activeAttorneys = attorneyService.findAllActive();
+        List<JudgeProjection> activeJudges = judgeService.findAllActive();
         
         model.addAttribute("caseForm", caseForm);
         model.addAttribute("activeAttorneys", activeAttorneys);
         model.addAttribute("activeJudges", activeJudges);
         
         return "cases/caseForm";
+    }
+    
+    @GetMapping("/cases/reassignment")
+    public String showReassignmentForm(Model model) {
+        List<AttorneyLightProjection> activeAttorneys = attorneyService.findAllActive();
+        
+        model.addAttribute("activeAttorneys", activeAttorneys);
+        
+        return "cases/reassignment";
+    }
+    
+    @PostMapping("/cases/reassignment")
+    public String reassignCaseload(@RequestParam("prevAssignedAttorneyId") Long prevId,
+            @RequestParam("newAssignedAttorneyId") Long newId,
+            @RequestParam("reassignedCases") String reassignedCases,
+            final RedirectAttributes redirectAttributes) {
+        if(prevId == newId) {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", "Must select different attorneys to reassign caseload");
+            return "redirect:/cases/reassignment";
+        }
+        
+        if(reassignedCases.equals("openCases")) {
+            caseService.reassignOpenCases(prevId, newId);
+        } else {
+            caseService.reassignAllCases(prevId, newId);
+        }
+        
+        redirectAttributes.addFlashAttribute("css", "success");
+        redirectAttributes.addFlashAttribute("msg", "Caseload reassigned successfully!");
+        return "redirect:/attorneys/" + newId;
     }
 
     @PostMapping("/cases/{id}/delete")

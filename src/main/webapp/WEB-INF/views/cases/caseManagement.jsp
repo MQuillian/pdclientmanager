@@ -11,5 +11,7 @@ CASE CRUD FUNCTIONALITY
 <a href="cases/list">Full case list</a>
 <br>
 <a href="cases/add">Add new case</a>
+<br>
+<a href="cases/reassignment">Reassign caseload</a>
 
 <%@ include file = "../footer.jsp" %>

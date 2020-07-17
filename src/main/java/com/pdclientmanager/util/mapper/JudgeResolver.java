@@ -7,8 +7,8 @@ import org.mapstruct.TargetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pdclientmanager.model.entity.Judge;
 import com.pdclientmanager.repository.JudgeRepository;
+import com.pdclientmanager.repository.entity.Judge;
 
 @Component
 public class JudgeResolver {

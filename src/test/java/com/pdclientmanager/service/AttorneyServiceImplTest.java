@@ -16,19 +16,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.AttorneyDto;
-import com.pdclientmanager.model.dto.AttorneyFormDto;
-import com.pdclientmanager.model.dto.CaseMinimalDto;
-import com.pdclientmanager.model.dto.InvestigatorMinimalDto;
-import com.pdclientmanager.model.entity.Attorney;
-import com.pdclientmanager.model.entity.Case;
-import com.pdclientmanager.model.entity.Investigator;
+import com.pdclientmanager.model.form.AttorneyForm;
+import com.pdclientmanager.model.projection.AttorneyProjection;
 import com.pdclientmanager.repository.AttorneyRepository;
+import com.pdclientmanager.repository.entity.Attorney;
+import com.pdclientmanager.repository.entity.Case;
+import com.pdclientmanager.repository.entity.Investigator;
+import com.pdclientmanager.repository.entity.WorkingStatus;
 import com.pdclientmanager.util.mapper.AttorneyMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 
@@ -45,10 +46,12 @@ class AttorneyServiceImplTest {
     
     private AttorneyService attorneyService;
     
-    private AttorneyDto attorneyDto;
-    private AttorneyFormDto attorneyFormDto;
+    private ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+    
+    private AttorneyProjection attorneyProj;
+    private AttorneyForm attorneyFormDto;
     private Attorney attorney;
-    private List<AttorneyDto> attorneyDtoList;
+    private List<AttorneyProjection> attorneyProjList;
     private List<Attorney> attorneyList;
     
     @BeforeEach
@@ -59,15 +62,12 @@ class AttorneyServiceImplTest {
         
         // Creating data for tests
         
-        attorneyDto = new AttorneyDto.AttorneyDtoBuilder()
-                .withId(1L)
-                .withName("Test Attorney")
-                .withInvestigator(new InvestigatorMinimalDto.InvestigatorMinimalDtoBuilder()
-                        .withId(1L)
-                        .build())
-                .build();
+        attorneyProj = factory.createProjection(AttorneyProjection.class);
+        attorneyProj.setId(1L);
+        attorneyProj.setName("Test Attorney");
+        attorneyProj.setWorkingStatus(WorkingStatus.ACTIVE);
         
-        attorneyFormDto = new AttorneyFormDto.AttorneyFormDtoBuilder()
+        attorneyFormDto = new AttorneyForm.AttorneyFormDtoBuilder()
                 .withId(1L)
                 .withName("Test Attorney")
                 .withInvestigatorId(1L)
@@ -81,8 +81,8 @@ class AttorneyServiceImplTest {
                         .build())
                 .build();
         
-        attorneyDtoList = new ArrayList<>();
-        attorneyDtoList.add(attorneyDto);
+        attorneyProjList = new ArrayList<>();
+        attorneyProjList.add(attorneyProj);
         
         attorneyList = new ArrayList<>();
         attorneyList.add(attorney);
@@ -104,62 +104,56 @@ class AttorneyServiceImplTest {
     }
     
     @Test
-    public void findById_WithValidId_ReturnsAttorneyDto() {
+    public void findById_WithValidId_ReturnsAttorneyProjection() {
  
-        when(mapper.toAttorneyDto(attorney))
-            .thenReturn(attorneyDto);
-        when(repository.findById(1L)).thenReturn(Optional.of(attorney));
+        when(repository.findById(1L, AttorneyProjection.class))
+            .thenReturn(Optional.of(attorneyProj));
         
-        AttorneyDto dtoFromService = attorneyService.findById(1L);
+        AttorneyProjection projFromService = attorneyService.findById(1L, AttorneyProjection.class);
         
-        assertThat(dtoFromService).isEqualTo(attorneyDto);
-        verify(mapper).toAttorneyDto(attorney);
-        verify(repository).findById(1L);
+        assertThat(projFromService).isEqualTo(attorneyProj);
+        verify(repository).findById(1L, AttorneyProjection.class);
     }
     
     @Test
     public void findAll_ReturnsDtoList() {
         
-        when(mapper.toAttorneyDtoList(attorneyList))
-            .thenReturn(attorneyDtoList);
-        when(repository.findAll()).thenReturn(attorneyList);
+        when(repository.findAllProjectedBy()).thenReturn(attorneyProjList);
         
-        List<AttorneyDto> listFromService = attorneyService.findAll();
+        List<AttorneyProjection> listFromService = attorneyService.findAll();
         
-        assertThat(listFromService).isEqualTo(attorneyDtoList);
-        verify(mapper).toAttorneyDtoList(attorneyList);
-        verify(repository).findAll();
+        assertThat(listFromService).isEqualTo(attorneyProjList);
+        verify(repository).findAllProjectedBy();
     }
     
     @Test
     public void delete_WithEmptyOpenCaseload_CallsRepositoryDeleteMethod() {
-        when(mapper.toAttorney(
-                eq(attorneyDto), any(CycleAvoidingMappingContext.class)))
-            .thenReturn(attorney);
+        
+        when(repository.findById(attorneyProj.getId(), Attorney.class))
+            .thenReturn(Optional.of(attorney));
+        
         attorney.setCaseload(new ArrayList<>());
         
-        assertThat(attorneyService.delete(attorneyDto)).isEqualTo(true);
-        verify(mapper).toAttorney(eq(attorneyDto),
-                any(CycleAvoidingMappingContext.class));
+        assertThat(attorneyService.delete(attorneyProj)).isEqualTo(true);
+
         verify(repository).delete(attorney);
     }
     
     @Test
     public void delete_WithOpenCaseload_DoesNotCallRepositoryDeleteMethod() {
-        when(mapper.toAttorney(
-                eq(attorneyDto), any(CycleAvoidingMappingContext.class)))
-            .thenReturn(attorney);
+        
+        when(repository.findById(attorneyProj.getId(), Attorney.class))
+            .thenReturn(Optional.of(attorney));
         attorney.getCaseload().add(new Case.CaseBuilder()
                 .build());
-        attorneyDto.getCaseload().add(new CaseMinimalDto.CaseMinimalDtoBuilder().build());
         
-        assertThat(attorneyService.delete(attorneyDto)).isEqualTo(false);
+        assertThat(attorneyService.delete(attorneyProj)).isEqualTo(false);
         verify(repository, never()).delete(attorney);
     }
     
     @Test
     public void deleteById_WithValidIdAndEmptyOpenCaseload_CallsRepositoryDeleteByIdMethod() {
-        when(repository.findById(1L)).thenReturn(Optional.of(attorney));
+        when(repository.findById(1L, Attorney.class)).thenReturn(Optional.of(attorney));
         attorney.setCaseload(new ArrayList<>());
         
         assertThat(attorneyService.deleteById(1L)).isEqualTo(true);
@@ -168,7 +162,7 @@ class AttorneyServiceImplTest {
     
     @Test
     public void deleteById_WithValidIdAndOpenCaseload_DoesNotCallRepositoryDeleteByIdMethod() {
-        when(repository.findById(1L)).thenReturn(Optional.of(attorney));
+        when(repository.findById(1L,  Attorney.class)).thenReturn(Optional.of(attorney));
         attorney.getCaseload().add(new Case.CaseBuilder().build());
         
         assertThat(attorneyService.deleteById(1L)).isEqualTo(false);

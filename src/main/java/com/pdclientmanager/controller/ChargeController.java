@@ -1,5 +1,6 @@
 package com.pdclientmanager.controller;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.pdclientmanager.model.dto.ChargeDto;
+import com.pdclientmanager.model.form.ChargeForm;
+import com.pdclientmanager.model.projection.ChargeProjection;
 import com.pdclientmanager.service.ChargeService;
 
 @Controller
@@ -32,13 +34,13 @@ private ChargeService chargeService;
     
     @GetMapping("/charges/add")
     public String showNewChargeForm(Model model) {
-        model.addAttribute("chargeForm", new ChargeDto());
+        model.addAttribute("chargeForm", new ChargeForm());
         
         return "charges/chargeForm";
     }
     
     @PostMapping("/charges")
-    public String saveCharge(@ModelAttribute("chargeForm") @Valid ChargeDto chargeForm,
+    public String saveCharge(@ModelAttribute("chargeForm") @Valid ChargeForm chargeForm,
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
@@ -63,23 +65,22 @@ private ChargeService chargeService;
     @GetMapping("/charges/{id}")
     public String showCharge(@PathVariable("id") Long targetId, Model model,
             final RedirectAttributes redirectAttributes) {
-        ChargeDto charge = chargeService.findById(targetId);
-        
-        if(charge == null) {
+        try {
+            ChargeProjection charge = chargeService.findById(targetId, ChargeProjection.class);
+            model.addAttribute("charge", charge);
+            
+            return "charges/showCharge";
+        } catch(EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", "Charge could not be found");
             
             return "redirect:/charges/list";
-        } else {
-            model.addAttribute("charge", charge);
-            
-            return "charges/showCharge";
         }
     }
     
     @GetMapping("/charges/{id}/update")
     public String updateCharge(@PathVariable("id") Long targetId, Model model) {
-        ChargeDto chargeForm = chargeService.findById(targetId);
+        ChargeForm chargeForm = chargeService.findFormById(targetId);
         
         model.addAttribute("chargeForm", chargeForm);
             

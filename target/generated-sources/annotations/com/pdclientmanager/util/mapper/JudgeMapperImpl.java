@@ -1,15 +1,13 @@
 package com.pdclientmanager.util.mapper;
 
-import com.pdclientmanager.model.dto.JudgeDto;
-import com.pdclientmanager.model.entity.Judge;
-import java.util.ArrayList;
-import java.util.List;
+import com.pdclientmanager.model.form.JudgeForm;
+import com.pdclientmanager.repository.entity.Judge;
 import org.springframework.stereotype.Component;
 
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2020-01-28T23:41:26-0500",
+    date = "2020-07-06T16:49:34-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
 */
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class JudgeMapperImpl implements JudgeMapper {
 
     @Override
-    public Judge toJudge(JudgeDto dto) {
+    public Judge toJudge(JudgeForm dto) {
         if ( dto == null ) {
             return null;
         }
@@ -32,45 +30,17 @@ public class JudgeMapperImpl implements JudgeMapper {
     }
 
     @Override
-    public JudgeDto toJudgeDto(Judge entity) {
+    public JudgeForm toJudgeForm(Judge entity) {
         if ( entity == null ) {
             return null;
         }
 
-        JudgeDto judgeDto = new JudgeDto();
+        JudgeForm judgeForm = new JudgeForm();
 
-        judgeDto.setId( entity.getId() );
-        judgeDto.setName( entity.getName() );
-        judgeDto.setWorkingStatus( entity.getWorkingStatus() );
+        judgeForm.setId( entity.getId() );
+        judgeForm.setName( entity.getName() );
+        judgeForm.setWorkingStatus( entity.getWorkingStatus() );
 
-        return judgeDto;
-    }
-
-    @Override
-    public List<Judge> toJudgeList(List<JudgeDto> dtos) {
-        if ( dtos == null ) {
-            return null;
-        }
-
-        List<Judge> list = new ArrayList<Judge>( dtos.size() );
-        for ( JudgeDto judgeDto : dtos ) {
-            list.add( toJudge( judgeDto ) );
-        }
-
-        return list;
-    }
-
-    @Override
-    public List<JudgeDto> toJudgeDtoList(List<Judge> entities) {
-        if ( entities == null ) {
-            return null;
-        }
-
-        List<JudgeDto> list = new ArrayList<JudgeDto>( entities.size() );
-        for ( Judge judge : entities ) {
-            list.add( toJudgeDto( judge ) );
-        }
-
-        return list;
+        return judgeForm;
     }
 }

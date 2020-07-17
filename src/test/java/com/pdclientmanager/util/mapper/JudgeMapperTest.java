@@ -2,6 +2,7 @@ package com.pdclientmanager.util.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.JudgeDto;
-import com.pdclientmanager.model.entity.Judge;
+import com.pdclientmanager.model.form.JudgeForm;
+import com.pdclientmanager.repository.entity.Judge;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -21,29 +22,35 @@ public class JudgeMapperTest {
     @Autowired
     JudgeMapper judgeMapper;
     
-    @Test
-    public void mapper_ShouldMapDtoToEntity() {
+    private Judge judge;
+    
+    private JudgeForm form;
+
+    @BeforeEach
+    public void setup() {
         
-        JudgeDto dto = new JudgeDto.JudgeDtoBuilder()
-                .build();
+        judge = new Judge.JudgeBuilder().build();
         
-        Judge entity = judgeMapper.toJudge(dto);
-        
-        assertThat(dto.getId()).isEqualTo(entity.getId());
-        assertThat(dto.getName()).isEqualTo(entity.getName());
-        assertThat(dto.getWorkingStatus()).isEqualTo(entity.getWorkingStatus());
+        form = new JudgeForm.JudgeFormBuilder().build();
     }
     
     @Test
-    public void mapper_ShouldMapEntityToDto() {
+    public void mapper_ShouldMapFormToEntity() {
         
-        Judge entity = new Judge.JudgeBuilder()
-                .build();
+        Judge entity = judgeMapper.toJudge(form);
         
-        JudgeDto dto = judgeMapper.toJudgeDto(entity);
+        assertThat(entity.getId()).isEqualTo(form.getId());
+        assertThat(entity.getName()).isEqualTo(form.getName());
+        assertThat(entity.getWorkingStatus()).isEqualTo(form.getWorkingStatus());
+    }
+    
+    @Test
+    public void mapper_ShouldMapEntityToForm() {
         
-        assertThat(entity.getId()).isEqualTo(dto.getId());
-        assertThat(entity.getName()).isEqualTo(dto.getName());
-        assertThat(entity.getWorkingStatus()).isEqualTo(dto.getWorkingStatus());
+        JudgeForm judgeForm = judgeMapper.toJudgeForm(judge);
+        
+        assertThat(judgeForm.getId()).isEqualTo(judge.getId());
+        assertThat(judgeForm.getName()).isEqualTo(judge.getName());
+        assertThat(judgeForm.getWorkingStatus()).isEqualTo(judge.getWorkingStatus());
     }
 }

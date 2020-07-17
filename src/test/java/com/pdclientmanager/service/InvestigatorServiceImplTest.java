@@ -15,18 +15,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.AttorneyMinimalDto;
-import com.pdclientmanager.model.dto.InvestigatorDto;
-import com.pdclientmanager.model.dto.InvestigatorFormDto;
-import com.pdclientmanager.model.entity.Attorney;
-import com.pdclientmanager.model.entity.Investigator;
+import com.pdclientmanager.model.form.InvestigatorForm;
+import com.pdclientmanager.model.projection.InvestigatorProjection;
 import com.pdclientmanager.repository.AttorneyRepository;
 import com.pdclientmanager.repository.InvestigatorRepository;
+import com.pdclientmanager.repository.entity.Attorney;
+import com.pdclientmanager.repository.entity.Investigator;
+import com.pdclientmanager.repository.entity.WorkingStatus;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 import com.pdclientmanager.util.mapper.InvestigatorMapper;
 
@@ -46,10 +48,12 @@ class InvestigatorServiceImplTest {
     
     private InvestigatorService investigatorService;
     
-    private InvestigatorDto investigatorDto;
-    private InvestigatorFormDto investigatorFormDto;
+    private ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+    
+    private InvestigatorProjection investigatorProj;
+    private InvestigatorForm investigatorFormDto;
     private Investigator investigator;
-    private List<InvestigatorDto> investigatorDtoList;
+    private List<InvestigatorProjection> investigatorProjList;
     private List<Investigator> investigatorList;
 
     @BeforeEach
@@ -59,14 +63,12 @@ class InvestigatorServiceImplTest {
         investigatorService = new InvestigatorServiceImpl(investigatorRepository,
                 attorneyRepository, mapper);
     
-        investigatorDto = new InvestigatorDto.InvestigatorDtoBuilder()
-                .withId(1L)
-                .withName("Test InvestigatorDto")
-                .build();
-        investigatorDto.getAssignedAttorneys().add(new AttorneyMinimalDto.AttorneyMinimalDtoBuilder()
-                .build());
+        investigatorProj = factory.createProjection(InvestigatorProjection.class);
+        investigatorProj.setId(1L);
+        investigatorProj.setName("Active Investigator");
+        investigatorProj.setWorkingStatus(WorkingStatus.ACTIVE);
         
-        investigatorFormDto = new InvestigatorFormDto.InvestigatorFormDtoBuilder()
+        investigatorFormDto = new InvestigatorForm.InvestigatorFormDtoBuilder()
                 .withId(1L)
                 .withName("Test InvestigatorFormDto")
                 .build();
@@ -78,8 +80,8 @@ class InvestigatorServiceImplTest {
         investigator.getAssignedAttorneys().add(new Attorney.AttorneyBuilder()
                 .build());
         
-        investigatorDtoList = new ArrayList<>();
-        investigatorDtoList.add(investigatorDto);
+        investigatorProjList = new ArrayList<>();
+        investigatorProjList.add(investigatorProj);
         
         investigatorList = new ArrayList<>();
         investigatorList.add(investigator);
@@ -88,8 +90,8 @@ class InvestigatorServiceImplTest {
     @Test
     public void save_WithValidinvestigator_CallsRepositorySaveMethod() {
         
-        when(mapper.toInvestigatorFromInvestigatorFormDto(
-                eq(investigatorFormDto), any(CycleAvoidingMappingContext.class)))
+        when(mapper.toInvestigatorFromInvestigatorForm(
+            eq(investigatorFormDto), any(CycleAvoidingMappingContext.class)))
             .thenReturn(investigator);
         
         assertThat(investigatorService.save(investigatorFormDto)).isEqualTo(investigator.getId());
@@ -99,41 +101,31 @@ class InvestigatorServiceImplTest {
     @Test
     public void findById_WithValidId_ReturnsInvestigatorDto() {
         
-        when(investigatorRepository.findById(1L)).thenReturn(Optional.of(investigator));
-        when(mapper.toInvestigatorDto(
-                eq(investigator)))
-            .thenReturn(investigatorDto);
+        when(investigatorRepository.findById(1L, InvestigatorProjection.class))
+            .thenReturn(Optional.of(investigatorProj));
         
-        InvestigatorDto dtoFromService = investigatorService.findById(1L);
         
-        assertThat(dtoFromService).isEqualTo(investigatorDto);
-        verify(investigatorRepository).findById(1L);
+        assertThat(investigatorService.findById(1L, InvestigatorProjection.class))
+            .isEqualTo(investigatorProj);
+        verify(investigatorRepository).findById(1L, InvestigatorProjection.class);
     }
     
     @Test
     public void findAll_ReturnsDtoList() {
         
-        when(investigatorRepository.findAll()).thenReturn(investigatorList);
-        when(mapper.toInvestigatorDtoList(
-                eq(investigatorList)))
-            .thenReturn(investigatorDtoList);
+        when(investigatorRepository.findAllBy(InvestigatorProjection.class)).thenReturn(investigatorProjList);
         
-        List<InvestigatorDto> listFromService = investigatorService.findAll();
-        
-        assertThat(listFromService).isEqualTo(investigatorDtoList);
-        verify(investigatorRepository).findAll();
+        assertThat(investigatorService.findAll()).isEqualTo(investigatorProjList);
+        verify(investigatorRepository).findAllBy(InvestigatorProjection.class);
     }
     
     @Test
     public void delete_WithValidEntity_CallsRepositoryDeleteMethod() {
         
-        when(mapper.toInvestigator(
-                eq(investigatorDto), any(CycleAvoidingMappingContext.class)))
-            .thenReturn(investigator);
         
-        investigatorService.delete(investigatorDto);
+        investigatorService.delete(investigatorProj);
         
-        verify(investigatorRepository).delete(investigator);
+        verify(investigatorRepository).deleteById(investigatorProj.getId());
     }
     
     @Test

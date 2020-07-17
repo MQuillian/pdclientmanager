@@ -21,7 +21,7 @@ var clientAutocompleteOptions = {
 	            this.value = '';
 	            
 	            $('#clientHiddenField').val('');
-	            if(document.getElementById('clientId.errors') == null) {
+	            if(document.getElementById('clientId.errors') === null) {
 	            	$(this).after("<span id='clientId.errors' class='error'></span>");
 	            }
 	            
@@ -32,7 +32,7 @@ var clientAutocompleteOptions = {
 		     event.preventDefault();
 		     $(this).val(ui.item.label);
 		     $('#clientHiddenField').val(ui.item.value);
-		     if(document.getElementById('clientId.errors') != null) {
+		     if(document.getElementById('clientId.errors') !== null) {
 		    	 document.getElementById('clientId.errors').innerHTML = '';
 		     }
 	    }
@@ -124,7 +124,7 @@ function deleteRow(){
 // Set up form and create/populate fields as needed
 (function(){
 	$('#clientName').autocomplete(clientAutocompleteOptions);
-	if(document.getElementById("formId") == null) {
+	if(document.getElementById("formId").value === '') {
 		newRow();
 	} else {
 		$(".charge-input").autocomplete(chargeAutocompleteOptions);

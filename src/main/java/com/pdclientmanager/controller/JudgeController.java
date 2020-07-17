@@ -1,5 +1,6 @@
 package com.pdclientmanager.controller;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.pdclientmanager.model.dto.JudgeDto;
+import com.pdclientmanager.model.form.JudgeForm;
+import com.pdclientmanager.model.projection.JudgeProjection;
 import com.pdclientmanager.service.JudgeService;
 
 @Controller
@@ -32,13 +34,13 @@ public class JudgeController {
     
     @GetMapping("/judges/add")
     public String showNewJudgeForm(Model model) {
-        model.addAttribute("judgeForm", new JudgeDto());
+        model.addAttribute("judgeForm", new JudgeForm());
         
         return "judges/judgeForm";
     }
     
     @PostMapping("/judges")
-    public String saveJudge(@ModelAttribute("judgeForm") @Valid JudgeDto judgeForm,
+    public String saveJudge(@ModelAttribute("judgeForm") @Valid JudgeForm judgeForm,
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
@@ -63,23 +65,22 @@ public class JudgeController {
     @GetMapping("/judges/{id}")
     public String showJudge(@PathVariable("id") Long targetId, Model model,
             final RedirectAttributes redirectAttributes) {
-        JudgeDto judge = judgeService.findById(targetId);
-        
-        if(judge == null) {
+        try {
+            JudgeProjection judge = judgeService.findById(targetId, JudgeProjection.class);
+            model.addAttribute("judge", judge);
+            
+            return "judges/showJudge";
+        } catch(EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", "Judge could not be found");
             
             return "redirect:/judges/list";
-        } else {
-            model.addAttribute("judge", judge);
-            
-            return "judges/showJudge";
         }
     }
     
     @GetMapping("/judges/{id}/update")
     public String updateJudge(@PathVariable("id") Long targetId, Model model) {
-        JudgeDto judgeForm = judgeService.findById(targetId);
+        JudgeForm judgeForm = judgeService.findFormById(targetId);
         
         model.addAttribute("judgeForm", judgeForm);
             

@@ -1,24 +1,17 @@
 package com.pdclientmanager.util.mapper;
 
-import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import com.pdclientmanager.model.dto.ChargeDto;
-import com.pdclientmanager.model.entity.Charge;
+import com.pdclientmanager.model.form.ChargeForm;
+import com.pdclientmanager.repository.entity.Charge;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ChargeMapper {
 
-    //Mapping between ChargeDto and Charge entity
+    //Mapping between ChargeForm and Charge entity
     
-    Charge toCharge(final ChargeDto dto);
+    Charge toCharge(final ChargeForm form);
     
-    ChargeDto toChargeDto(final Charge entity);
-    
-    List<Charge> toChargeList(final List<ChargeDto> dtos);
-    
-    List<ChargeDto> toChargeDtoList(final List<Charge> entities);
-    
+    ChargeForm toChargeForm(final Charge entity);
 }

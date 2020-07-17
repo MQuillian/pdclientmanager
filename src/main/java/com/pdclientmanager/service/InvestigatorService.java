@@ -2,22 +2,22 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
-import com.pdclientmanager.model.dto.InvestigatorDto;
-import com.pdclientmanager.model.dto.InvestigatorFormDto;
+import com.pdclientmanager.model.form.InvestigatorForm;
+import com.pdclientmanager.model.projection.InvestigatorProjection;
 
 public interface InvestigatorService {
 
-    Long save(final InvestigatorFormDto formDto);
+    Long save(final InvestigatorForm formDto);
     
-    InvestigatorDto findById(final Long targetId);
+    <T> T findById(final Long targetId, Class<T> type);
     
-    InvestigatorFormDto findFormById(final Long targetId);
+    InvestigatorForm findFormById(final Long targetId);
         
-    List<InvestigatorDto> findAll();
+    List<InvestigatorProjection> findAll();
     
-    List<InvestigatorDto> findAllActive();
+    List<InvestigatorProjection> findAllActive();
     
-    void delete(final InvestigatorDto dto);
+    void delete(final InvestigatorProjection target);
     
     void deleteById(final Long targetId);
 }

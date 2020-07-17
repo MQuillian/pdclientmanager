@@ -1,113 +1,137 @@
 package com.pdclientmanager.util.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.AttorneyMinimalDto;
-import com.pdclientmanager.model.dto.CaseDto;
-import com.pdclientmanager.model.dto.CaseMinimalDto;
-import com.pdclientmanager.model.dto.ChargedCountDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto;
-import com.pdclientmanager.model.dto.JudgeDto;
-import com.pdclientmanager.model.entity.Attorney;
-import com.pdclientmanager.model.entity.Case;
-import com.pdclientmanager.model.entity.ChargedCount;
-import com.pdclientmanager.model.entity.Client;
-import com.pdclientmanager.model.entity.Judge;
+import com.pdclientmanager.model.form.CaseForm;
+import com.pdclientmanager.repository.ChargeRepository;
+import com.pdclientmanager.repository.entity.Attorney;
+import com.pdclientmanager.repository.entity.Case;
+import com.pdclientmanager.repository.entity.Charge;
+import com.pdclientmanager.repository.entity.ChargedCount;
+import com.pdclientmanager.repository.entity.Client;
+import com.pdclientmanager.repository.entity.Judge;
+import com.pdclientmanager.service.AttorneyService;
+import com.pdclientmanager.service.ChargeService;
+import com.pdclientmanager.service.ClientService;
+import com.pdclientmanager.service.JudgeService;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {WebConfigTest.class})
 public class CaseMapperTest {
-
-    private CaseDto caseDto;
+    
+    @Mock
+    private ClientService clientService;
+    
+    @Mock
+    private JudgeService judgeService;
+    
+    @Mock
+    private AttorneyService attorneyService;
+    
+    @Mock
+    private ChargeService chargeService;
+    
+    private CaseForm caseFormDto;
     private Case courtCase;
     
     @Autowired
+    @InjectMocks
     CaseMapper caseMapper;
     
     @BeforeEach
     public void setUp() {
         
-        caseDto = new CaseDto.CaseDtoBuilder()
-            .withAttorney(new AttorneyMinimalDto.AttorneyMinimalDtoBuilder().build())
-            .withClient(new ClientMinimalDto.ClientMinimalDtoBuilder().build())
-            .withJudge(new JudgeDto.JudgeDtoBuilder().build())
-            .build();
-        ChargedCountDto testCountDto = new ChargedCountDto.ChargedCountDtoBuilder().build();
-        caseDto.addChargedCount(testCountDto);
+        initMocks(this);
+        
+        caseFormDto = new CaseForm.CaseFormDtoBuilder()
+                .withAttorneyId(1L)
+                .withCaseNumber("20J0001")
+                .withClientId(2L)
+                .withJudgeId(3L)
+                .build();
         
         courtCase = new Case.CaseBuilder()
             .withAttorney(new Attorney.AttorneyBuilder().build())
             .withClient(new Client.ClientBuilder().build())
             .withJudge(new Judge.JudgeBuilder().build())
             .build();
+        
         ChargedCount testCount = new ChargedCount.ChargedCountBuilder()
+            .withCharge(new Charge.ChargeBuilder().build())
             .build();
+        caseFormDto.addChargedCount(testCount);
         courtCase.addChargedCount(testCount);
     }
     
     // Mapping between CaseDto and Case entity
     
     @Test
-    public void mapper_ShouldMapDtoToEntity() {
+    public void mapper_ShouldMapFormToEntity() {
         
-        Case entity = caseMapper.toCase(caseDto, new CycleAvoidingMappingContext());
+        when(chargeService.findById(caseFormDto.getChargedCountsIds().get(1), Charge.class))
+            .thenReturn(new Charge.ChargeBuilder().build());
         
-        assertThat(caseDto.getId()).isEqualTo(entity.getId());
-        assertThat(caseDto.getCaseNumber()).isEqualTo(entity.getCaseNumber());
-        assertThat(caseDto.getDateOpened()).isEqualTo(entity.getDateOpened());
-        assertThat(caseDto.getDateClosed()).isEqualTo(entity.getDateClosed());
-        assertThat(caseDto.getClient().getId()).isEqualTo(entity.getClient().getId());
-        assertThat(caseDto.getJudge().getId()).isEqualTo(entity.getJudge().getId());
-        assertThat(caseDto.getAttorney().getId()).isEqualTo(entity.getAttorney().getId());
-        assertThat(caseDto.getChargedCounts().size())
-            .isEqualTo(entity.getChargedCounts().size());
-        assertThat(caseDto.getChargedCounts().get(1).getId())
-            .isEqualTo(entity.getChargedCounts().get(1).getId());
+        when(clientService.findById(caseFormDto.getClientId(), Client.class))
+            .thenReturn(new Client.ClientBuilder()
+                    .withId(caseFormDto.getClientId()).build());
+        
+        when(judgeService.findById(caseFormDto.getJudgeId(), Judge.class))
+            .thenReturn(new Judge.JudgeBuilder()
+                    .withId(caseFormDto.getJudgeId()).build());
+        
+        when(attorneyService.findById(caseFormDto.getAttorneyId(), Attorney.class))
+            .thenReturn(new Attorney.AttorneyBuilder()
+                    .withId(caseFormDto.getAttorneyId()).build());
+        
+        Case entity = caseMapper.toCaseFromCaseFormDto(caseFormDto, new CycleAvoidingMappingContext());
+        
+        assertThat(entity.getId()).isEqualTo(caseFormDto.getId());
+        assertThat(entity.getCaseNumber()).isEqualTo(caseFormDto.getCaseNumber());
+        assertThat(entity.getDateOpened()).isEqualTo(LocalDate.of(2000, 1, 1));
+        assertThat(entity.getDateClosed()).isNull();
+        assertThat(entity.getClient().getId()).isEqualTo(caseFormDto.getClientId());
+        assertThat(entity.getJudge().getId()).isEqualTo(caseFormDto.getJudgeId());
+        assertThat(entity.getAttorney().getId()).isEqualTo(caseFormDto.getAttorneyId());
+        assertThat(entity.getChargedCounts().size())
+            .isEqualTo(caseFormDto.getChargedCountsIds().size());
+        assertThat(entity.getChargedCounts().get(1).getCharge().getId())
+            .isEqualTo(caseFormDto.getChargedCountsIds().get(1));
     }
     
     @Test
-    public void mapper_ShouldMapEntityToDto() {
+    public void mapper_ShouldMapEntityToForm() {
                 
-        CaseDto dto = caseMapper.toCaseDto(courtCase);
+        CaseForm formDto = caseMapper.toCaseFormDtoFromCase(courtCase);
                 
-        assertThat(courtCase.getId()).isEqualTo(dto.getId());
-        assertThat(courtCase.getCaseNumber()).isEqualTo(dto.getCaseNumber());
-        assertThat(courtCase.getDateOpened()).isEqualTo(dto.getDateOpened());
-        assertThat(courtCase.getDateClosed()).isEqualTo(dto.getDateClosed());
-        assertThat(courtCase.getClient().getId()).isEqualTo(dto.getClient().getId());
-        assertThat(courtCase.getJudge().getId()).isEqualTo(dto.getJudge().getId());
-        assertThat(courtCase.getAttorney().getId()).isEqualTo(dto.getAttorney().getId());
-        assertThat(courtCase.getChargedCounts().size())
-            .isEqualTo(dto.getChargedCounts().size());
-        assertThat(courtCase.getChargedCounts().get(1).getId())
-            .isEqualTo(dto.getChargedCounts().get(1).getId());
-    }
-    
-    
-    // Mapping between CaseMinimalDto and Case entity
-    
-    @Test
-    public void mapper_ShouldMapEntityToMinimalDto() {
-        
-        CaseMinimalDto minimalDto = caseMapper.toCaseMinimalDto(courtCase);
-        
-        assertThat(courtCase.getId()).isEqualTo(minimalDto.getId());
-        assertThat(courtCase.getCaseNumber()).isEqualTo(minimalDto.getCaseNumber());
-        assertThat(courtCase.getDateOpened()).isEqualTo(minimalDto.getDateOpened());
-        assertThat(courtCase.getDateClosed()).isEqualTo(minimalDto.getDateClosed());
-        assertThat(courtCase.getChargedCounts().size())
-            .isEqualTo(minimalDto.getChargedCounts().size());
-        assertThat(courtCase.getChargedCounts().get(1).getId())
-            .isEqualTo(minimalDto.getChargedCounts().get(1).getId());
+        assertThat(formDto.getId()).isEqualTo(courtCase.getId());
+        assertThat(formDto.getCaseNumber()).isEqualTo(courtCase.getCaseNumber());
+        assertThat(formDto.getDateOpened()).isEqualTo("1/1/00");
+        assertThat(formDto.getDateClosed()).isEqualTo("");
+        assertThat(formDto.getClientId()).isEqualTo(courtCase.getClient().getId());
+        assertThat(formDto.getJudgeId()).isEqualTo(courtCase.getJudge().getId());
+        assertThat(formDto.getAttorneyId()).isEqualTo(courtCase.getAttorney().getId());
+        assertThat(formDto.getChargedCountsIds().size())
+            .isEqualTo(courtCase.getChargedCounts().size());
+        assertThat(formDto.getChargedCountsIds().get(1))
+            .isEqualTo(courtCase.getChargedCounts().get(1).getCharge().getId());
     }
 }

@@ -10,8 +10,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.ChargeDto;
-import com.pdclientmanager.model.entity.Charge;
+import com.pdclientmanager.model.form.ChargeForm;
+import com.pdclientmanager.repository.entity.Charge;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -22,28 +22,14 @@ public class ChargeMapperTest {
     ChargeMapper chargeMapper;
     
     @Test
-    public void mapper_ShouldMapDtoToEntity() {
+    public void mapper_ShouldMapFormToEntity() {
         
-        ChargeDto dto = new ChargeDto.ChargeDtoBuilder()
-                .build();
+        ChargeForm form = new ChargeForm.ChargeFormBuilder().build();
         
-        Charge entity = chargeMapper.toCharge(dto);
+        Charge entity = chargeMapper.toCharge(form);
         
-        assertThat(dto.getId()).isEqualTo(entity.getId());
-        assertThat(dto.getName()).isEqualTo(entity.getName());
-        assertThat(dto.getStatute()).isEqualTo(entity.getStatute());
-    }
-    
-    @Test
-    public void mapper_ShouldMapEntityToDto() {
-        
-        Charge entity = new Charge.ChargeBuilder()
-                .build();
-        
-        ChargeDto dto = chargeMapper.toChargeDto(entity);
-        
-        assertThat(entity.getId()).isEqualTo(dto.getId());
-        assertThat(entity.getName()).isEqualTo(dto.getName());
-        assertThat(entity.getStatute()).isEqualTo(dto.getStatute());
+        assertThat(form.getId()).isEqualTo(entity.getId());
+        assertThat(form.getName()).isEqualTo(entity.getName());
+        assertThat(form.getStatute()).isEqualTo(entity.getStatute());
     }
 }

@@ -7,8 +7,8 @@ import org.mapstruct.TargetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pdclientmanager.model.entity.Investigator;
 import com.pdclientmanager.repository.InvestigatorRepository;
+import com.pdclientmanager.repository.entity.Investigator;
 
 @Component
 public class InvestigatorResolver {

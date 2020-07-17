@@ -2,22 +2,23 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
-import com.pdclientmanager.model.dto.ClientDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto;
+import com.pdclientmanager.model.form.ClientForm;
+import com.pdclientmanager.model.projection.ClientLightProjection;
+import com.pdclientmanager.model.projection.ClientProjection;
 
 public interface ClientService {
 
-Long save(final ClientMinimalDto formDto);
+    Long save(final ClientForm form);
     
-    ClientDto findById(final Long targetId);
+    <T> T findById(final Long targetId, Class<T> type);
     
-    ClientMinimalDto findFormById(final Long targetId);
+    ClientForm findFormById(final Long targetId);
     
-    List<ClientDto> findByName(String query);
+    List<ClientLightProjection> findByName(String query);
         
-    List<ClientDto> findAll();
+    <T> List<T> findAllBy(Class<T> type);
     
-    void delete(final ClientDto dto);
+    void delete(final ClientProjection form);
     
     void deleteById(final Long targetId);
 }

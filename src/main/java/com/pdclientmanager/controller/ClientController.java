@@ -1,5 +1,6 @@
 package com.pdclientmanager.controller;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.pdclientmanager.model.dto.ClientDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto;
+import com.pdclientmanager.model.form.ClientForm;
+import com.pdclientmanager.model.projection.ClientLightProjection;
+import com.pdclientmanager.model.projection.ClientProjection;
 import com.pdclientmanager.service.ClientService;
 
 @Controller
@@ -34,7 +35,7 @@ public class ClientController {
     
     @GetMapping("clients/add")
     public String showNewClientForm(Model model) {
-        ClientMinimalDto clientForm = new ClientMinimalDto();
+        ClientForm clientForm = new ClientForm();
         
         model.addAttribute("clientForm", clientForm);
         
@@ -42,7 +43,7 @@ public class ClientController {
     }
     
     @PostMapping("/clients")
-    public String saveClient(@ModelAttribute("clientForm") @Valid ClientMinimalDto clientForm,
+    public String saveClient(@ModelAttribute("clientForm") @Valid ClientForm clientForm,
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
@@ -59,31 +60,30 @@ public class ClientController {
     
     @GetMapping("/clients/list")
     public String showAllClients(Model model) {
-        model.addAttribute("clientList", clientService.findAll());
+        model.addAttribute("clientList", clientService.findAllBy(ClientLightProjection.class));
         
         return "clients/listClients";
     }
     
     @GetMapping("/clients/{id}")
     public String showClient(@PathVariable("id") Long id, Model model,
-            final RedirectAttributes redirectAttributes) {
-        ClientDto client = clientService.findById(id);
-        
-        if(client == null) {
+            final RedirectAttributes redirectAttributes) {        
+        try {
+            ClientProjection client = clientService.findById(id, ClientProjection.class);
+            model.addAttribute("client", client);
+            
+            return "clients/showClient";
+        } catch(EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", "Client could not be found");
             
             return "redirect:/clients";
-        } else {
-            model.addAttribute("client", client);
-            
-            return "clients/showClient";
         }
     }
     
     @GetMapping("/clients/{id}/update")
     public String showUpdateClientForm(@PathVariable("id") Long targetId, Model model) {
-        ClientMinimalDto clientForm = clientService.findFormById(targetId);
+        ClientForm clientForm = clientService.findFormById(targetId);
         
         model.addAttribute("clientForm", clientForm);
         

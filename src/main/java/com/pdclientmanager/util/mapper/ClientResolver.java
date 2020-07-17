@@ -7,8 +7,8 @@ import org.mapstruct.TargetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pdclientmanager.model.entity.Client;
 import com.pdclientmanager.repository.ClientRepository;
+import com.pdclientmanager.repository.entity.Client;
 
 @Component
 public class ClientResolver {

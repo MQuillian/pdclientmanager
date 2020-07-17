@@ -9,17 +9,22 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.pdclientmanager.model.dto.CaseDto;
-import com.pdclientmanager.model.dto.CaseFormDto;
-import com.pdclientmanager.model.dto.CaseMinimalDto;
-import com.pdclientmanager.model.entity.Case;
-import com.pdclientmanager.model.entity.Charge;
-import com.pdclientmanager.model.entity.ChargedCount;
+import com.pdclientmanager.model.form.CaseForm;
 import com.pdclientmanager.repository.ChargeRepository;
+import com.pdclientmanager.repository.entity.Attorney;
+import com.pdclientmanager.repository.entity.Case;
+import com.pdclientmanager.repository.entity.Charge;
+import com.pdclientmanager.repository.entity.ChargedCount;
+import com.pdclientmanager.repository.entity.Client;
+import com.pdclientmanager.repository.entity.Judge;
+import com.pdclientmanager.service.AttorneyService;
+import com.pdclientmanager.service.ChargeService;
+import com.pdclientmanager.service.ClientService;
+import com.pdclientmanager.service.JudgeService;
 import com.pdclientmanager.util.CustomDateTimeFormatter;
 
 // Decorator class for CaseMapper that provides mapping support for SortedMap
-//   fields of Case, CaseDto, and CaseFormDto
+//   fields of Case, CaseProjection, and CaseForm
 
 public class CaseMapperDecorator implements CaseMapper {
 
@@ -28,41 +33,32 @@ public class CaseMapperDecorator implements CaseMapper {
     private CaseMapper delegate;
     
     @Autowired
-    private ChargeRepository chargeRepository;
+    private ClientService clientService;
+    
+    @Autowired
+    private JudgeService judgeService;
+    
+    @Autowired
+    private AttorneyService attorneyService;
+    
+    @Autowired
+    private ChargeService chargeService;
     
     private CustomDateTimeFormatter dateFormatter = new CustomDateTimeFormatter();
-    
-    
-    @Override
-    public Case toCase(CaseDto dto, CycleAvoidingMappingContext context) {
-        return delegate.toCase(dto, context);
-    }
 
     @Override
-    public CaseDto toCaseDto(Case entity) {
-        return delegate.toCaseDto(entity);
-    }
-
-    @Override
-    public List<Case> toCaseList(List<CaseDto> dtos, CycleAvoidingMappingContext context) {
-        return delegate.toCaseList(dtos, context);
-    }
-
-    @Override
-    public List<CaseDto> toCaseDtoList(List<Case> entities) {
-        return delegate.toCaseDtoList(entities);
-    }
-
-    @Override
-    public Case toCaseFromCaseFormDto(CaseFormDto dto, CycleAvoidingMappingContext context) {
+    public Case toCaseFromCaseFormDto(CaseForm dto, CycleAvoidingMappingContext context) {
         Case entity = delegate.toCaseFromCaseFormDto(dto, context);
+        
+        entity.setClient(clientService.findById(dto.getClientId(), Client.class));
+        entity.setJudge(judgeService.findById(dto.getJudgeId(), Judge.class));
+        entity.setAttorney(attorneyService.findById(dto.getAttorneyId(), Attorney.class));
         entity.setChargedCounts(new TreeMap<>());
         
         for(Map.Entry<Integer, Long> entry : dto.getChargedCountsIds().entrySet()) {
-            Charge charge = chargeRepository.findById(entry.getValue())
-                    .orElseThrow(EntityNotFoundException::new);
+            Charge charge = chargeService.findById(entry.getValue(), Charge.class);
             
-            ChargedCount chargedCount = new ChargedCount(entry.getKey(), null, charge);
+            ChargedCount chargedCount = new ChargedCount(entry.getKey(), charge);
             
             entity.addChargedCount(chargedCount);
         }
@@ -71,8 +67,8 @@ public class CaseMapperDecorator implements CaseMapper {
     }
 
     @Override
-    public CaseFormDto toCaseFormDtoFromCase(Case entity) {
-        CaseFormDto dto = delegate.toCaseFormDtoFromCase(entity);
+    public CaseForm toCaseFormDtoFromCase(Case entity) {
+        CaseForm dto = delegate.toCaseFormDtoFromCase(entity);
         dto.setDateOpened(dateFormatter
                 .toFormattedDateString(entity.getDateOpened()));
         dto.setDateClosed(dateFormatter
@@ -91,33 +87,12 @@ public class CaseMapperDecorator implements CaseMapper {
     }
 
     @Override
-    public List<Case> toCaseListFromCaseFormDtoList(List<CaseFormDto> dtos, CycleAvoidingMappingContext context) {
+    public List<Case> toCaseListFromCaseFormDtoList(List<CaseForm> dtos, CycleAvoidingMappingContext context) {
         return delegate.toCaseListFromCaseFormDtoList(dtos, context);
     }
 
     @Override
-    public List<CaseFormDto> toCaseFormDtoListFromCaseList(List<Case> entities) {
+    public List<CaseForm> toCaseFormDtoListFromCaseList(List<Case> entities) {
         return delegate.toCaseFormDtoListFromCaseList(entities);
     }
-
-    @Override
-    public CaseMinimalDto toCaseMinimalDto(Case entity) {
-        return delegate.toCaseMinimalDto(entity);
-    }
-
-    @Override
-    public List<CaseMinimalDto> toCaseMinimalDtoList(List<Case> entities) {
-        return delegate.toCaseMinimalDtoList(entities);
-    }
-
-    @Override
-    public CaseMinimalDto toCaseMinimalDtoFromCaseDto(CaseDto dto) {
-        return delegate.toCaseMinimalDtoFromCaseDto(dto);
-    }
-
-    @Override
-    public List<CaseMinimalDto> toCaseMinimalDtoListFromCaseDtoList(List<CaseDto> dtos) {
-        return delegate.toCaseMinimalDtoListFromCaseDtoList(dtos);
-    }
-
 }

@@ -8,10 +8,11 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pdclientmanager.model.dto.JudgeDto;
-import com.pdclientmanager.model.entity.Judge;
-import com.pdclientmanager.model.entity.WorkingStatus;
+import com.pdclientmanager.model.form.JudgeForm;
+import com.pdclientmanager.model.projection.JudgeProjection;
 import com.pdclientmanager.repository.JudgeRepository;
+import com.pdclientmanager.repository.entity.Judge;
+import com.pdclientmanager.repository.entity.WorkingStatus;
 import com.pdclientmanager.util.mapper.JudgeMapper;
 
 @Service
@@ -28,41 +29,47 @@ public class JudgeServiceImpl implements JudgeService {
     
     @Override
     @Transactional
-    public Long save(JudgeDto dto) {
-        Judge entity = mapper.toJudge(dto);
+    public Long save(JudgeForm form) {
+        Judge entity = mapper.toJudge(form);
         repository.save(entity);
         return entity.getId();
     }
 
     @Override
     @Transactional
-    public JudgeDto findById(Long targetId) {
-        Judge entity = repository.findById(targetId)
+    public <T> T findById(Long targetId, Class<T> type) {
+        T judge = repository.findById(targetId, type)
                 .orElseThrow(EntityNotFoundException::new);
-        JudgeDto dto = mapper.toJudgeDto(entity);
-        return dto;
+        return judge;
+    }
+    
+    @Override
+    @Transactional
+    public JudgeForm findFormById(Long targetId) {
+        Judge entity = repository.findById(targetId, Judge.class)
+                .orElseThrow(EntityNotFoundException::new);
+        JudgeForm judge = mapper.toJudgeForm(entity);
+        return judge;
     }
 
     @Override
     @Transactional
-    public List<JudgeDto> findAll() {
-        List<JudgeDto> dtoList = mapper.toJudgeDtoList(repository.findAll());
-        return dtoList;
+    public List<JudgeProjection> findAll() {
+        List<JudgeProjection> judgeList = repository.findAllBy(JudgeProjection.class);
+        return judgeList;
     }
 
     @Override
     @Transactional
-    public List<JudgeDto> findAllActive() {
-        List<JudgeDto> dtoList = mapper.toJudgeDtoList(
-                repository.findByWorkingStatus(WorkingStatus.ACTIVE));
-        return dtoList;
+    public List<JudgeProjection> findAllActive() {
+        List<JudgeProjection> judgeList = repository.findByWorkingStatus(WorkingStatus.ACTIVE, JudgeProjection.class);
+        return judgeList;
     }
 
     @Override
     @Transactional
-    public void delete(JudgeDto dto) {
-        Judge entity = mapper.toJudge(dto);
-        repository.delete(entity);
+    public void delete(JudgeProjection judge) {
+        repository.deleteById(judge.getId());
     }
 
     @Override

@@ -5,11 +5,11 @@ import java.time.format.DateTimeParseException;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.pdclientmanager.model.dto.CaseFormDto;
+import com.pdclientmanager.model.form.CaseForm;
 import com.pdclientmanager.util.CustomDateTimeFormatter;
 
 public class ConsistentDatesValidator implements
-        ConstraintValidator<ConsistentDatesConstraint, CaseFormDto> {
+        ConstraintValidator<ConsistentDatesConstraint, CaseForm> {
             
     private CustomDateTimeFormatter dateFormatter;
 
@@ -19,7 +19,7 @@ public class ConsistentDatesValidator implements
     }
 
     @Override
-    public boolean isValid(CaseFormDto form, ConstraintValidatorContext context) {
+    public boolean isValid(CaseForm form, ConstraintValidatorContext context) {
 
         String dateOpened = form.getDateOpened();
         String dateClosed = form.getDateClosed();

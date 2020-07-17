@@ -9,12 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.pdclientmanager.model.dto.ChargeDto;
-import com.pdclientmanager.model.dto.ClientDto;
+import com.pdclientmanager.model.projection.ChargeProjection;
+import com.pdclientmanager.model.projection.ClientLightProjection;
 import com.pdclientmanager.service.ChargeService;
 import com.pdclientmanager.service.ClientService;
-import com.pdclientmanager.util.json.CustomChargeDtoSerializer;
-import com.pdclientmanager.util.json.CustomClientDtoSerializer;
+import com.pdclientmanager.util.json.CustomChargeProjectionSerializer;
+import com.pdclientmanager.util.json.CustomClientLightProjectionSerializer;
 import com.pdclientmanager.util.json.JsonUtils;
 
 @Controller
@@ -31,20 +31,20 @@ public class AutocompleteController {
     
     @GetMapping("/autocomplete/clientsByName")
     public ResponseEntity<String> getClientsByName(@RequestParam("q") final String input) {
-        List<ClientDto> clients = clientService.findByName(input);
+        List<ClientLightProjection> clients = clientService.findByName(input);
 
-        String resp = JsonUtils.convertToJsonString(ClientDto.class, clients,
-                new CustomClientDtoSerializer());
+        String resp = JsonUtils.convertToJsonString(ClientLightProjection.class, clients,
+                new CustomClientLightProjectionSerializer());
         
         return new ResponseEntity<String>(resp, HttpStatus.OK);
     }
     
     @GetMapping("/autocomplete/chargesByNameOrStatute")
     public ResponseEntity<String> getChargesByNameOrStatute(@RequestParam("q") final String input) {
-        List<ChargeDto> charges = chargeService.findByNameOrStatute(input);
+        List<ChargeProjection> charges = chargeService.findByNameOrStatute(input);
 
-        String resp = JsonUtils.convertToJsonString(ChargeDto.class, charges,
-                new CustomChargeDtoSerializer());
+        String resp = JsonUtils.convertToJsonString(ChargeProjection.class, charges,
+                new CustomChargeProjectionSerializer());
         
         return new ResponseEntity<String>(resp, HttpStatus.OK);
     }

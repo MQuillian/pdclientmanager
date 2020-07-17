@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,12 +14,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.CaseMinimalDto;
-import com.pdclientmanager.model.dto.ClientDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto.ClientMinimalDtoBuilder;
-import com.pdclientmanager.model.entity.Case;
-import com.pdclientmanager.model.entity.Client;
+import com.pdclientmanager.model.form.ClientForm;
+import com.pdclientmanager.repository.entity.Case;
+import com.pdclientmanager.repository.entity.Client;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -28,15 +24,10 @@ import com.pdclientmanager.model.entity.Client;
 public class ClientMapperTest {
     
     @Autowired
-    @InjectMocks
     private ClientMapper mapper;
     
-    @Mock
-    private CaseResolver resolver;
-    
     private Client client;
-    private ClientDto clientDto;
-    private ClientMinimalDto clientMinimalDto;
+    private ClientForm clientForm;
     private Case courtCase;
     
     @BeforeEach
@@ -46,78 +37,31 @@ public class ClientMapperTest {
         
         client = new Client.ClientBuilder().build();
         
-        clientDto = new ClientDto.ClientDtoBuilder().build();
-        
-        clientMinimalDto = new ClientMinimalDtoBuilder().build();
-        
         courtCase = new Case.CaseBuilder().build();
+        client.getCases().add(courtCase);
+        
+        clientForm = new ClientForm.ClientFormBuilder().build();
     }
 
     // Mapping between ClientDto and Client entity
     
     @Test
-    public void mapper_ShouldMapDtoToEntity() {
+    public void mapper_ShouldMapFormToEntity() {
         
-        clientDto.getCases().add(new CaseMinimalDto.CaseMinimalDtoBuilder().build());
+        Client entity = mapper.toClient(clientForm, new CycleAvoidingMappingContext());
         
-        Client entity = mapper.toClient(clientDto, new CycleAvoidingMappingContext());
-        
-        assertThat(clientDto.getId()).isEqualTo(entity.getId());
-        assertThat(clientDto.getName()).isEqualTo(entity.getName());
-        assertThat(clientDto.getCustodyStatus()).isEqualTo(entity.getCustodyStatus());
-        assertThat(clientDto.getCases().get(0).getId()).isEqualTo(entity.getCases().get(0).getId());
+        assertThat(entity.getId()).isEqualTo(clientForm.getId());
+        assertThat(entity.getName()).isEqualTo(clientForm.getName());
+        assertThat(entity.getCustodyStatus()).isEqualTo(clientForm.getCustodyStatus());
     }
     
     @Test
-    public void mapper_ShouldMapEntityToDto() {
+    public void mapper_ShouldMapEntityToForm() {
         
-        client.getCases().add(new Case.CaseBuilder().build());
+        ClientForm form = mapper.toClientForm(client);
         
-        ClientDto dto = mapper.toClientDto(client);
-        
-        assertThat(client.getId()).isEqualTo(dto.getId());
-        assertThat(client.getName()).isEqualTo(dto.getName());
-        assertThat(client.getCustodyStatus()).isEqualTo(dto.getCustodyStatus());
-        assertThat(client.getCases().get(0).getId()).isEqualTo(dto.getCases().get(0).getId());
-    }
-    
-    
-    // Mapping between ClientMinimalDto and Client entity
-    
-    @Test
-    public void mapper_ShouldMapClientMinimalDtoToEntity() {
-        
-        Client mappedClient = mapper.toClientFromClientMinimalDto(clientMinimalDto, new CycleAvoidingMappingContext());
-
-        assertThat(mappedClient.getId()).isEqualTo(clientMinimalDto.getId());
-        assertThat(mappedClient.getName()).isEqualTo(clientMinimalDto.getName());
-        assertThat(mappedClient.getCustodyStatus()).isEqualTo(clientMinimalDto.getCustodyStatus());
-    }
-    
-    @Test
-    public void mapper_ShouldMapEntityToClientMinimalDto() {
-        
-        client.getCases().add(courtCase);
-        
-        Mockito.when(resolver.toLong(courtCase)).thenReturn(courtCase.getId());
-        
-        ClientMinimalDto mappedFormDto = mapper.toClientMinimalDto(client);
-        
-        assertThat(mappedFormDto.getId()).isEqualTo(client.getId());
-        assertThat(mappedFormDto.getName()).isEqualTo(client.getName());
-        assertThat(mappedFormDto.getCustodyStatus()).isEqualTo(client.getCustodyStatus());
-    }
-    
-    
-    // Mapping between ClientMinimalDto and Client entity
-    
-    @Test
-    public void mapper_ShouldMapEntityToMinimalDto() {
-        
-        ClientMinimalDto dto = mapper.toClientMinimalDto(client);
-        
-        assertThat(client.getId()).isEqualTo(dto.getId());
-        assertThat(client.getName()).isEqualTo(dto.getName());
-        assertThat(client.getCustodyStatus()).isEqualTo(dto.getCustodyStatus());
+        assertThat(form.getId()).isEqualTo(client.getId());
+        assertThat(form.getName()).isEqualTo(client.getName());
+        assertThat(form.getCustodyStatus()).isEqualTo(client.getCustodyStatus());
     }
 }

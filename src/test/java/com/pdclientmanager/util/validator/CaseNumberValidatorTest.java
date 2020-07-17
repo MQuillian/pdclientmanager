@@ -20,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.CaseFormDto;
+import com.pdclientmanager.model.form.CaseForm;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -46,12 +46,12 @@ public class CaseNumberValidatorTest {
     public void shouldReturnFalseForInvalidCaseNumber(String caseNumber, boolean expected) {
         
         boolean validCaseNumber = true;
-        CaseFormDto testDto = new CaseFormDto.CaseFormDtoBuilder()
+        CaseForm testDto = new CaseForm.CaseFormDtoBuilder()
                 .withCaseNumber(caseNumber).build();
         
-        Set<ConstraintViolation<CaseFormDto>> violations = validator.validate(testDto);
+        Set<ConstraintViolation<CaseForm>> violations = validator.validate(testDto);
         
-        for(ConstraintViolation<CaseFormDto> violation : violations) {
+        for(ConstraintViolation<CaseForm> violation : violations) {
             if(violation.getConstraintDescriptor().getAnnotation().annotationType()
                     .equals(CaseNumberConstraint.class)) {
                 validCaseNumber = false;

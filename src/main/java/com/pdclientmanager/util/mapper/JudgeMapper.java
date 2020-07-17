@@ -1,24 +1,18 @@
 package com.pdclientmanager.util.mapper;
 
-import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import com.pdclientmanager.model.dto.JudgeDto;
-import com.pdclientmanager.model.entity.Judge;
+import com.pdclientmanager.model.form.JudgeForm;
+import com.pdclientmanager.repository.entity.Judge;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface JudgeMapper {
-
-    //Mapping between JudgeDto and Judge entity
     
-    Judge toJudge(final JudgeDto dto);
+    //Mapping between JudgeForm and Judge entity
     
-    JudgeDto toJudgeDto(final Judge entity);
+    Judge toJudge(final JudgeForm dto);
     
-    List<Judge> toJudgeList(final List<JudgeDto> dtos);
-    
-    List<JudgeDto> toJudgeDtoList(final List<Judge> entities);
+    JudgeForm toJudgeForm(final Judge entity);
     
 }

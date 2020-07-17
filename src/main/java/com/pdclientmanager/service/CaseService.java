@@ -5,28 +5,32 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.pdclientmanager.model.dto.CaseDto;
-import com.pdclientmanager.model.dto.CaseFormDto;
+import com.pdclientmanager.model.form.CaseForm;
+import com.pdclientmanager.model.projection.CaseProjection;
 
 public interface CaseService {
     
-    Long save(final CaseFormDto formDto);
+    Long save(final CaseForm form);
     
-    CaseDto findById(final Long targetId);
+    <T> T findById(final Long targetId, Class<T> type);
     
-    CaseFormDto findFormById(final Long targetId);
-        
-    List<CaseDto> findAll();
+    CaseForm findFormById(final Long targetId);
     
-    Page<CaseDto> findAll(Pageable pageable);
+    <T> List<T> findAll(Class<T> type);
     
-    List<CaseDto> findAllOpen();
+    <T> Page<T> findAll(Pageable pageable, Class<T> type);
     
-    List<CaseDto> findAllOpenWithAttorneyId(final Long targetId);
+    <T> List<T> findAllOpen(Class<T> type);
     
-    Page<CaseDto> findAllWithClientName(Pageable pageRequest, final String clientName);
+    <T> List<T> findAllOpenWithAttorneyId(final Long targetId, Class<T> type);
     
-    void delete(final CaseDto dto);
+    <T> Page<T> findAllWithClientName(Pageable pageRequest, final String clientName, Class<T> type);
+    
+    void delete(final CaseProjection courtCase);
     
     void deleteById(final Long targetId);
+    
+    void reassignOpenCases(final Long prevId, final Long newId);
+    
+    void reassignAllCases(final Long prevId, final Long newId);
 }

@@ -8,10 +8,11 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pdclientmanager.model.dto.ClientDto;
-import com.pdclientmanager.model.dto.ClientMinimalDto;
-import com.pdclientmanager.model.entity.Client;
+import com.pdclientmanager.model.form.ClientForm;
+import com.pdclientmanager.model.projection.ClientLightProjection;
+import com.pdclientmanager.model.projection.ClientProjection;
 import com.pdclientmanager.repository.ClientRepository;
+import com.pdclientmanager.repository.entity.Client;
 import com.pdclientmanager.util.mapper.ClientMapper;
 import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 
@@ -29,48 +30,48 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public Long save(ClientMinimalDto formDto) {
-        Client entity = mapper.toClientFromClientMinimalDto(formDto, new CycleAvoidingMappingContext());
+    public Long save(ClientForm form) {
+        Client entity = mapper.toClient(form, new CycleAvoidingMappingContext());
         repository.save(entity);
         return entity.getId();
     }
 
     @Override
     @Transactional
-    public ClientDto findById(Long targetId) {
-        Client entity = repository.findById(targetId).orElseThrow(EntityNotFoundException::new);
-        ClientDto dto = mapper.toClientDto(entity);
-        return dto;
+    public <T> T findById(Long targetId, Class<T> type) {
+        T client = repository.findById(targetId, type)
+                .orElseThrow(EntityNotFoundException::new);
+        return client;
     }
 
     @Override
     @Transactional
-    public ClientMinimalDto findFormById(Long targetId) {
-        Client entity = repository.findById(targetId).orElseThrow(EntityNotFoundException::new);
-        ClientMinimalDto formDto = mapper.toClientMinimalDto(entity);
-        return formDto;
+    public ClientForm findFormById(Long targetId) {
+        Client entity = repository.findById(targetId)
+                .orElseThrow(EntityNotFoundException::new);
+        ClientForm form = mapper.toClientForm(entity);
+        return form;
     }
     
     @Override
     @Transactional
-    public List<ClientDto> findByName(String query) {
-        List<ClientDto> dtoList = mapper.toClientDtoList(repository.
-                findFirst10ByNameContaining(query));
-        return dtoList;
+    public List<ClientLightProjection> findByName(String query) {
+        List<ClientLightProjection> clientList = repository.
+                findFirst10ByNameContaining(query);
+        return clientList;
     }
 
     @Override
     @Transactional
-    public List<ClientDto> findAll() {
-        List<ClientDto> dtoList = mapper.toClientDtoList(repository.findAll());
-        return dtoList;
+    public <T> List<T> findAllBy(Class<T> type) {
+        List<T> clientList = repository.findAllBy(type);
+        return clientList;
     }
 
     @Override
     @Transactional
-    public void delete(ClientDto dto) {
-        Client entity = mapper.toClient(dto, new CycleAvoidingMappingContext());
-        repository.delete(entity);
+    public void delete(ClientProjection target) {
+        deleteById(target.getId());
     }
 
     @Override

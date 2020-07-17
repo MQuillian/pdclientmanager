@@ -2,19 +2,22 @@ package com.pdclientmanager.service;
 
 import java.util.List;
 
-import com.pdclientmanager.model.dto.ChargeDto;
+import com.pdclientmanager.model.form.ChargeForm;
+import com.pdclientmanager.model.projection.ChargeProjection;
 
 public interface ChargeService {
 
-    Long save(final ChargeDto dto);
+    Long save(final ChargeForm form);
     
-    ChargeDto findById(final Long targetId);
+    <T> T findById(final Long targetId, Class<T> type);
     
-    List<ChargeDto> findByNameOrStatute(String query);
+    ChargeForm findFormById(final Long targetId);
+    
+    List<ChargeProjection> findByNameOrStatute(String query);
         
-    List<ChargeDto> findAll();
+    List<ChargeProjection> findAll();
     
-    void delete(final ChargeDto dto);
+    void delete(final ChargeProjection form);
     
     void deleteById(final Long targetId);
 }

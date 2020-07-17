@@ -1,11 +1,25 @@
 package com.pdclientmanager.repository;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.pdclientmanager.model.entity.Attorney;
+import org.springframework.data.jpa.repository.EntityGraph;
 
-public interface AttorneyRepository extends EmployeeRepository<Attorney> {
+import com.pdclientmanager.model.projection.AttorneyProjection;
+import com.pdclientmanager.repository.entity.Attorney;
+import com.pdclientmanager.repository.entity.WorkingStatus;
+
+public interface AttorneyRepository extends BaseRepository<Attorney> {
     
-    List<Attorney> findByInvestigator_Id(Long targetId);
+    @EntityGraph(value = "Attorney.fullProjection")
+    <T> Optional<T> findById(Long targetId, Class<T> type);
     
+    <T> List<T> findByInvestigator_Id(Long targetId, Class<T> type);
+    
+    @EntityGraph(value = "Attorney.fullProjection")
+    List<AttorneyProjection> findAllProjectedBy();
+    
+    <T> List<T> findByWorkingStatus(WorkingStatus workingStatus, Class<T> type);
+    
+    <T> List<T> findBy(Class<T> type);
 }

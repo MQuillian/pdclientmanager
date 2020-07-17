@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.pdclientmanager.repository", entityManagerFactoryRef = "sessionFactory")
 @EnableSpringDataWebSupport
-@ComponentScan(basePackages = {"com.pdclientmanager"})
+//@ComponentScan(basePackages = {"com.pdclientmanager"})
 public class PersistenceConfig {
 
     private Environment environment;
@@ -37,7 +37,7 @@ public class PersistenceConfig {
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(dataSource());
-        factoryBean.setPackagesToScan("com.pdclientmanager.model");
+        factoryBean.setPackagesToScan("com.pdclientmanager.repository.entity");
         factoryBean.setHibernateProperties(hibernateProperties());
         factoryBean.setPhysicalNamingStrategy(new SnakeCaseHibernateNamingStrategy());
         return factoryBean;

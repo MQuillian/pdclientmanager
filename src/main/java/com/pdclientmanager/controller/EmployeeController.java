@@ -1,7 +1,6 @@
 package com.pdclientmanager.controller;
 
-import java.util.List;
-
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.hibernate.Hibernate;
@@ -15,13 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.pdclientmanager.model.dto.AttorneyDto;
-import com.pdclientmanager.model.dto.AttorneyFormDto;
-import com.pdclientmanager.model.dto.CaseDto;
-import com.pdclientmanager.model.dto.InvestigatorDto;
-import com.pdclientmanager.model.dto.InvestigatorFormDto;
+import com.pdclientmanager.model.form.AttorneyForm;
+import com.pdclientmanager.model.form.InvestigatorForm;
+import com.pdclientmanager.model.projection.AttorneyProjection;
+import com.pdclientmanager.model.projection.InvestigatorProjection;
 import com.pdclientmanager.service.AttorneyService;
-import com.pdclientmanager.service.CaseService;
 import com.pdclientmanager.service.InvestigatorService;
 import com.pdclientmanager.util.mapper.AttorneyMapper;
 import com.pdclientmanager.util.mapper.InvestigatorMapper;
@@ -31,16 +28,13 @@ public class EmployeeController {
     
     private AttorneyService attorneyService;
     private InvestigatorService investigatorService;
-    private CaseService caseService;
     
     @Autowired
     public EmployeeController(AttorneyService attorneyService,
-            InvestigatorService investigatorService,
-            CaseService caseService, AttorneyMapper attorneyMapper,
+            InvestigatorService investigatorService, AttorneyMapper attorneyMapper,
             InvestigatorMapper investigatorMapper) {
         this.attorneyService = attorneyService;
         this.investigatorService = investigatorService;
-        this.caseService = caseService;
     }
     
     @GetMapping("/employeeManagement")
@@ -52,7 +46,7 @@ public class EmployeeController {
     
     @GetMapping("/attorneys/add")
     public String showNewAttorneyForm(Model model) {
-        AttorneyFormDto attorney = new AttorneyFormDto();
+        AttorneyForm attorney = new AttorneyForm();
         model.addAttribute("attorneyForm", attorney);
         model.addAttribute("activeInvestigators", investigatorService.findAllActive());
         return "attorneys/attorneyForm";
@@ -60,7 +54,7 @@ public class EmployeeController {
     
     @PostMapping("/attorneys")
     public String saveAttorney(
-            @ModelAttribute("attorneyForm") @Valid AttorneyFormDto attorneyForm,
+            @ModelAttribute("attorneyForm") @Valid AttorneyForm attorneyForm,
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
@@ -82,21 +76,17 @@ public class EmployeeController {
     @GetMapping("/attorneys/{id}")
     public String showAttorney(@PathVariable("id") Long id, Model model,
             final RedirectAttributes redirectAttributes) {
-        AttorneyDto attorney = attorneyService.findById(id);
-        if(attorney == null) {
-            redirectAttributes.addFlashAttribute("css", "danger");
-            redirectAttributes.addFlashAttribute("msg", "Attorney could not be found...");
-            return "redirect:/attorneys";
-        }
-        List<CaseDto> caseload = caseService.findAllOpenWithAttorneyId(id);
+        
+        AttorneyProjection attorney = attorneyService.findById(id, AttorneyProjection.class);
         model.addAttribute("attorney", attorney);
-        model.addAttribute("caseload", caseload);
+        model.addAttribute("caseload", attorney.getCaseload());
+        
         return "attorneys/showAttorney";
     }
     
     @GetMapping("/attorneys/{id}/update")
     public String showUpdateAttorneyForm(@PathVariable("id") Long targetId, Model model) {
-        AttorneyFormDto attorney = attorneyService.findFormById(targetId);
+        AttorneyForm attorney = attorneyService.findFormById(targetId);
         model.addAttribute("attorneyForm", attorney);
         model.addAttribute("activeInvestigators", investigatorService.findAllActive());
         return "attorneys/attorneyForm";
@@ -118,7 +108,7 @@ public class EmployeeController {
     
     @GetMapping("/investigators/add")
     public String showNewInvestigatorForm(Model model) {
-        InvestigatorFormDto investigator = new InvestigatorFormDto();
+        InvestigatorForm investigator = new InvestigatorForm();
         model.addAttribute("investigatorForm", investigator);
         model.addAttribute("activeAttorneys", attorneyService.findAllActive());
         return "investigators/investigatorForm";
@@ -126,11 +116,12 @@ public class EmployeeController {
     
     @PostMapping("/investigators")
     public String saveInvestigator(
-            @ModelAttribute("investigator") @Valid InvestigatorFormDto investigatorForm, 
+            @ModelAttribute("investigator") @Valid InvestigatorForm investigatorForm, 
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
-            return "addInvestigatorForm";
+
+            return "investigators/investigatorForm";
         } else {
             Long entityId = investigatorService.save(investigatorForm);
             redirectAttributes.addFlashAttribute("css", "success");
@@ -147,14 +138,9 @@ public class EmployeeController {
     
     @GetMapping("/investigators/{id}")
     public String showInvestigator(@PathVariable("id") Long targetId, Model model) {
-        InvestigatorDto investigator = investigatorService
-                .findById(targetId);
-        if(investigator == null) {
-            model.addAttribute("css", "error");
-            model.addAttribute("msg", "Investigator not found");
-            return "redirect:/investigators";
-        }
-        Hibernate.initialize(investigator.getAssignedAttorneys());
+
+        InvestigatorProjection investigator = investigatorService
+            .findById(targetId, InvestigatorProjection.class);
         model.addAttribute("investigator", investigator);
         model.addAttribute("assignedAttorneys", investigator.getAssignedAttorneys());
         return "investigators/showInvestigator";
@@ -163,7 +149,7 @@ public class EmployeeController {
     @GetMapping("/investigators/{id}/update")
     public String showUpdateInvestigatorForm(@PathVariable("id") Long targetId,
             Model model) {
-        InvestigatorFormDto investigator = 
+        InvestigatorForm investigator = 
                 investigatorService.findFormById(targetId);
         model.addAttribute("investigatorForm", investigator);
         model.addAttribute("activeAttorneys", attorneyService.findAllActive());

@@ -21,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.dto.CaseFormDto;
+import com.pdclientmanager.model.form.CaseForm;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -48,15 +48,15 @@ public class ConsistentDatesValidatorTest {
             String dateOpened, String dateClosed, boolean expected) {
         
         boolean consistentDates = true;
-        CaseFormDto testForm = new CaseFormDto.CaseFormDtoBuilder()
+        CaseForm testForm = new CaseForm.CaseFormDtoBuilder()
                 .withDateOpened(dateOpened)
                 .withDateClosed(dateClosed)
                 .build();
         
-        Set<ConstraintViolation<CaseFormDto>> violations =
+        Set<ConstraintViolation<CaseForm>> violations =
                 validator.validate(testForm);
         
-        for(ConstraintViolation<CaseFormDto> violation : violations) {
+        for(ConstraintViolation<CaseForm> violation : violations) {
             if(violation.getConstraintDescriptor().getAnnotation().annotationType()
                 .equals(ConsistentDatesConstraint.class)) {
                     consistentDates = false;

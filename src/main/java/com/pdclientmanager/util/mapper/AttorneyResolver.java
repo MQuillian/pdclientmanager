@@ -7,8 +7,8 @@ import org.mapstruct.TargetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pdclientmanager.model.entity.Attorney;
 import com.pdclientmanager.repository.AttorneyRepository;
+import com.pdclientmanager.repository.entity.Attorney;
 
 @Component
 public class AttorneyResolver {
