@@ -40,6 +40,4 @@ public interface BaseRepository<T> extends PagingAndSortingRepository<T, Long> {
     <S extends T> List<S> saveAll(Iterable<S> entities);
 
     T getOne(Long id);
-    
-    
 }

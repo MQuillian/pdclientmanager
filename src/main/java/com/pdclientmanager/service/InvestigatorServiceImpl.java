@@ -98,6 +98,7 @@ public class InvestigatorServiceImpl implements InvestigatorService {
         for(Attorney attorney : prevAssignedAttorneys) {
             if(!form.getAssignedAttorneysIds().contains(attorney.getId())) {
                 attorney.setInvestigator(null);
+                attorneyRepository.save(attorney);
             }
         }
     }
@@ -107,6 +108,7 @@ public class InvestigatorServiceImpl implements InvestigatorService {
                 .findByInvestigator_Id(investigatorId, Attorney.class);
         for(Attorney attorney : prevAssignedAttorneys) {
             attorney.setInvestigator(null);
+            attorneyRepository.save(attorney);
         }
     }
 }

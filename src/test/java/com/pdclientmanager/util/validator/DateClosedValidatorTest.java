@@ -68,7 +68,7 @@ public class DateClosedValidatorTest {
         return Stream.of(
                 Arguments.of("letters", false),
                 Arguments.of("   ", false),
-                Arguments.of("11-05-2010", false),
+                Arguments.of("11-05-2010", true),
                 Arguments.of("13/15/2000", false),
                 Arguments.of("155/20/2000", false),
                 Arguments.of("10/200/2001", false),

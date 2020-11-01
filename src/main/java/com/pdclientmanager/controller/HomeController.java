@@ -50,5 +50,4 @@ public class HomeController {
         redirectAttributes.addFlashAttribute("msg", "Data reset successfully");
         return "redirect:/";
     }
-    
 }

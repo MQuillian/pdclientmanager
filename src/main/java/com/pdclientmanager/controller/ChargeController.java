@@ -51,7 +51,7 @@ private ChargeService chargeService;
             redirectAttributes.addFlashAttribute("css", "success");
             redirectAttributes.addFlashAttribute("msg", "Charge saved successfully!");
             
-            return "redirect:/charges" + entityId;
+            return "redirect:/charges/" + entityId;
         }
     }
     

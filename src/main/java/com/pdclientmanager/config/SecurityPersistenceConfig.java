@@ -1,14 +1,13 @@
 package com.pdclientmanager.config;
 
-
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -21,36 +20,36 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "com.pdclientmanager.repository", entityManagerFactoryRef = "sessionFactory")
+@EnableJpaRepositories(basePackages = "com.pdclientmanager.security", entityManagerFactoryRef = "securitySessionFactory")
 @EnableSpringDataWebSupport
-//@ComponentScan(basePackages = {"com.pdclientmanager"})
-public class PersistenceConfig {
+public class SecurityPersistenceConfig {
 
     private Environment environment;
     
     @Autowired
-    public PersistenceConfig(Environment environment) {
+    public SecurityPersistenceConfig(Environment environment) {
         this.environment = environment;
     }
     
-    @Bean("sessionFactory")
+    @Bean("securitySessionFactory")
+    @Primary
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-        factoryBean.setDataSource(dataSource());
-        factoryBean.setPackagesToScan("com.pdclientmanager.repository.entity");
+        factoryBean.setDataSource(securityDataSource());
+        factoryBean.setPackagesToScan("com.pdclientmanager.security");
         factoryBean.setHibernateProperties(hibernateProperties());
         factoryBean.setPhysicalNamingStrategy(new SnakeCaseHibernateNamingStrategy());
         return factoryBean;
     }
     
     @Bean
-    public DataSource dataSource() {
-      DriverManagerDataSource dataSource = new DriverManagerDataSource();
-      dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-      dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
-      dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
-      dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
-      return dataSource;
+    DataSource securityDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(environment.getRequiredProperty("security.driverClassName"));
+        dataSource.setUrl(environment.getRequiredProperty("security.url"));
+        dataSource.setUsername(environment.getRequiredProperty("security.username"));
+        dataSource.setPassword(environment.getRequiredProperty("security.password"));
+        return dataSource;
     }
     
     private Properties hibernateProperties() {
@@ -64,12 +63,5 @@ public class PersistenceConfig {
         properties.put("hibernate.c3p0.acquireRetryDelay", environment.getRequiredProperty("hibernate.c3p0.acquireRetryDelay"));
         properties.put("hibernate.c3p0.max_statements", environment.getRequiredProperty("hibernate.c3p0.max_statements"));
         return properties;
-    }
-    
-    @Bean("transactionManager")
-    public HibernateTransactionManager getTransactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(getSessionFactory().getObject());
-        return transactionManager;
     }
 }

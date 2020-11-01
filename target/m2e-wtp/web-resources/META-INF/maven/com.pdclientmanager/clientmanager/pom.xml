@@ -36,7 +36,8 @@
         <assertj.version>3.12.2</assertj.version>
         <mockito.version>2.27.0</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
-        <dbsetup.version>2.1.0</dbsetup.version>
+        <testcontainers.version>1.14.3</testcontainers.version>
+        <glassfish-inject.version>2.26</glassfish-inject.version>
     </properties>
     
     <dependencies>
@@ -157,11 +158,6 @@
             <artifactId>javax.servlet.jsp-api</artifactId>
             <version>${jsp.version}</version>
             <scope>provided</scope>
-            <exclusions>
-            	<exclusion>
-            	
-            	</exclusion>
-            </exclusions>
         </dependency>
         
         <!-- Expression Language -->
@@ -261,6 +257,13 @@
         </dependency>
         
         <dependency>
+        	<groupId>org.springframework.security</groupId>
+        	<artifactId>spring-security-test</artifactId>
+        	<version>${spring.version}</version>
+        	<scope>test</scope>
+        </dependency>
+        
+        <dependency>
         	<groupId>org.mockito</groupId>
         	<artifactId>mockito-core</artifactId>
         	<version>${mockito.version}</version>
@@ -274,10 +277,31 @@
         </dependency>
         
         <dependency>
-		    <groupId>com.ninja-squad</groupId>
-		    <artifactId>DbSetup</artifactId>
-		    <version>${dbsetup.version}</version>
+		    <groupId>org.testcontainers</groupId>
+		    <artifactId>testcontainers</artifactId>
+		    <version>${testcontainers.version}</version>
 		    <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.testcontainers</groupId>
+		    <artifactId>mysql</artifactId>
+		    <version>${testcontainers.version}</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		
+		<dependency>
+		    <groupId>org.testcontainers</groupId>
+		    <artifactId>junit-jupiter</artifactId>
+		    <version>${testcontainers.version}</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.glassfish.jersey.inject</groupId>
+		    <artifactId>jersey-hk2</artifactId>
+		    <version>${glassfish-inject.version}</version>
 		</dependency>
         
     </dependencies>
@@ -333,9 +357,9 @@
                 </configuration>
             </plugin>
             <plugin>
-            	<groupId>maven-surefire-plugin</groupId>
-            	<artifactId>junit-platform-surefire-provider</artifactId>
-            	<version>1.3.2</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
             </plugin>
         </plugins>
     </build>

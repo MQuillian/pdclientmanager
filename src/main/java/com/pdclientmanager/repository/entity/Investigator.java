@@ -3,6 +3,7 @@ package com.pdclientmanager.repository.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedAttributeNode;
@@ -16,7 +17,7 @@ import javax.persistence.OneToMany;
         })
 public class Investigator extends Employee {
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "investigator")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "investigator", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Attorney> assignedAttorneys;
 
     public Investigator() {

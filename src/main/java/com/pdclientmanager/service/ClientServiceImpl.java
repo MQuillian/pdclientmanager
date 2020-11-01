@@ -79,5 +79,4 @@ public class ClientServiceImpl implements ClientService {
     public void deleteById(Long targetId) {
         repository.deleteById(targetId);
     }
-
 }

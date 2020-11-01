@@ -24,7 +24,7 @@ public class CustomChargeProjectionSerializer extends StdSerializer<ChargeProjec
       ChargeProjection charge, JsonGenerator jsonGenerator, SerializerProvider serializer)
               throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("label", charge.toString());
+        jsonGenerator.writeStringField("label", charge.getStatute() + " - " + charge.getName());
         jsonGenerator.writeStringField("value", charge.getId().toString());
         jsonGenerator.writeEndObject();
     }

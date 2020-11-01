@@ -16,5 +16,4 @@ public interface ClientRepository extends BaseRepository<Client> {
     <T> List<T> findAllBy(Class<T> type);
     
     List<ClientLightProjection> findFirst10ByNameContaining(String query);
-    
 }

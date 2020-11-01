@@ -2,15 +2,14 @@ package com.pdclientmanager.util.mapper;
 
 import com.pdclientmanager.model.form.ChargeForm;
 import com.pdclientmanager.repository.entity.Charge;
+import javax.annotation.Generated;
 import org.springframework.stereotype.Component;
 
-/*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2020-07-06T16:49:30-0400",
+    date = "2020-10-19T17:18:15-0400",
     comments = "version: 1.3.0.Final, compiler: Eclipse JDT (IDE) 3.16.0.v20181130-1748, environment: Java 11.0.1 (Oracle Corporation)"
 )
-*/
 @Component
 public class ChargeMapperImpl implements ChargeMapper {
 

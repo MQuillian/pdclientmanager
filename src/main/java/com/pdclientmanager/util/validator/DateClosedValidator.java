@@ -21,7 +21,7 @@ public class DateClosedValidator implements ConstraintValidator<DateClosedConstr
     
     @Override
     public boolean isValid(String date, ConstraintValidatorContext cxt) {
-        if(date == "") {
+        if(date.equals("")) {
             return true;
         } else {
             try {

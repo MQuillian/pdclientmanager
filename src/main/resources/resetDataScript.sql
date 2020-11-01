@@ -1,3 +1,4 @@
+USE `walton_public_defender`;
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE investigators;
 INSERT INTO investigators VALUES (1, 'Tim Loodle', 0), (2, 'Sandra Sanderson', 0), (3, 'Debbie Downer', 1);

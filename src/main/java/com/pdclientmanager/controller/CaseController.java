@@ -80,8 +80,8 @@ public class CaseController {
         } else {
             Long entityId = caseService.save(caseForm);
             
-            redirectAttributes.addAttribute("css", "success");
-            redirectAttributes.addAttribute("msg", "Case saved successfully!");
+            redirectAttributes.addFlashAttribute("css", "success");
+            redirectAttributes.addFlashAttribute("msg", "Case saved successfully!");
             
             return "redirect:/cases/" + entityId;
         }

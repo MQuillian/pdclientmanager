@@ -22,7 +22,7 @@ public class CustomDateTimeFormatter {
     }
     
     
-    /* Checks date matches basic MONTH/DAY/YEAR pattern (allows for 1-2 digit months
+    /* Checks date matches basic MONTH/DAY/YEAR or MONTH-DAY-YEAR pattern (allows for 1-2 digit months
      *  and days, and 2 or 4 digit years) and if date matches, calls LocalDate.parse
      */
     

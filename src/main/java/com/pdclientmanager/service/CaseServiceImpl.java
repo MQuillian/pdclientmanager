@@ -55,7 +55,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     @Transactional
     public CaseForm findFormById(Long targetId) {
-        Case entity = repository.findById(targetId)
+        Case entity = repository.findById(targetId, Case.class)
                 .orElseThrow(EntityNotFoundException::new);
         CaseForm formDto = mapper.toCaseFormDtoFromCase(entity);
         return formDto;

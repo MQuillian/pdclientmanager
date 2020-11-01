@@ -38,6 +38,7 @@ public class UserForm {
     
     public UserForm(Long id, String username, String email, String password,
             String matchingPassword, List<String> roles) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;

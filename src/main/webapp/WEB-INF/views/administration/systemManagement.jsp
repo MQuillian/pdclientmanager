@@ -5,7 +5,9 @@
 <a href="${contextPath}/">Return to Home</a>
 <hr>
 
-<a href="admin/addUser">Add User</a>
+<a href="admin/users/addUser">Add User</a>
+<br>
+<a href="admin/users">Manage Existing Users</a>
 <br>
 <a href="judges">Judge Management</a>
 <br>

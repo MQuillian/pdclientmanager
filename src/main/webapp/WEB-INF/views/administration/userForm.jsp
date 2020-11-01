@@ -41,28 +41,37 @@
 			</div>
 		</div>
 	</spring:bind>
-	<spring:bind path="password">
-		<div class="form-group ${status.error ? 'has-error' : ''}">
-			<label class="col-sm-2 control-label">Password</label>
-			<div class="col-sm-10">
-				<form:input path="password" type="password" class="form-control"
-					id="password" placeholder="Password" />
-				<form:errors path="password" class="control-label" />
-			</div>
-			<br />
-		</div>
-	</spring:bind>
-	<spring:bind path="matchingPassword">
-		<div class="form-group ${status.error ? 'has-error' : ''}">
-			<label class="col-sm-2 control-label">Confirm password</label>
-			<div class="col-sm-10">
-				<form:input path="matchingPassword" type="password" class="form-control"
-					id="matchingPassword" placeholder="Password" />
-				<form:errors path="matchingPassword" class="control-label" />
-			</div>
-			<br />
-		</div>
-	</spring:bind>
+	
+	<c:choose>
+		<c:when test="${userForm['new']}">
+			<spring:bind path="password">
+				<div class="form-group ${status.error ? 'has-error' : ''}">
+					<label class="col-sm-2 control-label">Password</label>
+					<div class="col-sm-10">
+						<form:input path="password" type="password" class="form-control"
+							id="password" placeholder="Password" />
+						<form:errors path="password" class="control-label" />
+					</div>
+					<br />
+				</div>
+			</spring:bind>
+			<spring:bind path="matchingPassword">
+				<div class="form-group ${status.error ? 'has-error' : ''}">
+					<label class="col-sm-2 control-label">Confirm password</label>
+					<div class="col-sm-10">
+						<form:input path="matchingPassword" type="password" class="form-control"
+							id="matchingPassword" placeholder="Password" />
+						<form:errors path="matchingPassword" class="control-label" />
+					</div>
+					<br />
+				</div>
+			</spring:bind>
+		</c:when>
+		<c:otherwise>
+			<form:hidden path="password" />
+			<form:hidden path="matchingPassword" />
+		</c:otherwise>
+	</c:choose>
 	
 	<spring:bind path="roles">
 		<div class="form-group ${status.error ? 'has-error' : ''}">

@@ -13,5 +13,4 @@ public interface ChargeRepository extends BaseRepository<Charge> {
     List<ChargeProjection> findAllBy();
     
     List<ChargeProjection> findFirst10ByNameContainingOrStatuteContaining(String nameQuery, String statuteQuery);
-    
 }

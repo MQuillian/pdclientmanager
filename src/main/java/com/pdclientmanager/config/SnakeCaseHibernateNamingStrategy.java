@@ -38,6 +38,10 @@ public class SnakeCaseHibernateNamingStrategy implements PhysicalNamingStrategy 
                 .replaceAll(regex, replacement)
                 .toLowerCase();
         if(isTable == true) {
+            if(newName.endsWith("y") && !newName.endsWith("ey")) {
+                newName = newName.substring(0, newName.length() -1);
+                newName += "ie";
+            }
             newName += "s";
         }
         return Identifier.toIdentifier(newName);

@@ -6,7 +6,7 @@ public class ServletInitializerTest extends AbstractAnnotationConfigDispatcherSe
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {PersistenceConfig.class};
+        return new Class[] {DataPersistenceConfigTest.class, SecurityPersistenceConfigTest.class, SecurityConfigTest.class};
     }
 
     @Override

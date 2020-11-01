@@ -40,6 +40,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -90,16 +92,16 @@ public class EmployeeControllerTest {
         
         @Bean
         @Primary
-        CaseService caseService() {
+        CaseService caseServiceMock() {
             return Mockito.mock(CaseServiceImpl.class);
         }
     }
     
     @Autowired
-    AttorneyService attorneyServiceMock;
+    private AttorneyService attorneyServiceMock;
     
     @Autowired
-    InvestigatorService investigatorServiceMock;
+    private InvestigatorService investigatorServiceMock;
     
     private MockMvc mockMvc;
     
@@ -120,7 +122,7 @@ public class EmployeeControllerTest {
     @BeforeAll
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(SecurityMockMvcConfigurers.springSecurity()).build();
     }
         
     @BeforeEach
@@ -158,7 +160,8 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void employeeManagement_ShouldAddEmployeesToModelAndRenderEmployeeManagementView() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void employeeManagement_WithValidAuth_ShouldAddEmployeesToModelAndRenderEmployeeManagementView() throws Exception {
         
         when(attorneyServiceMock.findAllActive())
             .thenReturn(attorneyLightList);
@@ -175,7 +178,8 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void showNewAttorneyForm_ShouldAddAttorneyFormDtoAndActiveInvestigatorListToModelAndRenderFormView() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    public void showNewAttorneyForm_WithValidAuth_ShouldAddAttorneyFormDtoAndActiveInvestigatorListToModelAndRenderFormView() throws Exception {
         
         when(investigatorServiceMock.findAllActive())
             .thenReturn(investigatorList);
@@ -194,8 +198,17 @@ public class EmployeeControllerTest {
                             hasProperty("assignedAttorneys", is(investigator.getAssignedAttorneys()))))));
     }
     
-    @Test 
-    public void save_WhenValidNewAttorney_ShouldSaveAttorney() throws Exception {
+    @Test
+    @WithMockUser(roles = "USER")
+    public void showNewAttorneyForm_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(get("/attorneys/add"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void save_WhenValidNewAttorney_WithValidAuth_ShouldSaveAttorney() throws Exception {
         
         attorneyForm.setId(null);
         
@@ -204,9 +217,7 @@ public class EmployeeControllerTest {
         
         mockMvc.perform(post("/attorneys")
             .param("name", "Active Attorney")
-            .param("workingStatus", "ACTIVE")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(asJsonString(attorneyForm)))
+            .param("workingStatus", "ACTIVE"))
             .andExpect(status().isFound())
             .andExpect(view().name("redirect:/attorneys/1"))
             .andExpect(redirectedUrl("/attorneys/1"))
@@ -215,7 +226,16 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void showAllAttorneys_ShouldRenderListAttorneysView() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void save_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(post("/attorneys"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
+    }
+    
+    @Test
+    @WithMockUser(roles = "USER")
+    public void showAllAttorneys__WithValidAuth_ShouldRenderListAttorneysView() throws Exception {
         
         when(attorneyServiceMock.findAll())
             .thenReturn(attorneyList);
@@ -233,7 +253,8 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void showAttorney_WhenValidRequest_ShouldRenderAttorneyView() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void showAttorney_WhenValidRequest_WithValidAuth_ShouldRenderAttorneyView() throws Exception {
         
         when(attorneyServiceMock.findById(1L, AttorneyProjection.class))
             .thenReturn(attorney);
@@ -246,7 +267,8 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void showUpdateAttorneyForm_WhenValidRequest_ShouldRenderUpdateAttorneyForm() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    public void showUpdateAttorneyForm_WhenValidRequest_WithValidAuth_ShouldRenderUpdateAttorneyForm() throws Exception {
         
         when(attorneyServiceMock.findFormById(1L))
             .thenReturn(attorneyForm);
@@ -259,7 +281,16 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void deleteAttorneyById_WhenValidRequest_ShouldDeleteAndAddMessage() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void showUpdateAttorneyForm_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(get("/attorneys/1/update"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void deleteAttorneyById_WhenValidRequest_WithValidAuth_ShouldDeleteAndAddMessage() throws Exception {
         
         Long targetId = 1L;
         
@@ -276,7 +307,16 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void deleteAttorneyById_WhenActiveCaseloadNotEmpty_ShouldReturnViewAndAddMessage() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void deleteAttorneyById_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(post("/attorneys/1/delete"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void deleteAttorneyById_WhenActiveCaseloadNotEmpty_WithValidAuth_ShouldReturnViewAndAddMessage() throws Exception {
         
         Long targetId = 1L;
         
@@ -293,7 +333,8 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void showNewInvestigatorForm_ShouldAddInvestigatorFormDtoAndActiveAttorneyListToModelAndRenderFormView() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    public void showNewInvestigatorForm_WithValidAuth_ShouldAddInvestigatorFormDtoAndActiveAttorneyListToModelAndRenderFormView() throws Exception {
         
         when(attorneyServiceMock.findAllActive())
             .thenReturn(attorneyLightList);
@@ -307,7 +348,16 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void saveInvestigator_WhenValidInvestigator_ShouldPersistInvestigator() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void showNewInvestigatorForm_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(get("/investigators/add"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void saveInvestigator_WhenValidInvestigator_WithValidAuth_ShouldPersistInvestigator() throws Exception {
         
         investigatorForm.setId(null);
         
@@ -316,9 +366,7 @@ public class EmployeeControllerTest {
         
         mockMvc.perform(post("/investigators")
                 .param("name", "Active Investigator")
-                .param("workingStatus", "ACTIVE")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(investigatorForm)))
+                .param("workingStatus", "ACTIVE"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/investigators/1"))
                 .andExpect(redirectedUrl("/investigators/1"))
@@ -327,7 +375,16 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void viewAllInvestigators_ShouldRenderListInvestigatorsView() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void saveInvestigator_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(post("/investigators"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
+    }
+    
+    @Test
+    @WithMockUser(roles = "USER")
+    public void viewAllInvestigators_WithValidAuth_ShouldRenderListInvestigatorsView() throws Exception {
         
         when(investigatorServiceMock.findAll())
             .thenReturn(investigatorList);
@@ -340,7 +397,8 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void showInvestigator_WhenValidRequest_ShouldRenderInvestigatorView() throws Exception {
+    @WithMockUser(roles = "USER")
+    public void showInvestigator_WhenValidRequest_WithValidAuth_ShouldRenderInvestigatorView() throws Exception {
         
         when(investigatorServiceMock.findById(1L, InvestigatorProjection.class))
         .thenReturn(investigator);
@@ -353,7 +411,8 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void showUpdateInvestigatorForm_WhenValidRequest_ShouldRenderUpdateInvestigatorForm() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    public void showUpdateInvestigatorForm_WhenValidRequest_WithValidAuth_ShouldRenderUpdateInvestigatorForm() throws Exception {
         
         when(investigatorServiceMock.findFormById(1L))
         .thenReturn(investigatorForm);
@@ -366,6 +425,15 @@ public class EmployeeControllerTest {
     }
     
     @Test
+    @WithMockUser(roles = "USER")
+    public void showUpdateInvestigatorForm_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(get("/investigators/1/update"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
     public void deleteInvestigatorById_WhenValidRequest_ShouldDeleteAndAddMessage() throws Exception {        
         Long targetId = investigator.getId();
         
@@ -378,11 +446,11 @@ public class EmployeeControllerTest {
                 .andExpect(flash().attribute("msg", is("Investigator is deleted!")));
     }
     
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch(Exception e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    @WithMockUser(roles = "USER")
+    public void deleteInvestigatorById_WithInvalidAuth_ShouldReturnAccessDeniedView() throws Exception {
+        mockMvc.perform(post("/investigators/1/delete"))
+            .andExpect(status().isForbidden())
+            .andExpect(forwardedUrl("/accessDenied.jsp"));
     }
 }

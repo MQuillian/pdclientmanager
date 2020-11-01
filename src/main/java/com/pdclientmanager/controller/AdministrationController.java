@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pdclientmanager.model.form.UserForm;
-import com.pdclientmanager.service.UserService;
+import com.pdclientmanager.security.UserService;
 
 @Controller
 public class AdministrationController {
@@ -30,18 +30,15 @@ public class AdministrationController {
     
     @GetMapping("/admin")
     public String showAdministrationHome() {
-        return "/administration/systemManagement";
+        return "administration/systemManagement";
     }
 
-    @GetMapping("/admin/addUser")
+    @GetMapping("/admin/users/addUser")
     public String showNewUserForm(Model model) {
         UserForm userForm = new UserForm();
         model.addAttribute("userForm", userForm);
-        List<String> availableRoles = new ArrayList<>();
-        availableRoles.add("ADMIN");
-        availableRoles.add("USER");
-        model.addAttribute("availableRoles", availableRoles);
-        return "/administration/userForm";
+        model.addAttribute("availableRoles", listAllAvailableRoles());
+        return "administration/userForm";
     }
     
     @PostMapping("/admin/users")
@@ -50,17 +47,50 @@ public class AdministrationController {
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
             model.addAttribute("userForm", userForm);
-            List<String> availableRoles = new ArrayList<>();
-            availableRoles.add("ADMIN");
-            availableRoles.add("USER");
-            model.addAttribute("availableRoles", availableRoles);
-            return "/administration/userForm";
+            model.addAttribute("availableRoles", listAllAvailableRoles());
+            return "administration/userForm";
         } else {
-            String username = userService.saveUser(userForm);
+            Long userId = userService.saveUser(userForm);
             redirectAttributes.addFlashAttribute("css", "success");
             redirectAttributes.addFlashAttribute("msg", "User saved successfully!");
 
             return "redirect:/admin";
         }
+    }
+    
+    @GetMapping("/admin/users")
+    public String showAllUsers(Model model) {
+        model.addAttribute("userList", userService.findAll());
+        return "administration/listUsers";
+    }
+    
+    @GetMapping("/admin/users/{id}/update")
+    public String showUpdateUserForm(@PathVariable("id") Long targetId, Model model) {
+        UserForm user = userService.findFormById(targetId);
+        model.addAttribute("userForm", user);
+        model.addAttribute("availableRoles", listAllAvailableRoles());
+        return "administration/userForm";
+    }
+    
+    @PostMapping("/admin/users/{id}/delete")
+    public String deleteUserById(@PathVariable("id") Long id,
+            final RedirectAttributes redirectAttributes) {
+        if(userService.deleteById(id)) {
+            redirectAttributes.addFlashAttribute("css", "success");
+            redirectAttributes.addFlashAttribute("msg", "User is deleted!");
+        } else {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", 
+                    "User could not be found!");
+        }
+        return "redirect:/admin/users";
+    }
+    
+    private List<String> listAllAvailableRoles() {
+        List<String> availableRoles = new ArrayList<>();
+        availableRoles.add("ADMIN");
+        availableRoles.add("USER");
+        return availableRoles;
+        
     }
 }
