@@ -1,12 +1,17 @@
 .metadata
 bin/
 tmp/
+**/logs
 *.tmp
 *.bak
 *.swp
 *~.nib
+pdcm-logs/
 local.properties
 database.properties
+databaseTest.properties
+credentials.json
+.gitignore
 .settings/
 .loadpath
 .recommenders
@@ -52,6 +57,7 @@ database.properties
 ### Eclipse Patch ###
 # Eclipse Core      
 .project
+target/
 
 # JDT-specific (Eclipse Java Development Tools)     
 .classpath
@@ -59,4 +65,5 @@ database.properties
 # Hibernate config with username and pw
 *.cfg.xml
 
-/target/
+target/
+
