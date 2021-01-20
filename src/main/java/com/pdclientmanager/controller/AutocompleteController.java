@@ -9,10 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.pdclientmanager.model.projection.CaseLightProjection;
 import com.pdclientmanager.model.projection.ChargeProjection;
 import com.pdclientmanager.model.projection.ClientLightProjection;
+import com.pdclientmanager.service.CaseService;
 import com.pdclientmanager.service.ChargeService;
 import com.pdclientmanager.service.ClientService;
+import com.pdclientmanager.util.json.CustomCaseLightProjectionSerializer;
 import com.pdclientmanager.util.json.CustomChargeProjectionSerializer;
 import com.pdclientmanager.util.json.CustomClientLightProjectionSerializer;
 import com.pdclientmanager.util.json.JsonUtils;
@@ -22,11 +25,13 @@ public class AutocompleteController {
 
     private ClientService clientService;
     private ChargeService chargeService;
+    private CaseService caseService;
     
     @Autowired
-    public AutocompleteController(ClientService clientService, ChargeService chargeService) {
+    public AutocompleteController(ClientService clientService, ChargeService chargeService, CaseService caseService) {
         this.clientService = clientService;
         this.chargeService = chargeService;
+        this.caseService = caseService;
     }
     
     @GetMapping("/autocomplete/clientsByName")
@@ -45,6 +50,16 @@ public class AutocompleteController {
 
         String resp = JsonUtils.convertToJsonString(ChargeProjection.class, charges,
                 new CustomChargeProjectionSerializer());
+        
+        return new ResponseEntity<String>(resp, HttpStatus.OK);
+    }
+    
+    @GetMapping("/autocomplete/casesByCaseNumber")
+    public ResponseEntity<String> getCasesByCaseNumber(@RequestParam("q") final String input) {
+        List<CaseLightProjection> cases = caseService.findAllOpenWithCaseNumber(input, CaseLightProjection.class);
+
+        String resp = JsonUtils.convertToJsonString(CaseLightProjection.class, cases,
+                new CustomCaseLightProjectionSerializer());
         
         return new ResponseEntity<String>(resp, HttpStatus.OK);
     }

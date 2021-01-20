@@ -37,3 +37,19 @@ body {
 	text-align:center;
 	color:#A9A9A9;
 }
+
+th {
+	background:white;
+	position:sticky;
+	top:0;
+}
+
+td {
+	padding-right:10px;
+}
+
+#homeCalendar {
+	display:block;
+	height:70%;
+	overflow-y:auto;
+}

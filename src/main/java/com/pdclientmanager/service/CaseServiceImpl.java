@@ -90,6 +90,12 @@ public class CaseServiceImpl implements CaseService {
     }
     
     @Override
+    public <T> List<T> findAllOpenWithCaseNumber(String caseNumber, Class<T> type) {
+        List<T> caseList = repository.findFirst10ByDateClosedIsNullAndCaseNumberContaining(caseNumber, type);
+        return caseList;
+    }
+
+    @Override
     @Transactional
     public <T> Page<T> findAllWithClientName(Pageable pageRequest, String clientName, Class<T> type) {
         Page<T> casePage = repository.findByClient_NameContaining(pageRequest, clientName, type);

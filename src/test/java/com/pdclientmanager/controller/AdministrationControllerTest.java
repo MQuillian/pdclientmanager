@@ -141,8 +141,7 @@ public class AdministrationControllerTest {
             .andExpect(view().name("administration/userForm"))
             .andExpect(forwardedUrl("/WEB-INF/views/administration/userForm.jsp"))
             .andExpect(model().attribute("userForm", instanceOf(UserForm.class)))
-            .andExpect(model().attribute("availableRoles", hasSize(2)))
-            .andExpect(model().attribute("availableRoles", hasItems("USER", "ADMIN")));
+            .andExpect(model().attribute("availableRoles", hasItems("ATTORNEY", "INVESTIGATOR","ADMIN")));
     }
     
     @Test
@@ -162,6 +161,7 @@ public class AdministrationControllerTest {
         .thenReturn(1L);
         
         mockMvc.perform(post("/admin/users")
+                .param("fullName", "Full Name")
                 .param("username", "testuser")
                 .param("email", "user@pdcm.org")
                 .param("password", "userpass")

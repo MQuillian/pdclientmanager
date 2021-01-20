@@ -31,6 +31,8 @@ public interface CaseRepository extends BaseRepository<Case> {
     
     <T> List<T> findByDateClosedIsNullAndAttorney_Id(final Long attorneyId, Class<T> type);
     
+    <T> List<T> findFirst10ByDateClosedIsNullAndCaseNumberContaining(final String caseNumber, Class<T> type);
+    
     @EntityGraph(value = "Case.fullProjection")
     <T> Page<T> findByClient_NameContaining(final Pageable pageRequest, final String clientName, Class<T> type);
 }

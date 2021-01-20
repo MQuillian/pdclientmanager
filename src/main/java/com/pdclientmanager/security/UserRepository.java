@@ -10,6 +10,8 @@ public interface UserRepository extends Repository<User, Long> {
     
     public User findById(Long id);
     
+    public User findByFullName(String fullName);
+    
     public List<User> findAll();
     
     public void save(User user);

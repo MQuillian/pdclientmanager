@@ -16,7 +16,7 @@ import com.pdclientmanager.security.UserService;
 
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ComponentScan(basePackages = "com.pdclientmanager.security")
+@ComponentScan(basePackages = {"com.pdclientmanager.security", "com.pdclientmanager.calendar"})
 public class SecurityConfigTest extends WebSecurityConfigurerAdapter {
     
     @Bean

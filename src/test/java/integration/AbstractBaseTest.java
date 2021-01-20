@@ -1,8 +1,5 @@
 package integration;
 
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,7 +16,4 @@ public abstract class AbstractBaseTest {
         String className = testObject.getClass().getName();
         return className.contains("com.sun.proxy");
     }
-    
-    BiPredicate<Object, Class<Object>> checkClass = (obj, expectedClass) ->
-        obj.getClass().equals(expectedClass);
 }

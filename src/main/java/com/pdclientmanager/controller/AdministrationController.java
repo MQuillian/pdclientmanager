@@ -1,5 +1,6 @@
 package com.pdclientmanager.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,9 +51,14 @@ public class AdministrationController {
             model.addAttribute("availableRoles", listAllAvailableRoles());
             return "administration/userForm";
         } else {
+            try {
             Long userId = userService.saveUser(userForm);
             redirectAttributes.addFlashAttribute("css", "success");
             redirectAttributes.addFlashAttribute("msg", "User saved successfully!");
+            } catch(IOException e) {
+                redirectAttributes.addFlashAttribute("css", "danger");
+                redirectAttributes.addFlashAttribute("msg", "Error saving user - contact system admin for assistance");
+            }
 
             return "redirect:/admin";
         }
@@ -89,7 +95,8 @@ public class AdministrationController {
     private List<String> listAllAvailableRoles() {
         List<String> availableRoles = new ArrayList<>();
         availableRoles.add("ADMIN");
-        availableRoles.add("USER");
+        availableRoles.add("ATTORNEY");
+        availableRoles.add("INVESTIGATOR");
         return availableRoles;
         
     }

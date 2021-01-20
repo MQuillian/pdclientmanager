@@ -26,6 +26,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotEmpty(message = "Name")
+    private String fullName;
+    
     @NotEmpty(message = "Username")
     private String username;
     
@@ -51,10 +54,11 @@ public class User implements UserDetails {
         
     }
     
-    public User(Long id, String username, String email, String password,
-            Set<Authority> authorities, boolean enabled,
-            boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired) {
+    public User(Long id, String fullName, String username, String email, String password,
+            Set<Authority> authorities, boolean enabled, boolean accountNonExpired,
+            boolean accountNonLocked, boolean credentialsNonExpired) {
         this.id = id;
+        this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -65,14 +69,22 @@ public class User implements UserDetails {
         this.credentialsNonExpired = credentialsNonExpired;
     }
     
-    public User(Long id, String username, String email, String password,
-            Set<Authority> authorities, boolean enabled) {
-        this(id, username, email, password, authorities, enabled,
+    public User(Long id, String fullName, String username, String email, String password,
+            Set<Authority> authorities, String calendarUserId, boolean enabled) {
+        this(id, fullName, username, email, password, authorities, enabled,
                 true, true, true);
     }
     
     public Long getId() {
         return id;
+    }
+    
+    public String getFullName() {
+        return fullName;
+    }
+    
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
     
     @Override
@@ -149,6 +161,7 @@ public class User implements UserDetails {
     public static class UserBuilder {
         
         private Long id = 1L;
+        private String fullName = "Full Name";
         private String username = "user";
         private String email = "user@defualt.com";
         private String password = "userpass";
@@ -160,6 +173,11 @@ public class User implements UserDetails {
         
         public UserBuilder withId(Long id) {
             this.id = id;
+            return this;
+        }
+        
+        public UserBuilder withFullName(String fullName) {
+            this.fullName = fullName;
             return this;
         }
         
@@ -204,8 +222,8 @@ public class User implements UserDetails {
         }
         
         public User build() {
-            return new User(id, username, email, password, authorities, enabled, 
-                    accountNonExpired, accountNonLocked, credentialsNonExpired);
+            return new User(id, fullName, username, email, password, authorities,
+                    enabled, accountNonExpired, accountNonLocked, credentialsNonExpired);
         }
     }
 }

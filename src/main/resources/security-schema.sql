@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `users` ;
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `full_name` VARCHAR(45) NOT NULL,
   `username` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
@@ -19,7 +20,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `account_non_locked` BOOLEAN NOT NULL,
   `credentials_non_expired` BOOLEAN NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username_unique` (`username`))
+  UNIQUE KEY `username_unique` (`username`),
+  UNIQUE KEY `full_name_unique` (`full_name`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 

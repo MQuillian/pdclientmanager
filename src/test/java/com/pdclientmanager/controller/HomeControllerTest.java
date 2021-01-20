@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +35,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.pdclientmanager.calendar.CalendarService;
+import com.pdclientmanager.calendar.CaseEvent;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.repository.DemoDao;
 
@@ -51,10 +56,19 @@ public class HomeControllerTest {
         DemoDao demoDaoMock() {
             return Mockito.mock(DemoDao.class);
         }
+        
+        @Bean
+        @Primary
+        CalendarService calendarServiceMock() {
+            return Mockito.mock(CalendarService.class);
+        }
     }
     
     @Autowired
     private DemoDao demoDaoMock;
+    
+    @Autowired
+    private CalendarService calendarServiceMock;
     
     private MockMvc mockMvc;
     
@@ -75,6 +89,8 @@ public class HomeControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void showHome_WithValidAuth_ShouldRenderHomePageView() throws Exception {
+        when(calendarServiceMock.getListOfTwoWeeksEventsForCurrentUser()).thenReturn(new ArrayList<CaseEvent>());
+        
         mockMvc.perform(get("/"))
             .andExpect(status().isOk())
             .andExpect(view().name("homePage"))

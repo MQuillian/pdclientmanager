@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.pdclientmanager.model.projection.CaseLightProjection;
 import com.pdclientmanager.model.projection.CaseProjection;
 import com.pdclientmanager.repository.CaseRepository;
 import com.pdclientmanager.repository.entity.Case;
@@ -141,6 +142,17 @@ public class CaseRepositoryTest extends AbstractBaseTest {
         assertThat(caseResult).allMatch(checkCase);
         Predicate<CaseProjection> checkProjection = proj ->
             checkIfProjection(proj) && proj.getDateClosed() == null;
+        assertThat(projectionResult.size()).isEqualTo(3);
+        assertThat(projectionResult).allMatch(checkProjection);
+    }
+    
+    @Test
+    public void findFirst10ByDateClosedIsNullAndCaseNumberContaining_WithValidNumberAndType_ShouldReturnListOfMatchingCases() throws Exception {
+        List<CaseLightProjection> projectionResult = repository.findFirst10ByDateClosedIsNullAndCaseNumberContaining("18J1", CaseLightProjection.class);
+        
+        Predicate<CaseLightProjection> checkProjection = proj ->
+            checkIfProjection(proj) && proj.getDateClosed() == null
+                && proj.getCaseNumber().contains("18J1");
         assertThat(projectionResult.size()).isEqualTo(3);
         assertThat(projectionResult).allMatch(checkProjection);
     }

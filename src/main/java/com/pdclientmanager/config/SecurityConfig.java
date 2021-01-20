@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.pdclientmanager.security.UserService;
 
 @EnableWebSecurity
-@ComponentScan(basePackages = "com.pdclientmanager.security")
+@ComponentScan(basePackages = {"com.pdclientmanager.security"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired

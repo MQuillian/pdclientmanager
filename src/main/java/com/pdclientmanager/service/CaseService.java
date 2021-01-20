@@ -24,6 +24,8 @@ public interface CaseService {
     
     <T> List<T> findAllOpenWithAttorneyId(final Long targetId, Class<T> type);
     
+    <T> List<T> findAllOpenWithCaseNumber(final String caseNumber, Class<T> type);
+    
     <T> Page<T> findAllWithClientName(Pageable pageRequest, final String clientName, Class<T> type);
     
     void delete(final CaseProjection courtCase);

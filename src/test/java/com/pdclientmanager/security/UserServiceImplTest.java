@@ -28,12 +28,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.pdclientmanager.calendar.CalendarService;
+import com.pdclientmanager.config.SecurityConfigTest;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.UserForm;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebConfigTest.class})
+@ContextConfiguration(classes = {WebConfigTest.class, SecurityConfigTest.class})
 @ActiveProfiles("test")
 @TestInstance(Lifecycle.PER_CLASS)
 public class UserServiceImplTest {
@@ -98,6 +100,8 @@ public class UserServiceImplTest {
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         doNothing().when(userRepositoryMock).save(captor.capture());
         when(encoderMock.encode("testpass")).thenReturn("encodedpass");
+        
+//        when(calendarServiceMock.addNewCalendarToUser(any(CalendarUser.class))).thenReturn(null);
         
         userService.saveUser(testForm);
         

@@ -20,6 +20,18 @@
 	
 	<form:hidden path="id" />
 	
+	<spring:bind path="fullName">
+		<div class="form-group ${status.error ? 'has-error' : ''}">
+			<label class="col-sm-2 control-label">Full Name</label>
+			<div class="col-sm-10">
+				<form:input path="fullName" type="text" class="form-control"
+					id="fullName" placeholder="Full Name" />
+				<form:errors path="fullName" class="control-label" />
+			</div>
+		</div>
+	</spring:bind>
+	
+	
 	<spring:bind path="username">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-2 control-label">Username</label>
