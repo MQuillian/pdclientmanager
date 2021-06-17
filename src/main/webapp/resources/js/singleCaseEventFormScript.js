@@ -1,4 +1,4 @@
-var caseAutocompleteOptions = {
+const caseAutocompleteOptions = {
 		source : function(request, response) {
 			$.ajax({
 				url : contextPathVar + "/autocomplete/casesByCaseNumber",
@@ -37,48 +37,48 @@ var caseAutocompleteOptions = {
 	}
 
 function updateFormOnStartTimeChange() {
-	let startTimeValue = document.getElementById('startTime').value;
+	const startTimeValue = document.getElementById('startTime').value;
 	
-	let defaultEndTime = startTimeValue.substring(0, 11).concat("17:00");
+	const defaultEndTime = startTimeValue.substring(0, 11).concat("17:00");
 	document.getElementById('endTime').value = defaultEndTime;
 }
 
 function validateEndTime() {
-	let endTimeElement = document.getElementById('endTime');
-	let endTimeValue = endTimeElement.value;
-	let startTimeValue = document.getElementById('startTime').value;
-	let endTimeIsValid = true;
+	const endTimeElement = document.getElementById('endTime');
+	const endTimeValue = endTimeElement.value;
+	const startTimeValue = document.getElementById('startTime').value;
+	const endTimeIsValid = true;
 	
-	let endTimeYear = endTimeValue.substring(0,4);
-	let startTimeYear = startTimeValue.substring(0,4);
+	const endTimeYear = endTimeValue.substring(0,4);
+	const startTimeYear = startTimeValue.substring(0,4);
 
 	if(endTimeYear < startTimeYear) {
 		endTimeIsValid = false;
 		
 	} else if(endTimeYear === startTimeYear) {
-		let endTimeMonth = endTimeValue.substring(5,7);
-		let startTimeMonth = startTimeValue.substring(5,7);
+		const endTimeMonth = endTimeValue.substring(5,7);
+		const startTimeMonth = startTimeValue.substring(5,7);
 		
 		if(endTimeMonth < startTimeMonth) {
 			endTimeIsValid = false;
 			
 		} else if(endTimeMonth === startTimeMonth) {
-			let endTimeDay = endTimeValue.substring(8,10);
-			let startTimeDay = startTimeValue.substring(8,10);
+			const endTimeDay = endTimeValue.substring(8,10);
+			const startTimeDay = startTimeValue.substring(8,10);
 			
 			if(endTimeDay < startTimeDay) {
 				endTimeIsValid = false;
 				
 			} else if(endTimeDay === startTimeDay) {
-				let endTimeHour = endTimeValue.substring(11,13);
-				let startTimeHour = startTimeValue.substring(11,13);
+				const endTimeHour = endTimeValue.substring(11,13);
+				const startTimeHour = startTimeValue.substring(11,13);
 				
 				if(endTimeHour < startTimeHour) {
 					endTimeIsValid = false;
 					
 				} else if(endTimeHour === startTimeHour) {
-					let endTimeMinute = endTimeValue.substring(14,16);
-					let startTimeMinute = startTimeValue.substring(14,16);
+					const endTimeMinute = endTimeValue.substring(14,16);
+					const startTimeMinute = startTimeValue.substring(14,16);
 					
 					if(endTimeMinute <= startTimeMinute) {
 						endTimeIsValid = false;
@@ -107,8 +107,8 @@ function handleValidEndTime() {
 // Set up form and create/populate fields as needed
 (function(){
 	//Set min attribute of startTime
-	let currentDateString = new Date().toISOString();
-	let minDateString = currentDateString.substring(0, 11).concat("00:00");
+	const currentDateString = new Date().toISOString();
+	const minDateString = currentDateString.substring(0, 11).concat("00:00");
 	
 	$('#caseNumberInput').autocomplete(caseAutocompleteOptions);
 	
@@ -123,4 +123,16 @@ function handleValidEndTime() {
 			function() {
 		validateEndTime();
 	});
+	
+	if(document.getElementById('eventId').value !== '') {
+		$.ajax({url: contextPathVar + "/autocomplete/casesByCaseNumber",
+			dataType : "json",
+			data : {
+				q : document.getElementById('caseNumberInput').value
+			},
+			success: function(result){
+    			document.getElementById('clientField').innerHTML = result[0].clientName;
+    			document.getElementById('custodyField').innerHTML = result[0].custodyStatus;
+  }});
+	}
 })();

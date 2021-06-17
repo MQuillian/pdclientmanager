@@ -1,4 +1,4 @@
-var caseAutocompleteOptions = {
+const caseAutocompleteOptions = {
 		source : function(request, response) {
 			$.ajax({
 				url : contextPathVar + "/autocomplete/casesByCaseNumber",
@@ -20,16 +20,16 @@ var caseAutocompleteOptions = {
 	        if (!ui.item) {
 	            this.value = '';
 	            
-	            let clientField = this.id + ".client";
+	            const clientField = this.id + ".client";
 	            $('#' + clientField).text('');
 	            
-	            let attorneyField = this.id + ".attorney";
+	            const attorneyField = this.id + ".attorney";
 	            $('#' + attorneyField).val('');
 	            
-	            let custodyField = this.id + ".custodyStatus";
+	            const custodyField = this.id + ".custodyStatus";
 	            $('#' + custodyField).text('');
 	            
-	            let errorField = this.id + ".errors";
+	            const errorField = this.id + ".errors";
 	            document.getElementById(errorField).innerHTML = 'Please enter a valid case number';
         	}
 	    },
@@ -37,60 +37,60 @@ var caseAutocompleteOptions = {
 		     event.preventDefault();
 		     $(this).val(ui.item.caseNumber);
 	            
-     		 let clientField = this.id + ".client";
+     		 const clientField = this.id + ".client";
              document.getElementById(clientField).innerHTML = ui.item.clientName;
             
-             let attorneyField = this.id + ".attorney";
+             const attorneyField = this.id + ".attorney";
              document.getElementById(attorneyField).value = ui.item.attorneyName;
              
-             let custodyField = this.id + ".custodyStatus";
+             const custodyField = this.id + ".custodyStatus";
 	         document.getElementById(custodyField).innerHTML = ui.item.custodyStatus;
 	    }
 	}
 
 function updateFormOnStartTimeChange() {
-	let startTimeValue = document.getElementById('startTime').value;
+	const startTimeValue = document.getElementById('startTime').value;
 	
-	let defaultEndTime = startTimeValue.substring(0, 11).concat("17:00");
+	const defaultEndTime = startTimeValue.substring(0, 11).concat("17:00");
 	document.getElementById('endTime').value = defaultEndTime;
 }
 
 function validateEndTime() {
-	let endTimeElement = document.getElementById('endTime');
-	let endTimeValue = endTimeElement.value;
-	let startTimeValue = document.getElementById('startTime').value;
-	let endTimeIsValid = true;
+	const endTimeElement = document.getElementById('endTime');
+	const endTimeValue = endTimeElement.value;
+	const startTimeValue = document.getElementById('startTime').value;
+	const endTimeIsValid = true;
 	
-	let endTimeYear = endTimeValue.substring(0,4);
-	let startTimeYear = startTimeValue.substring(0,4);
+	const endTimeYear = endTimeValue.substring(0,4);
+	const startTimeYear = startTimeValue.substring(0,4);
 
 	if(endTimeYear < startTimeYear) {
 		endTimeIsValid = false;
 		
 	} else if(endTimeYear === startTimeYear) {
-		let endTimeMonth = endTimeValue.substring(5,7);
-		let startTimeMonth = startTimeValue.substring(5,7);
+		const endTimeMonth = endTimeValue.substring(5,7);
+		const startTimeMonth = startTimeValue.substring(5,7);
 		
 		if(endTimeMonth < startTimeMonth) {
 			endTimeIsValid = false;
 			
 		} else if(endTimeMonth === startTimeMonth) {
-			let endTimeDay = endTimeValue.substring(8,10);
-			let startTimeDay = startTimeValue.substring(8,10);
+			const endTimeDay = endTimeValue.substring(8,10);
+			const startTimeDay = startTimeValue.substring(8,10);
 			
 			if(endTimeDay < startTimeDay) {
 				endTimeIsValid = false;
 				
 			} else if(endTimeDay === startTimeDay) {
-				let endTimeHour = endTimeValue.substring(11,13);
-				let startTimeHour = startTimeValue.substring(11,13);
+				const endTimeHour = endTimeValue.substring(11,13);
+				const startTimeHour = startTimeValue.substring(11,13);
 				
 				if(endTimeHour < startTimeHour) {
 					endTimeIsValid = false;
 					
 				} else if(endTimeHour === startTimeHour) {
-					let endTimeMinute = endTimeValue.substring(14,16);
-					let startTimeMinute = startTimeValue.substring(14,16);
+					const endTimeMinute = endTimeValue.substring(14,16);
+					const startTimeMinute = startTimeValue.substring(14,16);
 					
 					if(endTimeMinute <= startTimeMinute) {
 						endTimeIsValid = false;
@@ -117,33 +117,33 @@ function handleValidEndTime() {
 }
 
 function newRow() {
-    let table = document.getElementById("caseEventTable");
-    let row = table.insertRow(table.getElementsByTagName("tr").length);
-    let caseEventNumber = table.getElementsByTagName("tr").length - 1;
+    const table = document.getElementById("caseEventTable");
+    const row = table.insertRow(table.getElementsByTagName("tr").length);
+    const caseEventNumber = table.getElementsByTagName("tr").length - 1;
     
     // CREATE LABEL FOR NEW ROW
-    let cell0 = row.insertCell(0);    
-    let label = document.createElement('LABEL');
+    const cell0 = row.insertCell(0);    
+    const label = document.createElement('LABEL');
 	label.htmlFor = "caseEvent" + caseEventNumber;
 	label.innerText = (caseEventNumber + 1) + ". ";
     cell0.appendChild(label);
         
      // CREATE HIDDEN INPUTS TO STORE TIMES AND INVESTIGATOR IN NEW ROW
-    let startTimeInput = document.createElement('INPUT');
+    const startTimeInput = document.createElement('INPUT');
 	startTimeInput.id = "startTime" + caseEventNumber + "hidden";
 	startTimeInput.type = "hidden";
 	startTimeInput.name = "caseEvents[" + caseEventNumber + "].startTime";
 	startTimeInput.max = "9999:12:31T23:59";
 	cell0.appendChild(startTimeInput);
     	
-	let endTimeInput = document.createElement('INPUT');
+	const endTimeInput = document.createElement('INPUT');
 	endTimeInput.id = "endTime" + caseEventNumber + "hidden";
 	endTimeInput.type = "hidden";
 	endTimeInput.name = "caseEvents[" + caseEventNumber + "].endTime";
 	endTimeInput.max = "9999:12:31T23:59";
 	cell0.appendChild(endTimeInput);
 	
-	let descriptionInput = document.createElement('INPUT');
+	const descriptionInput = document.createElement('INPUT');
 	descriptionInput.id = "descriptionInput" + caseEventNumber + "hidden";
 	descriptionInput.type = "hidden";
 	descriptionInput.name = "caseEvents[" + caseEventNumber + "].description";
@@ -151,8 +151,8 @@ function newRow() {
 	cell0.appendChild(descriptionInput);
 
     // CREATE INPUT FOR NEW ROW
-	let cell1 = row.insertCell(1);
-    let caseNumberInput = document.createElement('INPUT');
+	const cell1 = row.insertCell(1);
+    const caseNumberInput = document.createElement('INPUT');
     caseNumberInput.id = "caseEvent" + caseEventNumber;
     caseNumberInput.name= "caseEvents[" + caseEventNumber + "].caseNumber";
     caseNumberInput.classList.add('caseEventCaseNumberInput');
@@ -161,15 +161,15 @@ function newRow() {
     cell1.appendChild(caseNumberInput);
     
     // CREATE SPAN FOR CASEEVENT INFO
-    let cell2 = row.insertCell(2);
-    let clientSpan = document.createElement('SPAN');
+    const cell2 = row.insertCell(2);
+    const clientSpan = document.createElement('SPAN');
     clientSpan.id = "caseEvent" + caseEventNumber + ".client";
     clientSpan.innerHTML = "";
     cell2.appendChild(clientSpan);
     
  // CREATE INPUT FOR NEW ROW
-	let cell3 = row.insertCell(3);
-    let attorneyInput = document.createElement('INPUT');
+	const cell3 = row.insertCell(3);
+    const attorneyInput = document.createElement('INPUT');
     attorneyInput.id = "caseEvent" + caseEventNumber + ".attorney";
     attorneyInput.name= "caseEvents[" + caseEventNumber + "].attorney";
     attorneyInput.setAttribute('readonly', true);
@@ -178,22 +178,22 @@ function newRow() {
     cell3.appendChild(attorneyInput);
     
  // CREATE SPAN FOR CUSTODYSTATUS
-    let cell4 = row.insertCell(4);
-    let custodySpan = document.createElement('SPAN');
+    const cell4 = row.insertCell(4);
+    const custodySpan = document.createElement('SPAN');
     custodySpan.id = "caseEvent" + caseEventNumber + ".custodyStatus";
     custodySpan.innerHTML = "";
     cell4.appendChild(custodySpan);
     	
     // CREATE ERROR FIELD FOR NEW ROW
-   	let errorField = document.createElement('DIV');
+   	const errorField = document.createElement('DIV');
 	errorField.id = "caseEvent" + caseEventNumber + ".errors";
 	errorField.classList.add('error');
 	cell1.appendChild(errorField);
 }
 	
 function deleteRow(){
-    let table = document.getElementById("caseEventTable");
-    let rowCount = table.rows.length;
+    const table = document.getElementById("caseEventTable");
+    const rowCount = table.rows.length;
 
     if(rowCount>1){            
         table.deleteRow(-1);
@@ -203,8 +203,8 @@ function deleteRow(){
 // Set up form and create/populate fields as needed
 (function(){
 	//Set min attribute of startTime
-	let currentDateString = new Date().toISOString();
-	let minDateString = currentDateString.substring(0, 11).concat("00:00");
+	const currentDateString = new Date().toISOString();
+	const minDateString = currentDateString.substring(0, 11).concat("00:00");
 	document.getElementById('startTime').setAttribute("min", minDateString)
 	
 	//Start event listeners on startTime and endTime
@@ -219,9 +219,9 @@ function deleteRow(){
 	
 	document.getElementById('multiEventForm').addEventListener('submit',
 			function() {
-		let caseEvents = document.getElementById('caseEventTable').rows;
-		let startTime = document.getElementById('startTime').value;
-		let endTime = document.getElementById('endTime').value;
+		const caseEvents = document.getElementById('caseEventTable').rows;
+		const startTime = document.getElementById('startTime').value;
+		const endTime = document.getElementById('endTime').value;
 
 		for(i = 0; i < caseEvents.length; i++) {
 			document.getElementById('startTime' + i + 'hidden').value = startTime;

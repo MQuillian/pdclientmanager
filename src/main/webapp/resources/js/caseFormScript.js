@@ -1,4 +1,4 @@
-var clientAutocompleteOptions = {
+const clientAutocompleteOptions = {
 		source : function(request, response) {
 			$.ajax({
 				url : contextPathVar + "/autocomplete/clientsByName",
@@ -38,7 +38,7 @@ var clientAutocompleteOptions = {
 	    }
 	}
 
-var chargeAutocompleteOptions = {
+const chargeAutocompleteOptions = {
 		source : function(request, response) {
 			$.ajax({
 				url : contextPathVar + "/autocomplete/chargesByNameOrStatute",
@@ -78,19 +78,19 @@ var chargeAutocompleteOptions = {
 	}
 
 function newRow() {
-    var table = document.getElementById("chargeTable");
-    var row = table.insertRow(table.getElementsByTagName("tr").length);
-    var countNumber = table.getElementsByTagName("tr").length;
+    const table = document.getElementById("chargeTable");
+    const row = table.insertRow(table.getElementsByTagName("tr").length);
+    const countNumber = table.getElementsByTagName("tr").length;
     
     // CREATE LABEL FOR NEW ROW
-    var cell1 = row.insertCell(0);    
-    var label = document.createElement('LABEL');
+     cell1 = row.insertCell(0);    
+    const label = document.createElement('LABEL');
     		label.htmlFor = "count" + countNumber;
     		label.innerText = "Count " + countNumber + ": ";
         cell1.appendChild(label); 
 
     // CREATE INPUT FOR NEW ROW
-    var input = document.createElement('INPUT');
+    const input = document.createElement('INPUT');
         input.id = "count" + countNumber;
         input.name= "chargedCountsStrings[" + countNumber + "]";
         input.classList.add('charge-input');
@@ -98,7 +98,7 @@ function newRow() {
         cell1.appendChild(input);
         
     // CREATE HIDDEN FIELD TO STORE SELECTION IN NEW ROW
-    var chargeIdInput = document.createElement('INPUT');
+    const chargeIdInput = document.createElement('INPUT');
     	chargeIdInput.id = "count" + countNumber + "hidden";
     	chargeIdInput.type="hidden";
     	chargeIdInput.name = "chargedCountsIds[" + countNumber + "]";
@@ -106,15 +106,15 @@ function newRow() {
     	cell1.appendChild(chargeIdInput);
     	
     // CREATE ERROR FIELD FOR NEW ROW
-   	var errorField = document.createElement('DIV');
+   	const errorField = document.createElement('DIV');
     	errorField.id = "count" + countNumber + ".errors";
     	errorField.classList.add('error');
     	cell1.appendChild(errorField);
 }
 	
 function deleteRow(){
-    var table = document.getElementById("chargeTable");
-    var rowCount = table.rows.length;
+    const table = document.getElementById("chargeTable");
+    const rowCount = table.rows.length;
 
     if(rowCount>1){            
         table.deleteRow(-1);
