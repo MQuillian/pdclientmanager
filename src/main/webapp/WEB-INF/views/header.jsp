@@ -25,7 +25,9 @@
 		<script src="<spring:url value="/resources/js/bootstrap.min.js" />"></script>
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="background-img">
+		<div class="background-mask">
+		<nav class="navbar navbar-expand-lg navbar-light">
 		  <a class="navbar-brand" href="${contextPath}">PDClientManager</a>
 		
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -71,9 +73,6 @@
 	        </a>
 		  </div>
 		</nav>
-		
-		<div class="background-img">
-		<div class="background-mask">
 		
 		<div class="container content">
 

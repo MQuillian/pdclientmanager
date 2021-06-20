@@ -125,15 +125,6 @@ public class HomeControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void officeStats_ShouldRenderOfficeStatsView() throws Exception {
-        mockMvc.perform(get("/officeStats"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("officeStats"))
-            .andExpect(forwardedUrl("/WEB-INF/views/officeStats.jsp"));
-    }
-
-    @Test
-    @WithMockUser(roles = "USER")
     public void resetData_ShouldAddMessageAndRedirectToHomePage() throws Exception {
         mockMvc.perform(post("/reset"))
             .andExpect(status().isFound())

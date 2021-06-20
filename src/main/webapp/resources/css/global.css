@@ -8,24 +8,45 @@
 html {
 	position:relative;
 	min-height:100%;
+	height:100%;
+	overflow:auto;
 }
 
-.container {
+body {
+	margin:0;
+	padding:0;
+}
+
+.navbar {
 	background-color: rgba(255,255,255,0.9);
-	padding-top:15px;
-	padding-bottom:35px;
+}
+
+.content {
+	background-color: rgba(255,255,255,0.9);
+	position:relative;
+	margin-top:15px;
+	padding-bottom:10px;
+}
+
+.login-img {
+	background: url(../images/law-books.jpg) no-repeat center center fixed;
+  	background-size: cover;
 }
 
 .background-img {
-	background: url('../images/lady-justice.jpg');
-	min-height:100vh;
-	background-size: cover !important;
+	background: url(../images/lady-justice.jpg) no-repeat center center fixed;
+  	background-size: cover;
 }
 
 .background-mask {
-	background-color: rgba(0, 0, 0, 0.6);
+	background: linear-gradient(
+        45deg,
+        rgba(9, 32, 63, 0.7),
+        rgba(83, 120, 149, 0.7) 100%
+      );
 	min-height:100vh;
 	background-size: cover !important;
+	padding-bottom:15px;
 }
 
 .pagination {
@@ -35,21 +56,6 @@ html {
 
 .page-item {
 	display:inline-block;
-}
-
-.footer {
-	position:absolute;
-	bottom:0;
-	left:0;
-	right:0;
-	width:100%;
-	height:70px;
-	overflow:hidden;
-}
-
-.copyright {
-	text-align:center;
-	color:#A9A9A9;
 }
 
 .btn-group {

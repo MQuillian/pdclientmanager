@@ -26,46 +26,46 @@
     	<form:errors cssClass="error"/>
     </div>
     
-    <div class="row">
+    <div class="form-group">
     	<label for="dateOpened">Date Opened: </label>
     	<form:input type="text" path="dateOpened" name="dateOpened" id="dateOpened" />
     	<form:errors path="dateOpened" cssClass="error"/>
     </div>
     
-    <div class="row">
+    <div class="form-group">
     	<label for="dateClosed">Date Closed: </label>
     	<form:input type="text" path="dateClosed" name="dateClosed" id="dateClosed" />
     	<form:errors path="dateClosed" cssClass="error" />
     </div>
     
-    <div class="row">
+    <div class="form-group">
     	<label for="caseNumber">Case Number: </label>
     	<form:input type="text" path="caseNumber" name="caseNumber" id="caseNumber" />
     	<form:errors path="caseNumber" cssClass="error"/>
    	</div>
     
-    <div class="row">
+    <div class="form-group">
     	<label for="clientId">Client Name: </label>
     	<form:input type="text" path="clientName" id="clientName"/>
     	<form:input type="hidden" path="clientId" id="clientHiddenField" />
     	<form:errors path="clientId" cssClass="error"/>
     </div>
     
-    <div class="row">
+    <div class="form-group">
     	<label for="judgeId">Judge Name: </label>
     	<form:select path="judgeId" id="judgeId" items="${activeJudges}"
     		itemLabel="name" itemValue="id" />
     	<form:errors path="judgeId" cssClass="error" />
    	</div>
    	
-   	<div class="row">
+   	<div class="form-group">
    		<label for="attorneyId">Attorney Name: </label>
    		<form:select path="attorneyId" id="attorneyId" items="${activeAttorneys}"
    			itemLabel="name" itemValue="id" />
    		<form:errors path="attorneyId" cssClass="error" />
  	</div>
 	
-	<div class="row">
+	<div class="form-group">
         <div class="large-8 large-offset-2 columns">
         	<form:errors path="chargedCountsIds" cssClass="error" />
 	            <table id="myTable" class="hover large-12 columns">
@@ -104,7 +104,7 @@
         </div>    
     </div>       
       
-    <div class="row">
+    <div class="form-group">
         <div class="large-4 large-offset-2 columns">
             <button type="button" class="button expanded" onclick="newRow()">Add new row</button>
         </div>

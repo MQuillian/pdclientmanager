@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Login</title>
+<title>Log In</title>
 <link rel="stylesheet" href="<spring:url value="/resources/css/jquery-ui.min.css" />">
 <link rel="stylesheet" href="<spring:url value="/resources/css/bootstrap.min.css" />">
 <link rel="stylesheet" href="<spring:url value="/resources/css/global.css" />">
@@ -18,7 +18,10 @@
 <script src="<spring:url value="/resources/js/bootstrap.min.js" />"></script>
 </head>
 <body>
-<div class="container">
+
+<div class="login-img">
+<div class="background-mask">
+<div class="container" style="padding-top:15px">
 	<c:if test="${param.error == true}">
 		<div class="alert alert-danger alert-dismissible" role="alert">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -35,22 +38,30 @@
 			<strong>Successfully logged out</strong>
 		</div>
 	</c:if>
-   <h1>Custom Login Page</h1>
-   <form name='f' action="${contextPath}/handle_login" method='POST'>
-      <table>
-         <tr>
-            <td>User:</td>
-            <td><input type='text' name='username' value=''></td>
-         </tr>
-         <tr>
-            <td>Password:</td>
-            <td><input type='password' name='password' /></td>
-         </tr>
-         <tr>
-            <td><input name="submit" type="submit" value="submit" /></td>
-         </tr>
-      </table>
-  </form>
+	<div class="container">
+		<div class="d-flex justify-content-center h-100" style="padding-top:20vh">
+			<div class="card" style="background-color:rgba(255,255,255,0.9)">
+				<div class="card-header">
+					<h3>Login</h3>
+				</div>
+				<div class="card-body">
+					<form name="f" action="${contextPath}/handle_login" method="POST">
+						<div class="input-group form-group">
+							<input type="text" name="username" class="form-control" placeholder="Username">
+						</div>
+						<div class="input-group form-group">
+							<input type="password" name="password" class="form-control" placeholder="Password">
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Submit" class="btn float-right login_btn">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
 </div>
 </body>
 </html>
