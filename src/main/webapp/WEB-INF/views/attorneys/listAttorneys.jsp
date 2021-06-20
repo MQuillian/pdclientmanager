@@ -11,6 +11,7 @@
 			<th>Name</th>
 			<th>Working Status</th>
 			<th>Investigator</th>
+			<th></th>
 		</tr>
 	</thead>
 	<c:forEach items="${attorneyList}" var="attorney">

@@ -134,15 +134,6 @@ public class HomeControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void pendingCourt_ShouldRenderPendingCourtView() throws Exception {
-        mockMvc.perform(get("/pendingCourt"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("pendingCourt"))
-            .andExpect(forwardedUrl("/WEB-INF/views/pendingCourt.jsp"));
-    }
-
-    @Test
-    @WithMockUser(roles = "USER")
     public void resetData_ShouldAddMessageAndRedirectToHomePage() throws Exception {
         mockMvc.perform(post("/reset"))
             .andExpect(status().isFound())

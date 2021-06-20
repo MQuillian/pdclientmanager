@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -83,7 +84,29 @@ public class UserServiceImpl implements UserService {
             return mapUserToForm(currentUser);
         }
         return null;
-        
+    }
+    
+    @Override
+    public List<String> getCurrentUserRoles() {
+    	List<String> roles = new ArrayList<>();
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	if(auth != null) {
+    		for(GrantedAuthority authority : auth.getAuthorities()) {
+    			roles.add(authority.getAuthority());
+    		}
+    	}
+    	return roles;
+    }
+    
+    @Override
+    public String getCurrentUserFullName() {
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	if(auth != null) {
+    		User user = (User) auth.getDetails();
+    		return user.getFullName();
+    	} else {
+    		return null;
+    	}
     }
     
     // Mapping methods

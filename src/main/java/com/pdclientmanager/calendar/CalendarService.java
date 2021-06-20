@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface CalendarService {
     
+	public CaseEvent getEventById(String id) throws IOException;
+	
     public List<CaseEvent> getListOfTwoWeeksEventsForAllEmployees() throws IOException;
     
     public List<CaseEvent> getListOfTwoWeeksEventsForCurrentUser() throws IOException;
@@ -20,4 +22,6 @@ public interface CalendarService {
     public CaseEvent updateEvent(CaseEvent event) throws IOException;
     
     public void deleteEvent(CaseEvent event) throws IOException;
+    
+    public void deleteEvent(String eventId) throws IOException;
 }

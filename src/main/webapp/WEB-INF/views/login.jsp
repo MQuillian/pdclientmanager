@@ -36,7 +36,7 @@
 		</div>
 	</c:if>
    <h1>Custom Login Page</h1>
-   <form name='f' action="/pdclientmanager/handle_login" method='POST'>
+   <form name='f' action="${contextPath}/handle_login" method='POST'>
       <table>
          <tr>
             <td>User:</td>

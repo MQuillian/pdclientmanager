@@ -12,6 +12,7 @@
 			<th>Client</th>
 			<th>Case Status</th>
 			<th>Attorney</th>
+			<th></th>
 		</tr>
 	</thead>
 	

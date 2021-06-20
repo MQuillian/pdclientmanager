@@ -172,7 +172,7 @@ function newRow() {
     const attorneyInput = document.createElement('INPUT');
     attorneyInput.id = "caseEvent" + caseEventNumber + ".attorney";
     attorneyInput.name= "caseEvents[" + caseEventNumber + "].attorney";
-    attorneyInput.setAttribute('readonly', true);
+    attorneyInput.setAttribute('disabled', true);
     attorneyInput.classList.add('attorneyInput','form-control-plaintext','padding-m');
     attorneyInput.placeholder = "";
     cell3.appendChild(attorneyInput);

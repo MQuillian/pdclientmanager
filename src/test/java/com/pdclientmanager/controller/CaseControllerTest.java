@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -50,6 +51,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.pdclientmanager.calendar.CalendarService;
+import com.pdclientmanager.calendar.CaseEvent;
+import com.pdclientmanager.calendar.GoogleCalendarServiceImpl;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.CaseForm;
 import com.pdclientmanager.model.form.CaseForm.CaseFormDtoBuilder;
@@ -94,6 +98,12 @@ public class CaseControllerTest {
         JudgeService judgeServiceMock() {
             return Mockito.mock(JudgeServiceImpl.class);
         }
+        
+        @Bean
+        @Primary
+        CalendarService calendarServiceMock() {
+        	return Mockito.mock(GoogleCalendarServiceImpl.class);
+        }
     }
     
     @Autowired
@@ -104,6 +114,9 @@ public class CaseControllerTest {
     
     @Autowired
     private JudgeService judgeServiceMock;
+    
+    @Autowired
+    private CalendarService calendarServiceMock;
     
     private MockMvc mockMvc;
     
@@ -201,9 +214,8 @@ public class CaseControllerTest {
     
     @Test 
     public void save_WhenValidNewCase_ShouldSaveCase() throws Exception {
-        
         caseForm.setId(null);
-        
+       
         when(caseServiceMock.save(any(CaseForm.class)))
             .thenReturn(1L);
         
@@ -240,13 +252,20 @@ public class CaseControllerTest {
     
     @Test
     public void showCase_WithValidId_ShouldAddCaseToModelAndRenderCaseView() throws Exception {
-        when(caseServiceMock.findById(1L, CaseProjection.class)).thenReturn(caseProjection);
-        
+    	List<CaseEvent> caseEvents = new ArrayList<>();
+        caseEvents.add(new CaseEvent("TestId", caseProjection.getCaseNumber(), "Test Attorney",
+        		"Test Description", "Test Summary", LocalDateTime.now(), LocalDateTime.now()));
+    	
+    	when(caseServiceMock.findById(1L, CaseProjection.class)).thenReturn(caseProjection);
+    	when(calendarServiceMock.getListOfAllEventsByCaseNumber(caseProjection.getCaseNumber()))
+    		.thenReturn(caseEvents);
+    	
         mockMvc.perform(get("/cases/1"))
             .andExpect(status().isOk())
             .andExpect(view().name("cases/showCase"))
             .andExpect(forwardedUrl("/WEB-INF/views/cases/showCase.jsp"))
-            .andExpect(model().attribute("courtCase", is(caseProjection)));
+            .andExpect(model().attribute("courtCase", is(caseProjection)))
+    		.andExpect(model().attribute("caseEvents", is(caseEvents)));
     }
 
     @Test

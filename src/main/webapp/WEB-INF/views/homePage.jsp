@@ -4,10 +4,6 @@
 	<div class="col">
 		<h1>Home</h1>
 		<hr>
-		CASE SEARCH UI
-		<br>
-		PENDING CT DATE UI
-		<br>
 		<a href="admin">System Management</a>
 		<br>
 		<a href="calendar/management">Calendar Management</a>
@@ -18,18 +14,15 @@
 		<br>
 		<a href="employeeManagement">Employee Management</a>
 		<br>
-		STATISTICS UI
-		<br>
 		<a href="individualStats">Individual Statistics</a>
 		<br>
-		<a href="officeStats">Office Statistics</a>
-		<hr>
+		<br>
 		<form:form action="reset" method="post">
 			<button class="btn btn-danger" type="submit">
 			Reset Data (FOR DEMO USE ONLY)</button>
 		</form:form>
 	</div>
-	<div class="col">
+	<div class="col-8">
 	<h2>Upcoming Events</h2>
 	<hr>
 	<table class="table table-striped" id="homeCalendar">
@@ -45,7 +38,19 @@
 		<tr>
 			<td>${caseEvent.prettyStartTime}</td>
 			<td>${caseEvent.description}</td>
-			<td>${caseEvent.caseNumber}</td>
+			<td><a href="cases/byCaseNumber/${caseEvent.caseNumber}">${caseEvent.caseNumber}</a></td>
+			<td>
+				<div class="btn-group" role="group">
+					<spring:url value="/calendar/${caseEvent.id}/update" var="updateUrl" />
+					<spring:url value="/calendar/${caseEvent.id}/delete" var="deleteUrl" />
+					
+					<button class="btn btn-primary"
+						onclick="location.href='${updateUrl}'">Update</button>
+					<form:form action="${deleteUrl}" method="post">
+						<button class="btn btn-danger" type="submit">Delete</button>
+					</form:form>
+				</div>
+			</td>
 		</tr>
 	</c:forEach>
 	</table>

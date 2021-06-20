@@ -20,7 +20,7 @@ import com.pdclientmanager.repository.entity.Attorney;
 @Transactional
 public class BaseRepositoryTest extends AbstractBaseTest{
 
-    /* Uses CaseRepository as an implementation of BaseRepository to test
+    /* Uses AttorneyRepository as an implementation of BaseRepository to test
      * BaseRepository methods that are inherited
      */
     

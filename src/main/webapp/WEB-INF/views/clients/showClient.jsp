@@ -11,6 +11,16 @@
 </div>
 
 <div class="row">
+	<label class="col-sm-2">Incarceration date</label>
+	<div class="col-sm-10">${client.incarcerationDate}</div>
+</div>
+
+<div class="row">
+	<label class="col-sm-2">Release date</label>
+	<div class="col-sm-10">${client.releaseDate}</div>
+</div>
+
+<div class="row">
 	<label class="col-sm-2">Custody Status</label>
 	<div class="col-sm-10">${client.custodyStatus.displayText}</div>
 </div>

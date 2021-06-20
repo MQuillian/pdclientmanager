@@ -1,7 +1,11 @@
 package com.pdclientmanager.model.form;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.pdclientmanager.repository.entity.CustodyStatus;
 
@@ -15,14 +19,24 @@ public class ClientForm {
     @NotNull
     private CustodyStatus custodyStatus;
     
+    @NotNull
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private LocalDate incarcerationDate;
+    
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private LocalDate releaseDate;
+    
     public ClientForm() {
         
     }
 
-    public ClientForm(Long id, String name, CustodyStatus custodyStatus) {
+    public ClientForm(Long id, String name, CustodyStatus custodyStatus, LocalDate incarcerationDate,
+    		LocalDate releaseDate) {
         this.id = id;
         this.name = name;
         this.custodyStatus = custodyStatus;
+        this.incarcerationDate = incarcerationDate;
+        this.releaseDate = releaseDate;
     }
     
     public boolean isNew() {
@@ -51,6 +65,22 @@ public class ClientForm {
 
     public void setCustodyStatus(CustodyStatus custodyStatus) {
         this.custodyStatus = custodyStatus;
+    }
+    
+    public LocalDate getIncarcerationDate() {
+    	return incarcerationDate;
+    }
+    
+    public void setIncarcerationDate(LocalDate incarcerationDate) {
+    	this.incarcerationDate = incarcerationDate;
+    }
+    
+    public LocalDate getReleaseDate() {
+    	return releaseDate;
+    }
+    
+    public void setReleaseDate(LocalDate releaseDate) {
+    	this.releaseDate = releaseDate;
     }
 
     @Override
@@ -92,6 +122,8 @@ public class ClientForm {
         private Long id = 1L;
         private String name = "Default ClientForm";
         private CustodyStatus custodyStatus = CustodyStatus.IN_CUSTODY;
+        private LocalDate incarcerationDate = LocalDate.now();
+        private LocalDate releaseDate = null;
         
         public ClientFormBuilder withId(Long id) {
             this.id = id;
@@ -108,8 +140,18 @@ public class ClientForm {
             return this;
         }
         
+        public ClientFormBuilder withIncarcerationDate(LocalDate incarcerationDate) {
+        	this.incarcerationDate = incarcerationDate;
+        	return this;
+        }
+        
+        public ClientFormBuilder withReleaseDate(LocalDate releaseDate) {
+        	this.releaseDate = releaseDate;
+        	return this;
+        }
+        
         public ClientForm build() {
-            return new ClientForm(id, name, custodyStatus);
+            return new ClientForm(id, name, custodyStatus, incarcerationDate, releaseDate);
         }
     }
 }

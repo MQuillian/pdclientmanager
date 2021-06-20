@@ -2,6 +2,7 @@ package com.pdclientmanager.calendar;
 
 import java.io.IOException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.pdclientmanager.model.projection.CaseProjection;
+import com.pdclientmanager.service.CaseService;
 
 @Controller
 @Lazy
@@ -45,16 +50,23 @@ public class CalendarController {
             return "calendar/caseEventForm";
         } else {
             try {
-                service.addEvent(caseEvent);
-                
-                redirectAttributes.addFlashAttribute("css", "success");
-                redirectAttributes.addFlashAttribute("msg", "Event saved successfully");
+            	if(caseEvent.getId() == "") {
+            		service.addEvent(caseEvent);
+                    
+                    redirectAttributes.addFlashAttribute("css", "success");
+                    redirectAttributes.addFlashAttribute("msg", "Event saved successfully");
+            	} else {
+            		service.updateEvent(caseEvent);
+            		
+            		redirectAttributes.addFlashAttribute("css", "success");
+                    redirectAttributes.addFlashAttribute("msg", "Event updated successfully");
+            	}
             } catch(IOException e) {
                 redirectAttributes.addFlashAttribute("css", "danger");
                 redirectAttributes.addFlashAttribute("msg", "Error saving event");
             }
             
-            return "calendar/calendarManagement";
+            return "redirect:/cases/byCaseNumber/" + caseEvent.getCaseNumber();
         }
     }
     
@@ -83,5 +95,39 @@ public class CalendarController {
             }
             return "calendar/calendarManagement";
         }
+    }
+    
+    @GetMapping("/calendar/{id}/update")
+    public String showUpdateCaseEventForm(@PathVariable("id") String eventId, Model model,
+    		final RedirectAttributes redirectAttributes) {
+    	try {
+    		CaseEvent caseEvent = service.getEventById(eventId);
+    		if(caseEvent == null) {
+    			throw new EntityNotFoundException("No event exists with id - " + eventId);
+    		} else {
+    			model.addAttribute("caseEvent", caseEvent);
+    			return "calendar/caseEventForm";
+    		}
+    	} catch(Exception e) {
+    		redirectAttributes.addFlashAttribute("css", "danger");
+    		redirectAttributes.addFlashAttribute("msg", "Error finding matching event");
+    		return "calendar/calendarManagement";
+    	}
+    }
+    
+    @PostMapping("/calendar/{id}/delete")
+    public String deleteCaseEvent(@PathVariable("id") String eventId, final RedirectAttributes redirectAttributes) {
+    	try {
+    		service.deleteEvent(eventId);
+    		
+    		redirectAttributes.addFlashAttribute("css", "success");
+    		redirectAttributes.addFlashAttribute("msg", "Event succcessfully deleted!");
+    		
+    		return "calendar/calendarManagement";
+    	} catch(IOException e) {
+    		redirectAttributes.addFlashAttribute("css", "danger");
+    		redirectAttributes.addFlashAttribute("msg", "Error deleting event");
+    		return "calendar/calendarManagement";
+    	}
     }
 }

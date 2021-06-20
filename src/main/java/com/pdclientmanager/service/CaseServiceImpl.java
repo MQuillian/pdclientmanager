@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,11 @@ public class CaseServiceImpl implements CaseService {
     @Transactional
     public <T> List<T> findAllOpenWithAttorneyId(Long targetId, Class<T> type) {
         List<T> caseList = repository.findByDateClosedIsNullAndAttorney_Id(targetId, type);
+        if(type.equals(Case.class)) {
+        	for(T courtCase : caseList) {
+        		Hibernate.initialize(courtCase);
+        	}
+        }
         return caseList;
     }
     

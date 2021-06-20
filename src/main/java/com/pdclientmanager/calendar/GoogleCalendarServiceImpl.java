@@ -29,7 +29,6 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.pdclientmanager.model.form.UserForm;
 import com.pdclientmanager.security.UserService;
 import com.pdclientmanager.util.mapper.EventMapper;
 
@@ -65,6 +64,12 @@ public class GoogleCalendarServiceImpl implements CalendarService {
         this.userService = userService;
   }
 
+    public CaseEvent getEventById(String eventId, String calId) throws IOException {
+    	Event event = calendar.events().get(calId, eventId).execute();
+    	
+    	return mapper.toCaseEventFromEvent(event);
+    }
+    
     public List<CaseEvent> getListOfTwoWeeksEventsForAllEmployees(String calId) throws IOException {
         Events events = calendar.events().list(calId)
             .setTimeMin(getTodaysDateTime())
@@ -92,7 +97,7 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     }
     
     public List<CaseEvent> getListOfAllEventsForCurrentUser(String calId) throws IOException {
-        //If user is ONLY admin then returns events for all employees
+        //If user does not have ROLE_ATTORNEY then returns events for all employees
         String userSearchTerm = generateUserSearchTerm();
         if(userSearchTerm.contentEquals("ADMIN")) {
             return getListOfTwoWeeksEventsForAllEmployees(calId);
@@ -122,22 +127,12 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     }
     
     public void batchInsertEvents(List<CaseEvent> caseEvents, String calId) throws IOException {
-        JsonBatchCallback<Event> callback = new JsonBatchCallback<Event>() {
-
-            public void onSuccess(Event event, HttpHeaders responseHeaders) {
-              // NO NEED FOR ANY OTHER OPERATIONS IF SUCCESSFUL
-            }
-
-            public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) throws IOException {
-                throw new IOException("Error on calendar batch insert");
-            }
-        };
         
         // LIMIT BATCH SIZE TO <50 events DUE TO API CONSTRAINTS
         int currentIndex = 0;
         
         while(currentIndex < caseEvents.size()) {
-            executeBatchInsertRequestFromIndex(currentIndex, caseEvents, calId, callback);
+            executeBatchInsertRequestFromIndex(currentIndex, caseEvents, calId);
             currentIndex += 50;
         }
     }
@@ -150,6 +145,15 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     
     public void deleteEvent(CaseEvent event, String calId) throws IOException {
         calendar.events().delete(calId, event.getId()).execute();
+    }
+    
+    public void deleteEvent(String eventId, String calId) throws IOException {
+    	calendar.events().delete(calId,  eventId).execute();
+    }
+    
+    @Override
+    public CaseEvent getEventById(String eventId) throws IOException {
+    	return getEventById(eventId, "primary");
     }
     
     @Override
@@ -169,7 +173,7 @@ public class GoogleCalendarServiceImpl implements CalendarService {
 
     @Override
     public List<CaseEvent> getListOfAllEventsByCaseNumber(String searchTerm) throws IOException {
-        return getListOfAllEventsByCaseNumber("primary");
+        return getListOfAllEventsByCaseNumber(searchTerm, "primary");
     }
 
     @Override
@@ -191,6 +195,11 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     public void deleteEvent(CaseEvent event) throws IOException {
         deleteEvent(event, "primary");
     }
+    
+    @Override
+    public void deleteEvent(String eventId) throws IOException {
+    	deleteEvent(eventId, "primary");
+    }
 
     private DateTime getTodaysDateTime() {
         return DateTime.parseRfc3339(LocalDate.now().toString().concat("T00:00:00.00z"));
@@ -201,19 +210,29 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     }
     
     private String generateUserSearchTerm() {
-        UserForm user = userService.getCurrentUserAsForm();
-        List<String> authorities = user.getRoles();
+        List<String> roles = userService.getCurrentUserRoles();
         
-        if(authorities.contains("ROLE_ATTORNEY")) {
-            return "attorney=" + user.getFullName();
+        if(roles.contains("ROLE_ATTORNEY")) {
+            return "attorney=" + userService.getCurrentUserFullName();
         } else {
             return "ADMIN";
         }
     }
     
     private void executeBatchInsertRequestFromIndex(int startIndex, List<CaseEvent> caseEvents,
-            String calId, JsonBatchCallback<Event> callback) throws IOException {
-        int endIndex = startIndex + 50;
+            String calId) throws IOException {
+    	
+    	JsonBatchCallback<Event> callback = new JsonBatchCallback<Event>() {
+
+            public void onSuccess(Event event, HttpHeaders responseHeaders) {
+            	//NO NEED FOR FURTHER ACTION
+            }
+
+            public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) throws IOException {
+            	throw new IOException("Error on calendar batch insert - " + e.getMessage());
+            }
+        };
+    	int endIndex = startIndex + 50;
         if(endIndex > caseEvents.size()) {
             endIndex = caseEvents.size();
         }
@@ -246,42 +265,5 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     
     public List<CaseEvent> getAllEvents(String calId) throws IOException {
         return mapper.toListCaseEventFromListEvent(calendar.events().list(calId).execute().getItems());
-    }
-    
-    public void batchDeleteEvents(List<CaseEvent> caseEvents, String calId) throws IOException {
-        JsonBatchCallback<Void> callback = new JsonBatchCallback<Void>() {
-
-            public void onSuccess(Void v, HttpHeaders responseHeaders) {
-              // NO NEED FOR ANY OTHER OPERATIONS IF SUCCESSFUL
-            }
-
-            public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) throws IOException {
-                throw new IOException("Error on calendar batch delete");
-            }
-        };
-        
-        // LIMIT BATCH SIZE TO <50 events DUE TO API CONSTRAINTS
-        int currentIndex = 0;
-        
-        while(currentIndex < caseEvents.size()) {
-            executeBatchDeleteRequestFromIndex(currentIndex, caseEvents, calId, callback);
-            currentIndex += 50;
-        }
-    }
-    
-    private void executeBatchDeleteRequestFromIndex(int startIndex, List<CaseEvent> caseEvents,
-            String calId, JsonBatchCallback<Void> callback) throws IOException {
-        int endIndex = startIndex + 50;
-        if(endIndex > caseEvents.size()) {
-            endIndex = caseEvents.size();
-        }
-
-        BatchRequest batch = calendar.batch();
-        
-        for(int i = startIndex; i < endIndex; i++) {
-            String eventId = caseEvents.get(i).getId();
-            calendar.events().delete(calId, eventId).queue(batch, callback);
-        }
-        batch.execute();
     }
 }

@@ -1,5 +1,7 @@
 package com.pdclientmanager.repository.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,11 @@ public class Client {
     @NotNull(message = "Custody status")
     private CustodyStatus custodyStatus;
     
+    @NotNull(message = "Incarceration date")
+    private LocalDate incarcerationDate;
+    
+    private LocalDate releaseDate;
+    
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
     private List<Case> cases;
     
@@ -40,10 +47,13 @@ public class Client {
         
     }
 
-    public Client(Long id, String name, CustodyStatus custodyStatus, List<Case> cases) {
+    public Client(Long id, String name, CustodyStatus custodyStatus, LocalDate incarcerationDate,
+    		LocalDate releaseDate, List<Case> cases) {
         this.id = id;
         this.name = name;
         this.custodyStatus = custodyStatus;
+        this.incarcerationDate = incarcerationDate;
+        this.releaseDate = releaseDate;
         this.cases = cases;
     }
     
@@ -70,6 +80,22 @@ public class Client {
 
     public void setCustodyStatus(CustodyStatus custodyStatus) {
         this.custodyStatus = custodyStatus;
+    }
+    
+    public LocalDate getIncarcerationDate() {
+    	return incarcerationDate;
+    }
+    
+    public void setIncarcerationDate(LocalDate incarcerationDate) {
+    	this.incarcerationDate = incarcerationDate;
+    }
+    
+    public LocalDate getReleaseDate() {
+    	return releaseDate;
+    }
+    
+    public void setReleaseDate(LocalDate releaseDate) {
+    	this.releaseDate = releaseDate;
     }
     
     public List<Case> getCases() {
@@ -121,6 +147,8 @@ public class Client {
         Long id = 1L;
         String name = "Default Client";
         CustodyStatus custodyStatus = CustodyStatus.IN_CUSTODY;
+        LocalDate incarcerationDate = LocalDate.now();
+        LocalDate releaseDate = null;
         List<Case> cases = new ArrayList<>();
         
         public ClientBuilder withId(Long id) {
@@ -138,13 +166,23 @@ public class Client {
             return this;
         }
         
+        public ClientBuilder withIncarcerationDate(LocalDate incarcerationDate) {
+        	this.incarcerationDate = incarcerationDate;
+        	return this;
+        }
+        
+        public ClientBuilder withReleaseDate(LocalDate releaseDate) {
+        	this.releaseDate = releaseDate;
+        	return this;
+        }
+        
         public ClientBuilder withCases(List<Case> cases) {
             this.cases = cases;
             return this;
         }
         
         public Client build() {
-            return new Client(id, name, custodyStatus, cases);
+            return new Client(id, name, custodyStatus, incarcerationDate, releaseDate, cases);
         }
     }
 }

@@ -11,6 +11,7 @@
 			<th>Username</th>
 			<th>Email</th>
 			<th>Roles</th>
+			<th></th>
 		</tr>
 	</thead>
 	<c:forEach items="${userList}" var="user">

@@ -55,19 +55,65 @@
 				<th>Charge</th>
 			</tr>
 		</thead>
-		<c:forEach items="${courtCase.chargedCounts}" var="chargedCount">
+		<tbody>
+			<c:forEach items="${courtCase.chargedCounts}" var="chargedCount">
+				<tr>
+					<td>
+						<c:out value="${chargedCount.value.countNumber}"/>
+					</td>
+					<td>
+						<c:out value="${chargedCount.value.charge.statute}"/>
+					</td>
+					<td>
+						<c:out value="${chargedCount.value.charge.name}"/>
+					</td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+</div>
+<br>
+<div class="row">
+	<label class="col-sm-2">Case events</label>
+	<table class="table table-striped">
+		<thead>
 			<tr>
-				<td>
-					<c:out value="${chargedCount.value.countNumber}"/>
-				</td>
-				<td>
-					<c:out value="${chargedCount.value.charge.statute}"/>
-				</td>
-				<td>
-					<c:out value="${chargedCount.value.charge.name}"/>
-				</td>
+				<th>Start</th>
+				<th>End</th>
+				<th>Description</th>
+				<th>Summary</th>
 			</tr>
-		</c:forEach>
+		</thead>
+		<tbody>
+			<c:forEach items="${caseEvents}" var="caseEvent">
+				<tr>
+					<td>
+						<c:out value="${caseEvent.startTime}"/>
+					</td>
+					<td>
+						<c:out value="${caseEvent.endTime}"/>
+					</td>
+					<td>
+						<c:out value="${caseEvent.description}"/>
+					</td>
+					<td>
+						<c:out value="${caseEvent.summary}" />
+					</td>
+					<td>
+						<div class="btn-group" role="group">
+							<spring:url value="/calendar/${caseEvent.id}/update" var="updateUrl" />
+							<spring:url value="/calendar/${caseEvent.id}/delete" var="deleteUrl" />
+							
+							<button class="btn btn-primary"
+								onclick="location.href='${updateUrl}'">Update</button>
+							<form:form action="${deleteUrl}" method="post">
+								<button class="btn btn-danger" type="submit">Delete</button>
+							</form:form>
+						</div>
+					</td>
+				</tr>
+			</c:forEach>
+		</tbody>
 	</table>
 </div>
 <br />

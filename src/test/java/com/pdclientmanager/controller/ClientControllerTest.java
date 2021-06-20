@@ -161,7 +161,9 @@ public class ClientControllerTest {
         
         mockMvc.perform(post("/clients")
             .param("name", "Test Client")
-            .param("custodyStatus", "IN_CUSTODY"))
+            .param("custodyStatus", "IN_CUSTODY")
+            .param("incarcerationDate", "2021-01-05")
+            .param("releaseDate", ""))
             .andExpect(status().isFound())
             .andExpect(view().name("redirect:/clients/1"))
             .andExpect(redirectedUrl("/clients/1"))

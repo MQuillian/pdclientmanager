@@ -9,12 +9,16 @@ public interface ClientProjection {
     Long getId();
     String getName();
     CustodyStatus getCustodyStatus();
+    LocalDate getIncarcerationDate();
+    LocalDate getReleaseDate();
     List<CaseSummary> getCases();
     
  // setters for testing
     void setId(Long id);
     void setName(String name);
     void setCustodyStatus(CustodyStatus status);
+    void setIncarcerationDate(LocalDate incarcerationDate);
+    void setReleaseDate(LocalDate releaseDate);
     
     interface CaseSummary {
         

@@ -63,16 +63,19 @@
 		      </li>
 		    </ul>
 		    <form:form class="form-inline my-2 my-lg-0" method="get" modelAttribute="searchTerm" action="${contextPath}/cases/list/searchResults">
-		      <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search cases" aria-label="Search cases">
-		      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+		      <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search cases by client" aria-label="Search cases">
+		      <button class="btn btn-outline-success my-2 my-sm-2" type="submit">Search</button>
 		    </form:form>
-		    <a href="${contextPath}/logout" class="btn btn-danger ml-2 my-sm-0">
+		    <a href="${contextPath}/logout" class="btn btn-danger ml-2 my-sm-2">
 	          Logout
 	        </a>
 		  </div>
 		</nav>
 		
-		<div class="container">
+		<div class="background-img">
+		<div class="background-mask">
+		
+		<div class="container content">
 
 		<c:if test="${not empty msg}">
 			<div class="alert alert-${css} alert-dismissible" role="alert">

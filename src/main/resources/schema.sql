@@ -45,6 +45,8 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `custody_status` INT(4) NULL DEFAULT '0',
+  `incarceration_date` DATE NOT NULL,
+  `release_date` DATE,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;

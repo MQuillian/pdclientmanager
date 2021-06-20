@@ -46,6 +46,20 @@
 		</div>
 	</spring:bind>
 	
+	<div class="row">
+    	<label for="incarcerationDate">Incarceration date: </label>
+    	<form:input type="date-time" path="incarcerationDate" name="incarcerationDate"
+    		id="incarcerationDate" />
+    	<form:errors path="incarcerationDate" cssClass="error"/>
+    </div>
+   
+    <div class="row">
+    	<label for="releaseDate">Release date: </label>
+    	<form:input type="date-time" path="releaseDate" name="releaseDate"
+    		id="releaseDate" />
+    	<form:errors path="releaseDate" cssClass="error" />
+    </div>
+	
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<c:choose>

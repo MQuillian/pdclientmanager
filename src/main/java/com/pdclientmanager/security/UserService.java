@@ -20,4 +20,8 @@ public interface UserService extends UserDetailsService{
     public boolean deleteById(Long id);
     
     public UserForm getCurrentUserAsForm();
+    
+    public List<String> getCurrentUserRoles();
+    
+    public String getCurrentUserFullName();
 }

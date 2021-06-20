@@ -1,6 +1,7 @@
 package com.pdclientmanager.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -22,10 +24,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.pdclientmanager.calendar.CaseEvent;
 import com.pdclientmanager.calendar.GoogleCalendarServiceImpl;
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.form.UserForm;
 import com.pdclientmanager.security.UserService;
 import com.pdclientmanager.util.mapper.EventMapper;
 
@@ -46,13 +48,13 @@ public class GoogleCalendarServiceImplTest {
     LocalDateTime baseDateTime = LocalDateTime.now();
     LocalDateTime baseDateTimePlusTwoWeeks = baseDateTime.plus(2, ChronoUnit.WEEKS);
     
-    private final String testCalId = "1j61e5v3trfm92hs5sd3o5n9cs@group.calendar.google.com";
+    private String testCalId;
     private CaseEvent event1;
     private CaseEvent event2;
     private CaseEvent event3;
     private CaseEvent event4;
     
-    private UserForm attyQuillian;
+    private List<String> attyRole;
     
     @BeforeAll
     public void setup() {
@@ -60,12 +62,8 @@ public class GoogleCalendarServiceImplTest {
         
         try {
             service = new GoogleCalendarServiceImpl(mapper, userServiceMock);
-            
-            //Clear any events from prior interrupted test runs
-            List<CaseEvent> events = service.getAllEvents(testCalId);
-            for(CaseEvent ev : events) {
-                service.deleteEvent(ev, testCalId);
-            }
+
+            testCalId = service.createNewCalendar().getId();
             
             LocalDateTime tomorrow = baseDateTime.plus(1, ChronoUnit.DAYS);
             LocalDateTime tomorrowPlusOneHour = baseDateTime.plus(1, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
@@ -88,16 +86,21 @@ public class GoogleCalendarServiceImplTest {
             service.addEvent(event3, testCalId);
             service.addEvent(event4, testCalId);
             
-            List<String> attyRole = new ArrayList<>();
+            attyRole = new ArrayList<>();
             attyRole.add("ROLE_ATTORNEY");
-            attyQuillian = new UserForm.UserFormBuilder()
-                    .withFullName("Matt Quillian")
-                    .withRoles(attyRole)
-                    .build();
-            
+     
         } catch(Exception e) {
             System.out.println("Exception in setup- " + e.getMessage());
         }
+    }
+    
+    @AfterAll
+    public void cleanup() {
+    	try {
+    		service.deleteCalendar(testCalId);
+    	} catch(IOException e) {
+    		System.out.println("ERROR CLEANING UP AFTER GOOGLECALENDARSERVICEIMPL TESTS");
+    	}
     }
     
     @Test
@@ -112,14 +115,15 @@ public class GoogleCalendarServiceImplTest {
             assertThat(result).allMatch(datesAreWithinTwoWeeks);
 
         } catch(IOException e) {
-            System.out.println("IOException in test for getListOfTwoWeeksEventsForAllEmployees()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
     
     @Test
     public void getListOfTwoWeeksEventsForCurrentUser_WithAttorneyUser_ShouldReturnListOfMatchingAttorneyEvents() {
         try {
-            when(userServiceMock.getCurrentUserAsForm()).thenReturn(attyQuillian);
+            when(userServiceMock.getCurrentUserRoles()).thenReturn(attyRole);
+            when(userServiceMock.getCurrentUserFullName()).thenReturn("Matt Quillian");
             
             List<CaseEvent> result = service.getListOfTwoWeeksEventsForCurrentUser(testCalId);
             CaseEvent resultEvent = result.get(0);
@@ -131,14 +135,15 @@ public class GoogleCalendarServiceImplTest {
             assertThat(resultEvent.getEndTime().isAfter(baseDateTime));
             assertThat(resultEvent.getEndTime().isBefore(baseDateTimePlusTwoWeeks));
         } catch(IOException e) {
-            System.out.println("IOException in attorney test for getListOfTwoWeeksEventsForEmployee()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
 
     @Test
     public void getListOfAllEventsForCurrentUser_WithAttorneyUser_ShouldReturnListOfAttorneyEvents() {
         try {
-            when(userServiceMock.getCurrentUserAsForm()).thenReturn(attyQuillian);
+            when(userServiceMock.getCurrentUserRoles()).thenReturn(attyRole);
+            when(userServiceMock.getCurrentUserFullName()).thenReturn("Matt Quillian");
             
             List<CaseEvent> result = service.getListOfAllEventsForCurrentUser(testCalId);
             
@@ -148,7 +153,7 @@ public class GoogleCalendarServiceImplTest {
             assertThat(result.size()).isEqualTo(3);
             assertThat(result).allMatch(nameMatchesSearchTerm);
         } catch(IOException e) {
-            System.out.println("IOException in attorney test for getListOfAllEventsByEmployee()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
     
@@ -163,7 +168,7 @@ public class GoogleCalendarServiceImplTest {
             assertThat(result.size()).isEqualTo(2);
             assertThat(result).allMatch(caseNumberMatchesSearchTerm);
         } catch(IOException e) {
-            System.out.println("IOException in test for getListOfAllEventsByCaseNumber()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
     
@@ -183,7 +188,7 @@ public class GoogleCalendarServiceImplTest {
             //Cleanup
             service.deleteEvent(result, testCalId);
         } catch(IOException e) {
-            System.out.println("IOException in test for addEvent()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
     
@@ -191,17 +196,21 @@ public class GoogleCalendarServiceImplTest {
     public void batchAddEvents_ShouldAddEventsToCalendar() {
         List<CaseEvent> caseEvents = new ArrayList<>();
         for(int i = 0; i < 60; i++) {
-            caseEvents.add(new CaseEvent("batchTest" + i, "batchCaseNumber", "BatchTest Attorney",
-                    "Test Description", null, baseDateTime, baseDateTime.plus(1, ChronoUnit.HOURS)));
+            caseEvents.add(new CaseEvent(null, "batchCaseNumber", "BatchTest Attorney",
+                    "Test Description" + Integer.toString(i), null, baseDateTime, baseDateTime.plus(1, ChronoUnit.HOURS)));
         }
         try {
             service.batchInsertEvents(caseEvents, testCalId);
+            List<CaseEvent> result = service.getListOfAllEventsByCaseNumber("batchCaseNumber", testCalId);
+
+            assertThat(result.size()).isEqualTo(caseEvents.size());
             
-            assertThat(service.getListOfAllEventsByCaseNumber("batchCaseNumber")).containsAll(caseEvents);
             //Cleanup
-            service.batchDeleteEvents(caseEvents, testCalId);
+            for(CaseEvent ev : service.getListOfAllEventsByCaseNumber("batchCaseNumber", testCalId)) {
+            	service.deleteEvent(ev, testCalId);
+            }
         } catch(IOException e) {
-            System.out.println("IOException in test for batchAddEvents()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
 
@@ -228,7 +237,7 @@ public class GoogleCalendarServiceImplTest {
             service.addEvent(event1, testCalId);
             
         } catch(IOException e) {
-            System.out.println("IOException in test for updateEvent()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
 
@@ -245,7 +254,7 @@ public class GoogleCalendarServiceImplTest {
             //Cleanup
             service.addEvent(event1, testCalId);
         } catch(IOException e) {
-            System.out.println("IOException in test for deleteEvent()- " + e.getMessage());
+            fail("IOException was thrown - " + e.getMessage());
         }
     }
 }
