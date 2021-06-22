@@ -1,65 +1,27 @@
 package com.pdclientmanager.repository;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.StoredProcedureQuery;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-@Repository
+@Component
 public class DemoDao {
-    
-    // NOTE: This class is solely for resetting data to an original state for demo purposes
-
     @Autowired
-    private Environment environment;
-    
+    private EntityManagerFactory emf;
+    // NOTE: This class is solely for resetting data to an original state for demo purposes
+    @Transactional
     public void resetData() {
+        EntityManager em = emf.createEntityManager();
         try {
-            executeSqlScript("/resetDataScript.sql");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private void executeSqlScript(String resourceFileName) throws IOException, SQLException {
-        InputStream input = null;
-        BufferedReader reader = null;
-        Connection conn = null;
-        Statement statement = null;
-        
-        try {
-            Class.forName(environment.getRequiredProperty("jdbc.driverClassName"));
-            conn = DriverManager.getConnection(environment.getRequiredProperty("jdbc.url"),
-                    environment.getRequiredProperty("jdbc.username"),
-                    environment.getRequiredProperty("jdbc.password"));
-            statement = conn.createStatement();
-            input = getClass().getResourceAsStream(resourceFileName);
-            reader = new BufferedReader(new InputStreamReader(input));
-            String line = null;
-            while((line = reader.readLine()) != null) {
-                System.out.println(line);
-                statement.execute(line);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            StoredProcedureQuery sp = em.createStoredProcedureQuery("RESET_DEMO_DATA");
+            sp.execute();
         } finally {
-            if(reader != null) {
-                reader.close();
-            }
-            if(conn != null) {
-                conn.close();
-            }
+            em.close();
         }
+        
     }
-    
 }

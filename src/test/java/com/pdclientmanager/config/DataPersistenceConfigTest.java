@@ -1,15 +1,13 @@
 package com.pdclientmanager.config;
 
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
@@ -19,11 +17,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.util.ResourceUtils;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.MySQLContainer;
 
 @Configuration
 @PropertySource("classpath:database.properties")
@@ -52,11 +46,11 @@ public class DataPersistenceConfigTest {
     
     @Bean
     public DataSource jdbcDataSource() {
-      DriverManagerDataSource dataSource = new DriverManagerDataSource();
-      dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-      dataSource.setUrl("jdbc:tc:mysql://localhost:3306/walton_public_defender?TC_INITSCRIPT=databaseTest.sql?TC_DAEMON=true");
-      dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
-      dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+          DriverManagerDataSource dataSource = new DriverManagerDataSource();
+          dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
+          dataSource.setUrl("jdbc:tc:mysql://localhost:3306/walton_public_defender?TC_INITSCRIPT=databaseTest.sql?TC_DAEMON=true");
+          dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
+          dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
       return dataSource;
     }
     

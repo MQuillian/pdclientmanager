@@ -71,3 +71,15 @@ td {
 	height:70%;
 	overflow-y:auto;
 }
+
+.navbar-brand {
+	font-family: 'Open Sans', sans-serif;
+}
+
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../fonts/opensans-regular-webfont.woff2') format('woff2'),
+         url('../fonts/opensans-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

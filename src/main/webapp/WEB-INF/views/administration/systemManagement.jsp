@@ -13,7 +13,7 @@
 <br>
 <a href="charges">Charge Database Management</a>
 <br>
-<a href="officeStats">Office Statistics</a>
+<a href="admin/officeStats">Office Statistics</a>
 <hr>
 
 <%@ include file="../footer.jsp" %>

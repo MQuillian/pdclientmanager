@@ -17,16 +17,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pdclientmanager.model.form.UserForm;
+import com.pdclientmanager.model.projection.OfficeStatsDto;
+import com.pdclientmanager.repository.AdministratorDao;
 import com.pdclientmanager.security.UserService;
 
 @Controller
 public class AdministrationController {
     
     private UserService userService;
+    private AdministratorDao adminDao;
     
     @Autowired
-    public AdministrationController(UserService userService) {
+    public AdministrationController(UserService userService, AdministratorDao adminDao) {
         this.userService = userService;
+        this.adminDao = adminDao;
     }
     
     @GetMapping("/admin")
@@ -90,6 +94,14 @@ public class AdministrationController {
                     "User could not be found!");
         }
         return "redirect:/admin/users";
+    }
+    
+    @GetMapping("/admin/officeStats")
+    public String getOfficeStats(Model model) {
+        OfficeStatsDto officeStats = adminDao.getOfficeStats();
+        model.addAttribute("officeStats", officeStats);
+        
+        return "administration/officeStats";
     }
     
     private List<String> listAllAvailableRoles() {
