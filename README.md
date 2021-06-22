@@ -10,7 +10,7 @@ PDClientManager tracks and displays various metrics, such as aging reports, that
 
 ## Roadmap
 
-* Deploy to AWS Elastic Beanstalk
+* Deploy to AWS
 * Expand available metrics and provide greater insight to legal practice data and trends
   * Sentencing results and trends to provide insight for negotiations and client advisement
   * Changes in caseload movement over time to guarantee efficient management of caseloads in various courtrooms
