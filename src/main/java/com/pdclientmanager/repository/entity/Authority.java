@@ -1,4 +1,4 @@
-package com.pdclientmanager.security;
+package com.pdclientmanager.repository.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

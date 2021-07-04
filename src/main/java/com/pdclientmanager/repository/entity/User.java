@@ -1,4 +1,4 @@
-package com.pdclientmanager.security;
+package com.pdclientmanager.repository.entity;
 
 import java.util.HashSet;
 import java.util.Set;

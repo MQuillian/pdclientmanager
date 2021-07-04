@@ -77,7 +77,6 @@
 		    <artifactId>spring-data-jpa</artifactId>
 		    <version>${spring-data.version}</version>
 		</dependency>
-        
  
         <!-- Hibernate Core -->
         <dependency>

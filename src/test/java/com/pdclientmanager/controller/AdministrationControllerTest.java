@@ -51,9 +51,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.UserForm;
-import com.pdclientmanager.security.User;
-import com.pdclientmanager.security.UserService;
-import com.pdclientmanager.security.UserServiceImpl;
+import com.pdclientmanager.repository.entity.User;
+import com.pdclientmanager.service.UserService;
+import com.pdclientmanager.service.UserServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration

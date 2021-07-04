@@ -6,10 +6,9 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -20,9 +19,9 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@PropertySource("classpath:database.properties")
+@PropertySource("classpath:databaseTest.properties")
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "com.pdclientmanager.repository", entityManagerFactoryRef = "sessionFactory")
+@EnableJpaRepositories(basePackages = "com.pdclientmanager.repository", entityManagerFactoryRef = "sessionFactoryTest")
 @EnableSpringDataWebSupport
 public class DataPersistenceConfigTest {
 
@@ -33,8 +32,8 @@ public class DataPersistenceConfigTest {
         this.environment = environment;
     }
 
-    @Bean("sessionFactory")
-    @Primary
+    @Bean("sessionFactoryTest")
+    @Qualifier("sessionFactoryTest")
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(jdbcDataSource());
@@ -48,7 +47,7 @@ public class DataPersistenceConfigTest {
     public DataSource jdbcDataSource() {
           DriverManagerDataSource dataSource = new DriverManagerDataSource();
           dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-          dataSource.setUrl("jdbc:tc:mysql://localhost:3306/walton_public_defender?TC_INITSCRIPT=databaseTest.sql?TC_DAEMON=true");
+          dataSource.setUrl("jdbc:tc:mysql:5.7.34://0.0.0.0:3306/pdcm_test_db?TC_INITSCRIPT=databaseTest.sql");
           dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
           dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
       return dataSource;

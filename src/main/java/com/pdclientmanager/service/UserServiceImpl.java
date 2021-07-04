@@ -1,9 +1,11 @@
-package com.pdclientmanager.security;
+package com.pdclientmanager.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.calendar.CalendarService;
 import com.pdclientmanager.model.form.UserForm;
+import com.pdclientmanager.repository.UserRepository;
+import com.pdclientmanager.repository.entity.Authority;
+import com.pdclientmanager.repository.entity.User;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,13 +48,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long saveUser(UserForm userForm) throws IOException {
         User user = mapFormToUser(userForm);
-        repository.save(user);
+        user = repository.save(user);
         return user.getId();
     }
     
     @Override
     public UserForm findFormById(Long id) {
-        User user = repository.findById(id);
+        User user = repository.findById(id)
+        		.orElseThrow(EntityNotFoundException::new);;
         UserForm form = mapUserToForm(user);
         return form;
     }
@@ -67,7 +73,8 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public boolean deleteById(Long id) {
-        User user = repository.findById(id);
+        User user = repository.findById(id)
+        		.orElseThrow(EntityNotFoundException::new);
         if(user != null) {
             repository.delete(user);
             return true;
@@ -124,7 +131,8 @@ public class UserServiceImpl implements UserService {
                 user.getAuthorities().add(auth);
             }
         } else {
-            user = repository.findById(userForm.getId());
+            user = repository.findById(userForm.getId())
+            		.orElseThrow(EntityNotFoundException::new);
             user.setUsername(userForm.getUsername());
             user.setEmail(userForm.getEmail());
             user.getAuthorities().clear();

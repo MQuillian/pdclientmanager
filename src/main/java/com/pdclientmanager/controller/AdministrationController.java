@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.pdclientmanager.model.form.UserForm;
 import com.pdclientmanager.model.projection.OfficeStatsDto;
 import com.pdclientmanager.repository.AdministratorDao;
-import com.pdclientmanager.security.UserService;
+import com.pdclientmanager.service.UserService;
 
 @Controller
 public class AdministrationController {

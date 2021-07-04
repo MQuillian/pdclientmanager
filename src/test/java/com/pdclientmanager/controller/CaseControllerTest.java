@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,29 +30,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.pdclientmanager.calendar.CalendarService;
 import com.pdclientmanager.calendar.CaseEvent;
-import com.pdclientmanager.calendar.GoogleCalendarServiceImpl;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.CaseForm;
 import com.pdclientmanager.model.form.CaseForm.CaseFormDtoBuilder;
@@ -64,64 +57,31 @@ import com.pdclientmanager.model.projection.JudgeProjection;
 import com.pdclientmanager.repository.entity.ChargedCount;
 import com.pdclientmanager.repository.entity.WorkingStatus;
 import com.pdclientmanager.service.AttorneyService;
-import com.pdclientmanager.service.AttorneyServiceImpl;
 import com.pdclientmanager.service.CaseService;
-import com.pdclientmanager.service.CaseServiceImpl;
 import com.pdclientmanager.service.JudgeService;
-import com.pdclientmanager.service.JudgeServiceImpl;
 
 @ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+@WebAppConfiguration(value = "WebConfigTest.class")
 @ContextConfiguration(classes = {WebConfigTest.class})
-@ActiveProfiles("test")
 @TestInstance(Lifecycle.PER_CLASS)
 public class CaseControllerTest {
     
-    @Profile("test")
-    @Configuration
-    static class ContextConfiguration {
-        
-        @Bean
-        @Primary
-        CaseService caseServiceMock() {
-            return Mockito.mock(CaseServiceImpl.class);
-        }
-        
-        @Bean
-        @Primary
-        AttorneyService attorneyServiceMock() {
-            return Mockito.mock(AttorneyServiceImpl.class);
-        }
-        
-        @Bean
-        @Primary
-        JudgeService judgeServiceMock() {
-            return Mockito.mock(JudgeServiceImpl.class);
-        }
-        
-        @Bean
-        @Primary
-        CalendarService calendarServiceMock() {
-        	return Mockito.mock(GoogleCalendarServiceImpl.class);
-        }
-    }
-    
-    @Autowired
+    @Mock
     private CaseService caseServiceMock;
     
-    @Autowired
+    @Mock
     private AttorneyService attorneyServiceMock;
     
-    @Autowired
+    @Mock
     private JudgeService judgeServiceMock;
     
-    @Autowired
+    @Mock
     private CalendarService calendarServiceMock;
     
     private MockMvc mockMvc;
     
-    @Autowired
-    WebApplicationContext wac;
+    @InjectMocks
+    CaseController controllerUnderTest;
     
     private ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
     
@@ -138,7 +98,9 @@ public class CaseControllerTest {
     @BeforeAll
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest)
+        		.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+        		.build();
     }
         
     @BeforeEach
@@ -182,10 +144,10 @@ public class CaseControllerTest {
     
     @Test
     public void caseManagement_ShouldRenderCaseManagementView() throws Exception {
-        mockMvc.perform(get("/cases"))
+    	 	
+    	mockMvc.perform(get("/cases"))
             .andExpect(status().isOk())
-            .andExpect(view().name("cases/caseManagement"))
-            .andExpect(forwardedUrl("/WEB-INF/views/cases/caseManagement.jsp"));
+            .andExpect(view().name("cases/caseManagement"));
     }
     
     @Test
@@ -196,7 +158,6 @@ public class CaseControllerTest {
         mockMvc.perform(get("/cases/add"))
             .andExpect(status().isOk())
             .andExpect(view().name("cases/caseForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/cases/caseForm.jsp"))
             .andExpect(model().attribute("caseForm", instanceOf(CaseForm.class)))
             .andExpect(model().attribute("activeAttorneys", hasSize(1)))
             .andExpect(model().attribute("activeAttorneys", hasItem(
@@ -218,7 +179,6 @@ public class CaseControllerTest {
        
         when(caseServiceMock.save(any(CaseForm.class)))
             .thenReturn(1L);
-        
         mockMvc.perform(post("/cases")
             .param("dateOpened", "01/01/2010")
             .param("dateClosed", "")
@@ -242,7 +202,6 @@ public class CaseControllerTest {
         mockMvc.perform(get("/cases/list"))
             .andExpect(status().isOk())
             .andExpect(view().name("cases/listCases"))
-            .andExpect(forwardedUrl("/WEB-INF/views/cases/listCases.jsp"))
             .andExpect(model().attribute("cases", is(caseLightProjectionPage.getContent())))
             .andExpect(model().attribute("page", is(caseLightProjectionPage.getNumber())))
             .andExpect(model().attribute("totalPages", is(caseLightProjectionPage.getTotalPages())))
@@ -263,7 +222,6 @@ public class CaseControllerTest {
         mockMvc.perform(get("/cases/1"))
             .andExpect(status().isOk())
             .andExpect(view().name("cases/showCase"))
-            .andExpect(forwardedUrl("/WEB-INF/views/cases/showCase.jsp"))
             .andExpect(model().attribute("courtCase", is(caseProjection)))
     		.andExpect(model().attribute("caseEvents", is(caseEvents)));
     }
@@ -277,7 +235,6 @@ public class CaseControllerTest {
             .param("q", "Test"))
             .andExpect(status().isOk())
             .andExpect(view().name("cases/listCases"))
-            .andExpect(forwardedUrl("/WEB-INF/views/cases/listCases.jsp"))
             .andExpect(model().attribute("cases", is(caseProjectionPage.getContent())))
             .andExpect(model().attribute("page", is(caseProjectionPage.getNumber())))
             .andExpect(model().attribute("totalPages", is(caseProjectionPage.getTotalPages())))
@@ -293,7 +250,6 @@ public class CaseControllerTest {
         mockMvc.perform(get("/cases/1/update"))
             .andExpect(status().isOk())
             .andExpect(view().name("cases/caseForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/cases/caseForm.jsp"))
             .andExpect(model().attribute("caseForm", is(caseForm)))
             .andExpect(model().attribute("activeAttorneys", is(attorneyList)))
             .andExpect(model().attribute("activeJudges", is(judgeList)));
@@ -306,7 +262,6 @@ public class CaseControllerTest {
         mockMvc.perform(get("/cases/reassignment"))
             .andExpect(status().isOk())
             .andExpect(view().name("cases/reassignment"))
-            .andExpect(forwardedUrl("/WEB-INF/views/cases/reassignment.jsp"))
             .andExpect(model().attribute("activeAttorneys", is(attorneyList)));
     }
 

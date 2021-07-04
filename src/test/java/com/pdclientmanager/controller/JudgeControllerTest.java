@@ -1,6 +1,5 @@
 package com.pdclientmanager.controller;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.validateMockitoUsage;
@@ -24,56 +23,44 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
+import com.pdclientmanager.config.SecurityConfigTest;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.JudgeForm;
 import com.pdclientmanager.model.projection.JudgeProjection;
 import com.pdclientmanager.repository.entity.WorkingStatus;
 import com.pdclientmanager.service.JudgeService;
-import com.pdclientmanager.service.JudgeServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebConfigTest.class})
-@ActiveProfiles("test")
+@ContextConfiguration(classes = {WebConfigTest.class, SecurityConfigTest.class})
 @TestInstance(Lifecycle.PER_CLASS)
 public class JudgeControllerTest {
     
-    @Profile("test")
-    @Configuration
-    static class ContextConfiguration {
-        @Bean
-        @Primary
-        JudgeService judgeServiceMock() {
-            return Mockito.mock(JudgeServiceImpl.class);
-        }
-    }
+    @Mock
+    JudgeService judgeServiceMock;
 
+    @InjectMocks
+    JudgeController controllerUnderTest;
+    
     @Autowired
-    private JudgeService judgeServiceMock;
+    FilterChainProxy springSecurityFilterChain;
     
     private MockMvc mockMvc;
-    
-    @Autowired
-    WebApplicationContext wac;
     
     private ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
     
@@ -83,8 +70,10 @@ public class JudgeControllerTest {
     
     @BeforeAll
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(SecurityMockMvcConfigurers.springSecurity()).build();
+    	MockitoAnnotations.initMocks(this); 
+        this.mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest)
+        		.apply(SecurityMockMvcConfigurers.springSecurity(springSecurityFilterChain))
+        		.build();
     }
         
     @BeforeEach
@@ -110,8 +99,7 @@ public class JudgeControllerTest {
     public void showJudgeManagement_WithValidAuth_ShouldRenderJudgeManagementView() throws Exception {
         mockMvc.perform(get("/judges"))
             .andExpect(status().isOk())
-            .andExpect(view().name("judges/judgeManagement"))
-            .andExpect(forwardedUrl("/WEB-INF/views/judges/judgeManagement.jsp"));
+            .andExpect(view().name("judges/judgeManagement"));
     }
 
     @Test
@@ -119,10 +107,7 @@ public class JudgeControllerTest {
     public void showNewJudgeForm_WithValidAuth_ShouldAddFormAndRenderJudgeFormView() throws Exception {
         mockMvc.perform(get("/judges/add"))
             .andExpect(status().isOk())
-            .andExpect(view().name("judges/judgeForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/judges/judgeForm.jsp"))
-            .andExpect(model().attribute("judgeForm", instanceOf(JudgeForm.class)));
-    }
+            .andExpect(view().name("judges/judgeForm"));    }
     
     @Test
     @WithMockUser(roles = "USER")
@@ -161,7 +146,6 @@ public class JudgeControllerTest {
         mockMvc.perform(get("/judges/list"))
             .andExpect(status().isOk())
             .andExpect(view().name("judges/listJudges"))
-            .andExpect(forwardedUrl("/WEB-INF/views/judges/listJudges.jsp"))
             .andExpect(model().attribute("judgeList", is(judgeList)));
     }
 
@@ -173,7 +157,6 @@ public class JudgeControllerTest {
         mockMvc.perform(get("/judges/1"))
             .andExpect(status().isOk())
             .andExpect(view().name("judges/showJudge"))
-            .andExpect(forwardedUrl("/WEB-INF/views/judges/showJudge.jsp"))
             .andExpect(model().attribute("judge", judgeProjection));
     }
 
@@ -185,7 +168,6 @@ public class JudgeControllerTest {
         mockMvc.perform(get("/judges/1/update"))
             .andExpect(status().isOk())
             .andExpect(view().name("judges/judgeForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/judges/judgeForm.jsp"))
             .andExpect(model().attribute("judgeForm", is(judgeForm)));
     }
     

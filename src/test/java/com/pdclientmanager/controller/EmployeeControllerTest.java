@@ -30,27 +30,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.AttorneyForm;
 import com.pdclientmanager.model.form.AttorneyForm.AttorneyFormDtoBuilder;
@@ -61,52 +55,27 @@ import com.pdclientmanager.model.projection.AttorneyProjection;
 import com.pdclientmanager.model.projection.InvestigatorProjection;
 import com.pdclientmanager.repository.entity.WorkingStatus;
 import com.pdclientmanager.service.AttorneyService;
-import com.pdclientmanager.service.AttorneyServiceImpl;
-import com.pdclientmanager.service.CaseService;
-import com.pdclientmanager.service.CaseServiceImpl;
 import com.pdclientmanager.service.InvestigatorService;
-import com.pdclientmanager.service.InvestigatorServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {WebConfigTest.class})
-@ActiveProfiles("test")
 @TestInstance(Lifecycle.PER_CLASS)
 public class EmployeeControllerTest {
     
-    @Profile("test")
-    @Configuration
-    static class ContextConfiguration {
-        
-        @Bean
-        @Primary
-        AttorneyService attorneyServiceMock() {
-            return Mockito.mock(AttorneyServiceImpl.class);
-        }
-        
-        @Bean
-        @Primary
-        InvestigatorService investigatorServiceMock() {
-            return Mockito.mock(InvestigatorServiceImpl.class);
-        }
-        
-        @Bean
-        @Primary
-        CaseService caseServiceMock() {
-            return Mockito.mock(CaseServiceImpl.class);
-        }
-    }
-    
-    @Autowired
+    @Mock
     private AttorneyService attorneyServiceMock;
     
-    @Autowired
+    @Mock
     private InvestigatorService investigatorServiceMock;
     
     private MockMvc mockMvc;
     
+    @InjectMocks
+    EmployeeController controllerUnderTest;
+    
     @Autowired
-    WebApplicationContext wac;
+    FilterChainProxy springSecurityFilterChain;
     
     private ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
     
@@ -122,7 +91,9 @@ public class EmployeeControllerTest {
     @BeforeAll
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(SecurityMockMvcConfigurers.springSecurity()).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest)
+        		.apply(SecurityMockMvcConfigurers.springSecurity(springSecurityFilterChain))
+        		.build();
     }
         
     @BeforeEach
@@ -160,24 +131,6 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    @WithMockUser(roles = "USER")
-    public void employeeManagement_WithValidAuth_ShouldAddEmployeesToModelAndRenderEmployeeManagementView() throws Exception {
-        
-        when(attorneyServiceMock.findAllActive())
-            .thenReturn(attorneyLightList);
-        
-        when(investigatorServiceMock.findAllActive())
-            .thenReturn(investigatorList);
-                
-        mockMvc.perform(get("/employeeManagement"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("employeeManagement"))
-            .andExpect(forwardedUrl("/WEB-INF/views/employeeManagement.jsp"))
-            .andExpect(model().attribute("activeInvestigators", contains(investigator)))
-            .andExpect(model().attribute("activeAttorneys", contains(attorneyLight)));
-    }
-    
-    @Test
     @WithMockUser(roles = "ADMIN")
     public void showNewAttorneyForm_WithValidAuth_ShouldAddAttorneyFormDtoAndActiveInvestigatorListToModelAndRenderFormView() throws Exception {
         
@@ -187,7 +140,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/attorneys/add"))
             .andExpect(status().isOk())
             .andExpect(view().name("attorneys/attorneyForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/attorneyForm.jsp"))
             .andExpect(model().attribute("attorneyForm", instanceOf(AttorneyForm.class)))
             .andExpect(model().attribute("activeInvestigators", hasSize(1)))
             .andExpect(model().attribute("activeInvestigators", hasItem(
@@ -243,7 +195,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/attorneys"))
             .andExpect(status().isOk())
             .andExpect(view().name("attorneys/listAttorneys"))
-            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/listAttorneys.jsp"))
             .andExpect(model().attribute("attorneyList", hasSize(1)))
             .andExpect(model().attribute("attorneyList", hasItem(
                 allOf(
@@ -262,7 +213,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/attorneys/1"))
             .andExpect(status().isOk())
             .andExpect(view().name("attorneys/showAttorney"))
-            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/showAttorney.jsp"))
             .andExpect(model().attribute("attorney", samePropertyValuesAs(attorney)));
     }
     
@@ -276,7 +226,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/attorneys/1/update"))
             .andExpect(status().isOk())
             .andExpect(view().name("attorneys/attorneyForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/attorneys/attorneyForm.jsp"))
             .andExpect(model().attribute("attorneyForm", samePropertyValuesAs(attorneyForm)));
     }
     
@@ -342,7 +291,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/investigators/add"))
             .andExpect(status().isOk())
             .andExpect(view().name("investigators/investigatorForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/investigators/investigatorForm.jsp"))
             .andExpect(model().attribute("investigatorForm", instanceOf(InvestigatorForm.class)))
             .andExpect(model().attribute("activeAttorneys", contains(attorneyLight)));
     }
@@ -392,7 +340,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/investigators"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("investigators/listInvestigators"))
-                .andExpect(forwardedUrl("/WEB-INF/views/investigators/listInvestigators.jsp"))
                 .andExpect(model().attribute("investigatorList", contains(investigator)));
     }
     
@@ -406,7 +353,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/investigators/1"))
             .andExpect(status().isOk())
             .andExpect(view().name("investigators/showInvestigator"))
-            .andExpect(forwardedUrl("/WEB-INF/views/investigators/showInvestigator.jsp"))
             .andExpect(model().attribute("investigator", samePropertyValuesAs(investigator)));
     }
     
@@ -420,7 +366,6 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/investigators/1/update"))
             .andExpect(status().isOk())
             .andExpect(view().name("investigators/investigatorForm"))
-            .andExpect(forwardedUrl("/WEB-INF/views/investigators/investigatorForm.jsp"))
             .andExpect(model().attribute("investigatorForm", samePropertyValuesAs(investigatorForm)));
     }
     

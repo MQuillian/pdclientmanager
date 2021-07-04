@@ -1,4 +1,4 @@
-package com.pdclientmanager.security;
+package com.pdclientmanager.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterAll;
@@ -32,6 +33,9 @@ import com.pdclientmanager.calendar.CalendarService;
 import com.pdclientmanager.config.SecurityConfigTest;
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.UserForm;
+import com.pdclientmanager.repository.UserRepository;
+import com.pdclientmanager.repository.entity.Authority;
+import com.pdclientmanager.repository.entity.User;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -48,6 +52,7 @@ public class UserServiceImplTest {
     
     private UserService userService;
     private User testUser;
+    private Optional<User> userOpt;
     private UserForm testForm;
     private List<User> userList;
     
@@ -76,6 +81,8 @@ public class UserServiceImplTest {
         
         userList = new ArrayList<>();
         userList.add(testUser);
+        
+        userOpt = Optional.of(testUser);
     }
     
     @AfterAll
@@ -98,7 +105,7 @@ public class UserServiceImplTest {
         testForm.setId(null);
         
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        doNothing().when(userRepositoryMock).save(captor.capture());
+        when(userRepositoryMock.save(captor.capture())).thenReturn(testUser);
         when(encoderMock.encode("testpass")).thenReturn("encodedpass");
         
 //        when(calendarServiceMock.addNewCalendarToUser(any(CalendarUser.class))).thenReturn(null);
@@ -116,7 +123,7 @@ public class UserServiceImplTest {
     
     @Test
     public void findFormById_WhenValidRequest_MapsUserToFormAndReturnsForm() throws Exception {
-        when(userRepositoryMock.findById(1L)).thenReturn(testUser);
+        when(userRepositoryMock.findById(1L)).thenReturn(userOpt);
         
         UserForm resultForm = userService.findFormById(1L);
         
@@ -138,7 +145,7 @@ public class UserServiceImplTest {
     
     @Test
     public void deleteById_WithValidId_ShouldDeleteUserAndReturnTrue() throws Exception {
-        when(userRepositoryMock.findById(1L)).thenReturn(testUser);
+        when(userRepositoryMock.findById(1L)).thenReturn(userOpt);
         
         assertThat(userService.deleteById(1L));
     }

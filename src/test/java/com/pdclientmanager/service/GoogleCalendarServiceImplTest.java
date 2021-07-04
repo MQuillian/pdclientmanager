@@ -24,11 +24,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.google.api.services.calendar.model.CalendarListEntry;
 import com.pdclientmanager.calendar.CaseEvent;
 import com.pdclientmanager.calendar.GoogleCalendarServiceImpl;
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.security.UserService;
 import com.pdclientmanager.util.mapper.EventMapper;
 
 @ExtendWith(SpringExtension.class)

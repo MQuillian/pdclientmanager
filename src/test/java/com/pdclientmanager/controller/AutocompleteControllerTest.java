@@ -16,71 +16,44 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.projection.ChargeProjection;
 import com.pdclientmanager.model.projection.ClientLightProjection;
 import com.pdclientmanager.repository.entity.CustodyStatus;
 import com.pdclientmanager.service.ChargeService;
-import com.pdclientmanager.service.ChargeServiceImpl;
 import com.pdclientmanager.service.ClientService;
-import com.pdclientmanager.service.ClientServiceImpl;
 import com.pdclientmanager.util.json.CustomChargeProjectionSerializer;
 import com.pdclientmanager.util.json.CustomClientLightProjectionSerializer;
 import com.pdclientmanager.util.json.JsonUtils;
 
-
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {WebConfigTest.class})
-@ActiveProfiles("test")
 @TestInstance(Lifecycle.PER_CLASS)
 public class AutocompleteControllerTest {
-
-    @Profile("test")
-    @Configuration
-    static class ContextConfiguration {
-        
-        @Bean
-        @Primary
-        ClientService clientServiceMock() {
-            return Mockito.mock(ClientServiceImpl.class);
-        }
-        
-        @Bean
-        @Primary
-        ChargeService chargeServiceMock() {
-            return Mockito.mock(ChargeServiceImpl.class);
-        }
-    }
     
-    @Autowired
+    @Mock
     private ClientService clientServiceMock;
     
-    @Autowired
+    @Mock
     private ChargeService chargeServiceMock;
     
     private MockMvc mockMvc;
     
-    @Autowired
-    WebApplicationContext wac;
+    @InjectMocks
+    AutocompleteController controllerUnderTest;
     
     private ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
     
@@ -92,7 +65,7 @@ public class AutocompleteControllerTest {
     @BeforeAll
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest).build();
     }
     
     @BeforeEach

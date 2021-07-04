@@ -1,0 +1,20 @@
+version: '3'
+services:
+  pdcm-mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+    ports:
+      - 3306:3306
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d/
+
+  pdcm-main:
+    image: pdcm-webapp:latest
+    restart: on-failure
+    depends_on:
+      - pdcm-mysql
+    ports:
+      - 8080:8080

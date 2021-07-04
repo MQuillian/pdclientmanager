@@ -26,7 +26,7 @@
 			<td>
 				<div class="btn-group" role="group">
 					<spring:url value="/admin/users/${user.id}/update" var="updateUrl" />
-					<spring:url value="/admin/users//${user.id}/delete" var="deleteUrl" />
+					<spring:url value="/admin/users/${user.id}/delete" var="deleteUrl" />
 					
 					<button class="btn btn-primary"
 						onclick="location.href='${updateUrl}'">Update</button>

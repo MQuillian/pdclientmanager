@@ -13,7 +13,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.pdclientmanager"})
+@ComponentScan(basePackages="com.pdclientmanager")
 public class WebConfigTest implements WebMvcConfigurer {
     
     @Bean

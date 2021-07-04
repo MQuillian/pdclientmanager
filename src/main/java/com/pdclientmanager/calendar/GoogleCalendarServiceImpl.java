@@ -29,7 +29,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.pdclientmanager.security.UserService;
+import com.pdclientmanager.service.UserService;
 import com.pdclientmanager.util.mapper.EventMapper;
 
 @Service

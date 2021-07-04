@@ -10,10 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.pdclientmanager.security.UserService;
+import com.pdclientmanager.service.UserService;
 
 @EnableWebSecurity
-@ComponentScan(basePackages = {"com.pdclientmanager.security"})
+@ComponentScan(basePackages = {"com.pdclientmanager"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
