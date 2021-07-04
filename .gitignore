@@ -102,9 +102,10 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-# Credentials #
+# Secrets #
 credentials.json
 database.properties
+*.env
 
 # Logs #
 pdcm-logs
