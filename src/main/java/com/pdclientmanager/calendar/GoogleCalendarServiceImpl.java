@@ -1,5 +1,6 @@
 package com.pdclientmanager.calendar;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
@@ -39,7 +40,7 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     private final String APPLICATION_NAME = "PDCM";
     private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
-    private final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    private final String CREDENTIALS_FILE_PATH = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
     private final NetHttpTransport HTTP_TRANSPORT;
     private GoogleCredentials credentials;
     private HttpRequestInitializer requestInitializer;
@@ -50,10 +51,8 @@ public class GoogleCalendarServiceImpl implements CalendarService {
   
     @Autowired
     public GoogleCalendarServiceImpl(EventMapper mapper, UserService userService) throws IOException, GeneralSecurityException {
-        this.HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        this.credentials = GoogleCredentials.fromStream(
-            GoogleCalendarServiceImpl.class.getResourceAsStream(CREDENTIALS_FILE_PATH))
-            .createScoped(SCOPES);
+    	this.HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        this.credentials = GoogleCredentials.fromStream(new FileInputStream("/var/secrets/google/key.json")).createScoped(SCOPES);
         credentials.refreshIfExpired();
         requestInitializer = new HttpCredentialsAdapter(credentials);
         calendar = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)

@@ -47,9 +47,9 @@ public class DataPersistenceConfig {
     public DataSource jdbcDataSource() {
       DriverManagerDataSource dataSource = new DriverManagerDataSource();
       dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-      dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
-      dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
-      dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+      dataSource.setUrl(environment.getRequiredProperty("SPRING_DATASOURCE_URL"));
+      dataSource.setUsername(environment.getRequiredProperty("SPRING_DATASOURCE_USERNAME"));
+      dataSource.setPassword(environment.getRequiredProperty("SPRING_DATASOURCE_PASSWORD"));
       return dataSource;
     }
     

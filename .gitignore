@@ -104,7 +104,6 @@ buildNumber.properties
 
 # Secrets #
 credentials.json
-database.properties
 *.env
 
 # Logs #
