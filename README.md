@@ -24,7 +24,7 @@ PDClientManager tracks and displays various metrics, such as aging reports, that
 * **calendar** - Controller, service, and entity classes for Google Calendar integration
 * **config** - Config classes for Hibernate and Spring Web MVC/Data/Security
 * **controller** - Spring WebMVC controller classes
-* **model.form** - Casses for form-backing objects used in controllers
+* **model.form** - Classes for form-backing objects used in controllers
 * **model.projection** - Projections/DTOs used with Spring Data repositories
 * **repository** - Spring Data repository classes
 * **repository.entity** - Entity classes used with Hibernate/Spring Data repositories
