@@ -37,7 +37,7 @@ PDClientManager tracks and displays various metrics, such as aging reports, that
 
 ## Getting Started
 
-1. To run on local kubernetes cluster, (install minikube)[https://minikube.sigs.k8s.io/docs/start/]
+1. To run on local kubernetes cluster, [install kubectl and minikube](https://kubernetes.io/docs/tasks/tools/)
 2. Copy pdcm-app.yaml and pdcm-db.yaml files into desired application directory
 3. If you do not yet have a Google service account, [create one](https://cloud.google.com/iam/docs/creating-managing-service-accounts#iam-service-accounts-create-console)
 4. If you do not yet have a Google service account key, [create one as a .json file](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-console)
