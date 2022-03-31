@@ -11,7 +11,7 @@
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
         
-        <spring.version>5.2.0.RELEASE</spring.version>
+        <spring.version>5.3.18</spring.version>
         <spring-data.version>2.2.0.RELEASE</spring-data.version>
         <hibernate.version>5.4.2.Final</hibernate.version>
         <hibernate-validator.version>6.0.16.Final</hibernate-validator.version>
