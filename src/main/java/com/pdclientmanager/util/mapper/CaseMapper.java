@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.mapstruct.Context;
 import org.mapstruct.DecoratedWith;
-import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,7 +17,7 @@ public class AdministratorDao {
     @Qualifier("sessionFactory")
     private EntityManagerFactory emf;
     // NOTE: This class is solely for resetting data to an original state for demo purposes
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional
     public OfficeStatsDto getOfficeStats() {
         EntityManager em = emf.createEntityManager();
         try {

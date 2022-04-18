@@ -3,7 +3,6 @@ package com.pdclientmanager.repository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.StoredProcedureQuery;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,7 +14,7 @@ public class DemoDao {
     @Qualifier("sessionFactory")
     private EntityManagerFactory emf;
     // NOTE: This class is solely for resetting data to an original state for demo purposes
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional
     public void resetData() {
         EntityManager em = emf.createEntityManager();
         try {

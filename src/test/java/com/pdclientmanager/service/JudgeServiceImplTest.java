@@ -1,20 +1,13 @@
 package com.pdclientmanager.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,23 +20,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.model.form.CaseForm;
 import com.pdclientmanager.model.form.JudgeForm;
-import com.pdclientmanager.model.projection.CaseProjection;
 import com.pdclientmanager.model.projection.JudgeProjection;
-import com.pdclientmanager.repository.AttorneyRepository;
-import com.pdclientmanager.repository.CaseRepository;
 import com.pdclientmanager.repository.JudgeRepository;
-import com.pdclientmanager.repository.entity.Attorney;
-import com.pdclientmanager.repository.entity.Case;
-import com.pdclientmanager.repository.entity.Charge;
-import com.pdclientmanager.repository.entity.ChargedCount;
-import com.pdclientmanager.repository.entity.ChargedCountId;
-import com.pdclientmanager.repository.entity.Client;
 import com.pdclientmanager.repository.entity.Judge;
 import com.pdclientmanager.repository.entity.WorkingStatus;
-import com.pdclientmanager.util.mapper.CaseMapper;
-import com.pdclientmanager.util.mapper.CycleAvoidingMappingContext;
 import com.pdclientmanager.util.mapper.JudgeMapper;
 
 @ExtendWith(SpringExtension.class)

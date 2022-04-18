@@ -4,13 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.pdclientmanager.model.form.CaseForm;
-import com.pdclientmanager.repository.ChargeRepository;
 import com.pdclientmanager.repository.entity.Attorney;
 import com.pdclientmanager.repository.entity.Case;
 import com.pdclientmanager.repository.entity.Charge;

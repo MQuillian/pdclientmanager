@@ -6,10 +6,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.Query;
 
 import com.pdclientmanager.model.projection.CaseProjection;
-import com.pdclientmanager.model.projection.OfficeStatsDto;
 import com.pdclientmanager.repository.entity.Case;
 
 public interface CaseRepository extends BaseRepository<Case> {

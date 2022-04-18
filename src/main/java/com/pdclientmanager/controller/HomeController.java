@@ -14,7 +14,6 @@ import com.pdclientmanager.calendar.CalendarService;
 import com.pdclientmanager.calendar.CaseEvent;
 import com.pdclientmanager.model.projection.AttorneyLightProjection;
 import com.pdclientmanager.repository.DemoDao;
-import com.pdclientmanager.repository.entity.Attorney;
 import com.pdclientmanager.service.AttorneyService;
 
 @Controller

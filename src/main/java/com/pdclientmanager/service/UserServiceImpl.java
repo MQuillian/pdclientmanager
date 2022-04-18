@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.pdclientmanager.calendar.CalendarService;
 import com.pdclientmanager.model.form.UserForm;
 import com.pdclientmanager.repository.UserRepository;
 import com.pdclientmanager.repository.entity.Authority;

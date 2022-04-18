@@ -1,3 +1,3 @@
-FROM tomcat:9.0.48-jdk8-openjdk-slim-buster
+FROM tomcat:9.0.62-jdk11-corretto
 COPY /target/pdclientmanager.war /usr/local/tomcat/webapps/
 COPY /credentials.json /secrets/credentials.json
