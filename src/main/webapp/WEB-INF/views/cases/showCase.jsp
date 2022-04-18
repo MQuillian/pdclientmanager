@@ -88,10 +88,10 @@
 			<c:forEach items="${caseEvents}" var="caseEvent">
 				<tr>
 					<td>
-						<c:out value="${caseEvent.startTime}"/>
+						<c:out value="${caseEvent.prettyStartTime}"/>
 					</td>
 					<td>
-						<c:out value="${caseEvent.endTime}"/>
+						<c:out value="${caseEvent.prettyEndTime}"/>
 					</td>
 					<td>
 						<c:out value="${caseEvent.description}"/>

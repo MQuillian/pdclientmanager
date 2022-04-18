@@ -1,0 +1,24 @@
+version: '3.2'
+services:
+  pdcm-mysql:
+    image: mysql:5.7
+    env_file: mysql.env
+    ports:
+      - 3306:3306
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d/
+
+  pdcm-main:
+    image: pdcm-webapp:latest
+    restart: on-failure
+    env_file:
+      - mysql.env
+      - calendar.env
+    depends_on:
+      - pdcm-mysql
+    ports:
+      - 8081:8080
+    volumes:
+      - type: bind
+        source: ./credentials.json
+        target: /secrets/credentials.json

@@ -52,7 +52,7 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     @Autowired
     public GoogleCalendarServiceImpl(EventMapper mapper, UserService userService) throws IOException, GeneralSecurityException {
     	this.HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        this.credentials = GoogleCredentials.fromStream(new FileInputStream("/var/secrets/google/key.json")).createScoped(SCOPES);
+        this.credentials = GoogleCredentials.fromStream(new FileInputStream(CREDENTIALS_FILE_PATH)).createScoped(SCOPES);
         credentials.refreshIfExpired();
         requestInitializer = new HttpCredentialsAdapter(credentials);
         calendar = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)

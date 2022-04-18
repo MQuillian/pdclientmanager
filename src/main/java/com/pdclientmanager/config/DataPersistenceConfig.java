@@ -47,9 +47,11 @@ public class DataPersistenceConfig {
     public DataSource jdbcDataSource() {
       DriverManagerDataSource dataSource = new DriverManagerDataSource();
       dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-      dataSource.setUrl(environment.getRequiredProperty("SPRING_DATASOURCE_URL"));
-      dataSource.setUsername(environment.getRequiredProperty("SPRING_DATASOURCE_USERNAME"));
-      dataSource.setPassword(environment.getRequiredProperty("SPRING_DATASOURCE_PASSWORD"));
+      dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
+      
+      // username and password are provided via secret .env file in container
+      dataSource.setUsername(environment.getRequiredProperty("MYSQL_USER"));
+      dataSource.setPassword(environment.getRequiredProperty("MYSQL_PASSWORD"));
       return dataSource;
     }
     

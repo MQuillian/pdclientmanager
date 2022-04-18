@@ -122,9 +122,26 @@ public class CaseEvent {
         sb.append('-');
         sb.append(dateTime.getYear());
         sb.append(' ');
-        sb.append(dateTime.getHour());
+        int hour = dateTime.getHour();
+        if(hour == 0) {
+            sb.append("12");
+        } else if(hour > 12) {
+            sb.append(hour- 12);
+        } else {
+            sb.append(hour);
+        }
         sb.append(':');
-        sb.append(dateTime.getMinute());
+        int minute = dateTime.getMinute();
+        if(minute == 0) {
+            sb.append("00");
+        } else {
+            sb.append(minute);
+        }
+        if(hour < 12) {
+            sb.append(" AM");
+        } else {
+            sb.append(" PM");
+        }
         return sb.toString();
     }
 }
