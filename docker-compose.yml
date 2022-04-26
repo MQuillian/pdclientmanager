@@ -9,7 +9,7 @@ services:
       - ./init:/docker-entrypoint-initdb.d/
 
   pdcm-main:
-    image: pdcm-webapp:latest
+    image: pdcm-webapp-aws:latest
     restart: on-failure
     env_file:
       - mysql.env

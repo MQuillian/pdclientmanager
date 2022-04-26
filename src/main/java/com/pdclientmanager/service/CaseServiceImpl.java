@@ -98,6 +98,13 @@ public class CaseServiceImpl implements CaseService {
         List<T> caseList = repository.findFirst10ByDateClosedIsNullAndCaseNumberContaining(caseNumber, type);
         return caseList;
     }
+    
+    @Override
+    public <T> T findByCaseNumber(String caseNumber, Class <T> type) {
+        T result = repository.findByCaseNumber(caseNumber, type)
+                .orElseThrow(EntityNotFoundException::new);
+        return result;
+    }
 
     @Override
     @Transactional

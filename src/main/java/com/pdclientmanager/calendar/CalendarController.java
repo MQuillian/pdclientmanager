@@ -44,7 +44,7 @@ public class CalendarController {
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
-            return "calendar/caseEventForm";
+            return "redirect:/calendar/caseEventForm";
         } else {
             try {
             	if(caseEvent.getId() == "") {
@@ -79,7 +79,7 @@ public class CalendarController {
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
-            return "calendar/simultaneousMultiCaseEventForm";
+            return "redirect:/calendar/multiCaseEventForm";
         } else {
             try {
                 service.batchAddEvents(caseEventsList.getCaseEvents());
@@ -90,7 +90,7 @@ public class CalendarController {
                 redirectAttributes.addFlashAttribute("css", "danger");
                 redirectAttributes.addFlashAttribute("msg", "Error adding cases to calendar");
             }
-            return "calendar/calendarManagement";
+            return "redirect:/calendar/management";
         }
     }
     
@@ -108,7 +108,7 @@ public class CalendarController {
     	} catch(Exception e) {
     		redirectAttributes.addFlashAttribute("css", "danger");
     		redirectAttributes.addFlashAttribute("msg", "Error finding matching event");
-    		return "calendar/calendarManagement";
+    		return "redirect:/calendar/management";
     	}
     }
     
@@ -120,11 +120,27 @@ public class CalendarController {
     		redirectAttributes.addFlashAttribute("css", "success");
     		redirectAttributes.addFlashAttribute("msg", "Event succcessfully deleted!");
     		
-    		return "calendar/calendarManagement";
+    		return "redirect:/calendar/management";
     	} catch(IOException e) {
     		redirectAttributes.addFlashAttribute("css", "danger");
     		redirectAttributes.addFlashAttribute("msg", "Error deleting event");
-    		return "calendar/calendarManagement";
+    		return "redirect:/calendar/management";
     	}
+    }
+    
+    @PostMapping("/calendar/{id}/deleteFromHome")
+    public String deleteCaseEventFromHomePage(@PathVariable("id") String eventId, final RedirectAttributes redirectAttributes) {
+        try {
+            service.deleteEvent(eventId);
+            
+            redirectAttributes.addFlashAttribute("css", "success");
+            redirectAttributes.addFlashAttribute("msg", "Event succcessfully deleted!");
+            
+            return "redirect:/";
+        } catch(IOException e) {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", "Error deleting event");
+            return "redirect:/";
+        }
     }
 }

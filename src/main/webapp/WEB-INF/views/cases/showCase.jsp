@@ -74,6 +74,18 @@
 </div>
 <br>
 <div class="row">
+	<div class="btn-group" role="group">
+		<spring:url value="/documents/${courtCase.caseNumber}/upload" var="uploadUrl" />
+		<spring:url value="/documents/${courtCase.caseNumber}/list" var="listFilesUrl" />
+		
+		<button class="btn btn-success"
+			onclick="location.href='${uploadUrl}'">Upload document</button>
+		<button class="btn btn-primary"
+			onclick="location.href='${listFilesUrl}'">List attached documents</button>
+	</div>
+</div>
+<br>
+<div class="row">
 	<label class="col-sm-2">Case events</label>
 	<table class="table table-striped">
 		<thead>

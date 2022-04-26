@@ -42,7 +42,7 @@
 			<td>
 				<div class="btn-group" role="group">
 					<spring:url value="/calendar/${caseEvent.id}/update" var="updateUrl" />
-					<spring:url value="/calendar/${caseEvent.id}/delete" var="deleteUrl" />
+					<spring:url value="/calendar/${caseEvent.id}/deleteFromHome" var="deleteUrl" />
 					
 					<button class="btn btn-primary"
 						onclick="location.href='${updateUrl}'">Update</button>
