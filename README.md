@@ -38,7 +38,7 @@ PDClientManager tracks and displays various metrics, such as aging reports, that
 
 ## Usage
 
-The application has been deployed on an AWS EC2 instance and may be accessed [here](PDCM-ALB-407053983.us-west-2.elb.amazonaws.com/pdclientmanager).
+The application has been deployed on an AWS EC2 instance and may be accessed [here](http://PDCM-ALB-407053983.us-west-2.elb.amazonaws.com/pdclientmanager).
 
 ## Potential Roadmap
 
