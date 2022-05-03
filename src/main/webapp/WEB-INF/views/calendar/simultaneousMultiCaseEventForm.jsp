@@ -8,7 +8,7 @@
 
 <spring:url value="/calendar/multipleEvents" var="calendarActionUrl" />
 
-<form:form id="multiEventForm" modelAttribute="caseEventsList" method="post" action="${calendarActionUrl}">
+<form:form id="multiEventForm" modelAttribute="caseEventsList" method="post" action="${calendarActionUrl}" >
     
     <fmt:bundle basename="messages">
     
@@ -18,12 +18,12 @@
     <div class="form-row">
 	    <div class="form-group col-md-3">
 	    	<label for="startTime">Court start date/time: </label>
-	    	<input type="datetime-local" name="startTime" id="startTime" required/>
+	    	<input type="datetime-local" name="startTime" id="startTime" class="form-control" required/>
 	    	<span id="startTime.errors" class="error"></span>
 	    </div>
 	    <div class="form-group col-md-3">
 	    	<label for="endTime">Court end date/time: </label>
-	    	<input type="datetime-local" name="endTime" id="endTime" required/>
+	    	<input type="datetime-local" name="endTime" id="endTime" class="form-control" required/>
     		<span id="endTime.errors" class="error"></span>
 		</div>
     </div>
@@ -44,7 +44,7 @@
             </table>
         </div>    
     </div>       
-      
+  
     <div class="form-row">
         <div class="col-xs-3">
             <button type="button" class="btn btn-secondary" onclick="newRow()">Add new row</button>
@@ -53,8 +53,9 @@
             <button type="button" class="btn btn-secondary" onclick="deleteRow()">Delete latest row</button>
         </div>
     </div>
+	<form:errors path="caseEvents" class="control-label" cssClass="error" />
+	<span id="submitValidationErrors" cssClass="error"></span>
 <br>
-	
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<button type="submit" id="save" class="btn-lg btn-primary pull-right">Save events</button>

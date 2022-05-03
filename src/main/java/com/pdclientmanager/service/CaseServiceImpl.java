@@ -147,6 +147,7 @@ public class CaseServiceImpl implements CaseService {
         
         for(Case courtCase : cases) {
             courtCase.setAttorney(newAssignedAttorney);
+            repository.save(courtCase);
         }
     }
 }

@@ -35,7 +35,8 @@ public class HomeController {
     @GetMapping("/")
     public String showHome(Model model) {
         try {
-            List<CaseEvent> upcomingEvents = calendarService.getListOfAllEventsForCurrentUser();
+            List<CaseEvent> upcomingEvents = calendarService.sortCaseEventListChronologically(
+                    calendarService.getListOfAllEventsForCurrentUser());
             
             model.addAttribute("events", upcomingEvents);
             

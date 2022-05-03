@@ -81,7 +81,7 @@ public class CaseController {
     @PostMapping(path = "/cases")
     public String saveCase(@ModelAttribute("caseForm") @Valid CaseForm caseForm, 
             BindingResult result, Model model,
-            final RedirectAttributes redirectAttributes) {
+            final RedirectAttributes redirectAttributes) throws IOException {
         if(result.hasErrors()) {
             List<AttorneyLightProjection> activeAttorneys = attorneyService.findAllActive();
             List<JudgeProjection> activeJudges = judgeService.findAllActive();
@@ -93,12 +93,20 @@ public class CaseController {
             return "cases/caseForm";
             
         } else {
-            Long entityId = caseService.save(caseForm);
-            
-            redirectAttributes.addFlashAttribute("css", "success");
-            redirectAttributes.addFlashAttribute("msg", "Case saved successfully!");
-            
-            return "redirect:/cases/" + entityId;
+            try {
+                updateCaseEvents(caseForm.getId(), caseForm.getCaseNumber());
+                Long entityId = caseService.save(caseForm);
+                
+                redirectAttributes.addFlashAttribute("css", "success");
+                redirectAttributes.addFlashAttribute("msg", "Case saved successfully!");
+                
+                return "redirect:/cases/" + entityId;
+            } catch(IOException e) {
+                redirectAttributes.addFlashAttribute("css", "danger");
+                redirectAttributes.addFlashAttribute("msg", "Error updating existing case events");
+                
+                return "redirect:/cases";
+            }
         }
     }
     
@@ -121,7 +129,8 @@ public class CaseController {
         CaseProjection courtCase = caseService.findById(id, CaseProjection.class);
         List<CaseEvent> caseEvents = new ArrayList<>();
         try {
-        	caseEvents = calendarService.getListOfAllEventsByCaseNumber(courtCase.getCaseNumber());
+        	caseEvents = calendarService.sortCaseEventListChronologically(
+        	        calendarService.getListOfAllEventsByCaseNumber(courtCase.getCaseNumber()));
         } catch(IOException e) {
         	redirectAttributes.addFlashAttribute("css", "danger");
         	redirectAttributes.addFlashAttribute("msg", "Error retrieving scheduled events for case");
@@ -213,12 +222,20 @@ public class CaseController {
     @PostMapping("/cases/{id}/delete")
     public String deleteCaseById(@PathVariable("id") Long id,
             final RedirectAttributes redirectAttributes) {
-        caseService.deleteById(id);
-        
-        redirectAttributes.addFlashAttribute("css", "success");
-        redirectAttributes.addFlashAttribute("msg", "Case is deleted!");
+        try {
+            deleteAllCaseEvents(id);
+            caseService.deleteById(id);
+            
+            redirectAttributes.addFlashAttribute("css", "success");
+            redirectAttributes.addFlashAttribute("msg", "Case is deleted!");
 
-        return "redirect:/cases";
+            return "redirect:/cases";
+        } catch(IOException e) {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", "Error deleting existing case events");
+
+            return "redirect:/cases";
+        }
     }
     
     @GetMapping("/cases/caseloadStats")
@@ -278,5 +295,26 @@ public class CaseController {
 		resp.append("]}");
         
         return new ResponseEntity<String>(resp.toString(), HttpStatus.OK);
+    }
+    
+    private void updateCaseEvents(Long caseId, String caseNumber) throws IOException {
+        List<CaseEvent> events = calendarService
+                .getListOfAllFutureEventsByCaseId(caseId.toString());
+        if(events.size() > 0 && !events.get(0).getCaseNumber().contentEquals(caseNumber)) {
+            for(CaseEvent event : events) {
+                event.setCaseNumber(caseNumber);
+                calendarService.updateEvent(event);
+            }
+        }
+    }
+    
+    private void deleteAllCaseEvents(Long caseId) throws IOException {
+        List<CaseEvent> events = calendarService
+                .getListOfAllFutureEventsByCaseId(caseId.toString());
+        if(events.size() > 0) {
+            for(CaseEvent event : events) {
+                calendarService.deleteEvent(event);
+            }
+        }
     }
 }

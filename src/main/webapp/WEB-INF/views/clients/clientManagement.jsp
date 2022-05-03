@@ -4,8 +4,6 @@
 <hr>
 <a href="${contextPath}/">Return to Home</a>
 <hr>
-CLIENT SEARCH
-<br>
 <a href="${contextPath}/clients/list">Full client list</a>
 <br>
 <a href="${contextPath}/clients/add">Add new client</a>

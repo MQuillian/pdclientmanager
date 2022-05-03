@@ -26,7 +26,7 @@
 			<div class="col-sm-10">
 				<form:input path="fullName" type="text" class="form-control"
 					id="fullName" placeholder="Full Name" />
-				<form:errors path="fullName" class="control-label" />
+				<form:errors path="fullName" class="control-label" cssClass="error"/>
 			</div>
 		</div>
 	</spring:bind>
@@ -38,7 +38,7 @@
 			<div class="col-sm-10">
 				<form:input path="username" type="text" class="form-control"
 					id="username" placeholder="Username" />
-				<form:errors path="username" class="control-label" />
+				<form:errors path="username" class="control-label" cssClass="error" />
 			</div>
 		</div>
 	</spring:bind>
@@ -49,7 +49,7 @@
 			<div class="col-sm-10">
 				<form:input path="email" type="email" class="form-control"
 					id="email" placeholder="Email" />
-				<form:errors path="email" class="control-label" />
+				<form:errors path="email" class="control-label" cssClass="error" />
 			</div>
 		</div>
 	</spring:bind>
@@ -62,7 +62,7 @@
 					<div class="col-sm-10">
 						<form:input path="password" type="password" class="form-control"
 							id="password" placeholder="Password" />
-						<form:errors path="password" class="control-label" />
+						<form:errors path="password" class="control-label" cssClass="error"/>
 					</div>
 					<br />
 				</div>
@@ -73,7 +73,7 @@
 					<div class="col-sm-10">
 						<form:input path="matchingPassword" type="password" class="form-control"
 							id="matchingPassword" placeholder="Password" />
-						<form:errors path="matchingPassword" class="control-label" />
+						<form:errors path="matchingPassword" class="control-label" cssClass="error"/>
 					</div>
 					<br />
 				</div>
@@ -92,7 +92,7 @@
 				<form:checkboxes path="roles" element="li style='list-style-type:none;'" items="${availableRoles}"
 					size="5"
 					cssStyle="margin-right: 5px; margin-left: 5px" />
-				<form:errors path="roles" class="control-label" />
+				<form:errors path="roles" class="control-label" cssClass="error"/>
 			</div>
 			<br />
 		</div>

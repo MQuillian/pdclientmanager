@@ -53,14 +53,22 @@
 		        </div>
 		      </li>
 		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" id="calendarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        	Calendar
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="calendarDropdown">
+		        	<a class="dropdown-item" href="${contextPath}/calendar/management">Calendar management</a>
+		        	<a class="dropdown-item" href="${contextPath}/calendar/multiCaseEventForm">Add cases for court date</a>
+		        	<a class="dropdown-item" href="${contextPath}/calendar/caseEventForm">Add single event</a>
+		        </div>
+		      </li>
+		      <li class="nav-item dropdown">
 		        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		          Employees
 		        </a>
 		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 		          <a class="dropdown-item" href="${contextPath}/attorneys">Attorneys</a>
 		          <a class="dropdown-item" href="${contextPath}/investigators">Investigators</a>
-		          <div class="dropdown-divider"></div>
-		          <a class="dropdown-item" href="#">Something else here</a>
 		        </div>
 		      </li>
 		    </ul>

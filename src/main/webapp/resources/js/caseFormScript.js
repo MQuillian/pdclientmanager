@@ -94,6 +94,7 @@ function newRow() {
         input.id = "count" + countNumber;
         input.name= "chargedCountsStrings[" + countNumber + "]";
         input.classList.add('charge-input');
+        input.classList.add('form-control');
         $(input).autocomplete(chargeAutocompleteOptions);
         cell1.appendChild(input);
         

@@ -28,25 +28,25 @@
     
     <div class="form-group">
     	<label for="dateOpened">Date Opened: </label>
-    	<form:input type="text" path="dateOpened" name="dateOpened" id="dateOpened" />
+    	<form:input type="text" path="dateOpened" name="dateOpened" id="dateOpened" class="form-control" />
     	<form:errors path="dateOpened" cssClass="error"/>
     </div>
     
     <div class="form-group">
     	<label for="dateClosed">Date Closed: </label>
-    	<form:input type="text" path="dateClosed" name="dateClosed" id="dateClosed" />
+    	<form:input type="text" path="dateClosed" name="dateClosed" id="dateClosed" class="form-control" />
     	<form:errors path="dateClosed" cssClass="error" />
     </div>
     
     <div class="form-group">
     	<label for="caseNumber">Case Number: </label>
-    	<form:input type="text" path="caseNumber" name="caseNumber" id="caseNumber" />
+    	<form:input type="text" path="caseNumber" name="caseNumber" id="caseNumber" class="form-control" />
     	<form:errors path="caseNumber" cssClass="error"/>
    	</div>
     
     <div class="form-group">
     	<label for="clientId">Client Name: </label>
-    	<form:input type="text" path="clientName" id="clientName"/>
+    	<form:input type="text" path="clientName" id="clientName" class="form-control"/>
     	<form:input type="hidden" path="clientId" id="clientHiddenField" />
     	<form:errors path="clientId" cssClass="error"/>
     </div>
@@ -54,14 +54,14 @@
     <div class="form-group">
     	<label for="judgeId">Judge Name: </label>
     	<form:select path="judgeId" id="judgeId" items="${activeJudges}"
-    		itemLabel="name" itemValue="id" />
+    		itemLabel="name" itemValue="id" class="form-control" />
     	<form:errors path="judgeId" cssClass="error" />
    	</div>
    	
    	<div class="form-group">
    		<label for="attorneyId">Attorney Name: </label>
    		<form:select path="attorneyId" id="attorneyId" items="${activeAttorneys}"
-   			itemLabel="name" itemValue="id" />
+   			itemLabel="name" itemValue="id" class="form-control" />
    		<form:errors path="attorneyId" cssClass="error" />
  	</div>
 	
@@ -82,7 +82,7 @@
 	              				<label for="count${countNumber}">Count ${countNumber}</label>
 	              				<input id="count${chargedCount.key}"
 	              					name="chargedCountsStrings[${countNumber}]" 
-	              					class="charge-input ui-autocomplete-input"
+	              					class="charge-input ui-autocomplete-input form-control"
 	              					autocomplete="off"
 	              					value="${caseForm.chargedCountsStrings[countNumber]}">
               					<input id="count${countNumber}hidden" type="hidden"
@@ -106,10 +106,10 @@
       
     <div class="form-group">
         <div class="large-4 large-offset-2 columns">
-            <button type="button" class="button expanded" onclick="newRow()">Add new row</button>
+            <button type="button" class="btn btn-primary" onclick="newRow()">Add new row</button>
         </div>
-        <div class=" large-4 large-offeset-2 columns">
-            <button type="button" class="button expanded" onclick="deleteRow()">Delete latest row</button>
+        <div class=" large-4 large-offset-2 columns">
+            <button type="button" class="btn btn-danger" onclick="deleteRow()">Delete latest row</button>
         </div>
     </div>
 <br>

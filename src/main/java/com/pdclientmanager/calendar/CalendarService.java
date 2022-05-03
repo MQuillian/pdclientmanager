@@ -24,4 +24,10 @@ public interface CalendarService {
     public void deleteEvent(CaseEvent event) throws IOException;
     
     public void deleteEvent(String eventId) throws IOException;
+    
+    public List<CaseEvent> sortCaseEventListChronologically(List<CaseEvent> caseEvents);
+
+    public List<CaseEvent> getListOfAllFutureEventsByCaseId(String searchTerm) throws IOException;
+
+    public List<CaseEvent> getListOfAllFutureEventsByAttorney(String searchTerm) throws IOException;
 }

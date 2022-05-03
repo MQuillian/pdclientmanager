@@ -27,7 +27,9 @@ public interface CaseRepository extends BaseRepository<Case> {
     
     <T> Page<T> findAllBy(final Pageable pageRequest, Class<T> type);
     
-    <T> List<T> findByAttorney_Id(final Long attorneyid, Class<T> type);
+    <T> List<T> findByAttorney_Id(final Long attorneyId, Class<T> type);
+    
+    <T> List<T> findByJudge_Id(final Long judgeid, Class<T> type);
     
     <T> List<T> findByDateClosedIsNullAndAttorney_Id(final Long attorneyId, Class<T> type);
     

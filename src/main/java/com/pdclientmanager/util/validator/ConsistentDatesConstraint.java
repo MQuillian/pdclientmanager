@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConsistentDatesConstraint {
 
-    String message() default "Date opened cannot be before date closed";
+    String message() default "Date closed cannot be prior to date opened";
 
     Class<?>[] groups() default { };
 

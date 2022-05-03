@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DateClosedConstraint {
 
-    String message() default "Invalid date closed";
+    String message() default "Invalid date - Please use MM/DD/YYYY format";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

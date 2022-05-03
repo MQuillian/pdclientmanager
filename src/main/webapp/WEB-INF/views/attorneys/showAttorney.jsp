@@ -29,7 +29,7 @@
 <br />
 
 <div class="row">
-	<label class="col-sm-2">Current Caseload</label>
+	<label class="col-sm-2">Cases</label>
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -50,6 +50,17 @@
 			</tr>
 		</c:forEach>
 	</table>
+</div>
+
+<div class="btn-group" role="group">
+	<spring:url value="/attorneys/${attorney.id}/update" var="updateUrl" />
+	<spring:url value="/attorneys/${attorney.id}/delete" var="deleteUrl" />
+	
+	<button class="btn btn-primary"
+		onclick="location.href='${updateUrl}'">Update</button>
+	<form:form action="${deleteUrl}" method="post">
+		<button class="btn btn-danger" type="submit">Delete</button>
+	</form:form>
 </div>
 	
 <%@ include file="../footer.jsp" %>

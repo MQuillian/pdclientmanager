@@ -70,13 +70,13 @@ public class GoogleCalendarServiceImplTest {
             LocalDateTime twoDaysAgo = baseDateTime.minus(2, ChronoUnit.DAYS);
             LocalDateTime twoDaysAgoPlusOneHour = baseDateTime.minus(2, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
             
-            event1 = new CaseEvent(null, "20J0001", "John Schneider",
+            event1 = new CaseEvent(null, "20J0001", "1", "John Schneider",
                     "Description 1", "Summary 1", tomorrow, tomorrowPlusOneHour);
-            event2 = new CaseEvent(null, "20J0002", "Matt Quillian",
+            event2 = new CaseEvent(null, "20J0002", "2", "Matt Quillian",
                     "Description 2", "Summary 2", tomorrow, tomorrowPlusOneHour);
-            event3 = new CaseEvent(null, "20J0003", "Matt Quillian",
+            event3 = new CaseEvent(null, "20J0003", "3", "Matt Quillian",
                     "Description 3", "Summary 3", threeWeeks, threeWeeksPlusOneHour);
-            event4 = new CaseEvent(null, "20J0003", "Matt Quillian",
+            event4 = new CaseEvent(null, "20J0003", "4", "Matt Quillian",
                     "Description 4", "Summary 4", twoDaysAgo, twoDaysAgoPlusOneHour);
             
             service.addEvent(event1, testCalId);
@@ -173,7 +173,7 @@ public class GoogleCalendarServiceImplTest {
     @Test
     public void addEvent_ShouldAddEventToCalendar() {
         try {
-            CaseEvent newEvent = new CaseEvent(null, "20J0006", "Matt Quillian",
+            CaseEvent newEvent = new CaseEvent(null, "20J0006", "1", "Matt Quillian",
                     "Description", "Summary", baseDateTime,
                     baseDateTime.plus(1, ChronoUnit.HOURS));
             
@@ -194,7 +194,7 @@ public class GoogleCalendarServiceImplTest {
     public void batchAddEvents_ShouldAddEventsToCalendar() {
         List<CaseEvent> caseEvents = new ArrayList<>();
         for(int i = 0; i < 60; i++) {
-            caseEvents.add(new CaseEvent(null, "batchCaseNumber", "BatchTest Attorney",
+            caseEvents.add(new CaseEvent(null, "batchCaseNumber", "1", "BatchTest Attorney",
                     "Test Description" + Integer.toString(i), null, baseDateTime, baseDateTime.plus(1, ChronoUnit.HOURS)));
         }
         try {
@@ -216,7 +216,7 @@ public class GoogleCalendarServiceImplTest {
     public void updateEvent_ShouldUpdateEventInCalendar() {
         try {
             CaseEvent originalEvent = service.getListOfAllEventsByCaseNumber(event1.getCaseNumber(), testCalId).get(0);
-            CaseEvent updatedEvent = new CaseEvent(originalEvent.getId(), "20J0010", "Matt Quillian",
+            CaseEvent updatedEvent = new CaseEvent(originalEvent.getId(), "20J0010", originalEvent.getCaseId(), "Matt Quillian",
                     "Description", "Summary", baseDateTime,
                     baseDateTime.plus(1, ChronoUnit.HOURS));
             

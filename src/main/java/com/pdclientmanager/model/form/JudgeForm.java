@@ -1,11 +1,16 @@
 package com.pdclientmanager.model.form;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import com.pdclientmanager.repository.entity.WorkingStatus;
 
 public class JudgeForm {
 
     private Long id;
+    @NotEmpty
     private String name;
+    @NotNull
     private WorkingStatus workingStatus;
     
     public JudgeForm() {

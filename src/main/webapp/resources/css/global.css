@@ -29,12 +29,12 @@ body {
 }
 
 .login-img {
-	background: url(../images/law-books.jpg) no-repeat center center fixed;
+	background: url(../images/lady-justice.jpg) no-repeat center center fixed;
   	background-size: cover;
 }
 
 .background-img {
-	background: url(../images/lady-justice.jpg) no-repeat center center fixed;
+	background: url(../images/law-books.jpg) no-repeat center center fixed;
   	background-size: cover;
 }
 

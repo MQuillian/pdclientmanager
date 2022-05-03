@@ -68,7 +68,7 @@ public class EventMapperTest {
         LocalDateTime startTime = LocalDateTime.of(2001, 02, 04, 8, 30);
         LocalDateTime endTime = LocalDateTime.of(2001, 02, 04, 9, 30);
         
-        caseEvent = new CaseEvent("testID", "01J0001", "John Schneider", "testDescription",
+        caseEvent = new CaseEvent("testID", "01J0001", "1", "John Schneider", "testDescription",
             "testSummary", startTime, endTime);
     }
     

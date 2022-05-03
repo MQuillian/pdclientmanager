@@ -111,7 +111,7 @@ buildNumber.properties
 # Secrets #
 credentials.json
 *.env
-aws.tar
+ec2data.tar.gz
 
 # Logs #
 pdcm-logs

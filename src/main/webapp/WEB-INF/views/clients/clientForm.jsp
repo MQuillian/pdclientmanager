@@ -46,18 +46,22 @@
 		</div>
 	</spring:bind>
 	
-	<div class="row">
-    	<label for="incarcerationDate">Incarceration date: </label>
-    	<form:input type="date-time" path="incarcerationDate" name="incarcerationDate"
-    		id="incarcerationDate" />
-    	<form:errors path="incarcerationDate" cssClass="error"/>
+	<div class="form-group">
+		<div class="col-sm-10">
+	    	<label for="incarcerationDate" class="col-sm-3">Incarceration date: </label>
+	    	<form:input type="date-time" path="incarcerationDate" name="incarcerationDate"
+	    		id="incarcerationDate" class="form-control"/>
+	    	<form:errors path="incarcerationDate" cssClass="error"/>
+    	</div>
     </div>
    
-    <div class="row">
-    	<label for="releaseDate">Release date: </label>
-    	<form:input type="date-time" path="releaseDate" name="releaseDate"
-    		id="releaseDate" />
-    	<form:errors path="releaseDate" cssClass="error" />
+    <div class="form-group">
+    	<div class="col-sm-10">
+	    	<label for="releaseDate" class="col-sm-2">Release date: </label>
+	    	<form:input type="date-time" path="releaseDate" name="releaseDate"
+	    		id="releaseDate" class="form-control"/>
+	    	<form:errors path="releaseDate" cssClass="error" />
+    	</div>
     </div>
 	
 	<div class="form-group">

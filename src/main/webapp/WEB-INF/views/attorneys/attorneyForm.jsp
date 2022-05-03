@@ -25,7 +25,7 @@
 			<div class="col-sm-10">
 				<form:input path="name" type="text" class="form-control"
 					id="name" placeholder="Name" />
-				<form:errors path="name" class="control-label" />
+				<form:errors path="name" class="control-label" cssClass="error" />
 			</div>
 		</div>
 	</spring:bind>
@@ -33,7 +33,7 @@
 	<spring:bind path="workingStatus">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-2 control-label">Working Status</label>
-			<label>NOTE: Updating to Inactive status will remove any investigator assignment </label>
+			<label>NOTE: Selecting Inactive status will remove any investigator assignment </label>
 			<div class="col-sm-10">
 				<label class="radio-inline">
 					<form:radiobutton path="workingStatus" value="ACTIVE" />Active
@@ -42,7 +42,7 @@
 					<form:radiobutton path="workingStatus" value="INACTIVE" />Inactive
 				</label>
 				<br />
-				<form:errors path="workingStatus" class="control-label" />
+				<form:errors path="workingStatus" class="control-label" cssClass="error" />
 			</div>
 		</div>
 	</spring:bind>
@@ -52,7 +52,7 @@
 			<div class="col-sm-5">
 				<form:select path="investigatorId" items="${activeInvestigators}"
 					itemLabel="name" itemValue="id" size="5" class="form-control" />
-				<form:errors path="investigatorId" class="control-label" />
+				<form:errors path="investigatorId" class="control-label" cssClass="error"/>
 			</div>
 			<br />
 		</div>

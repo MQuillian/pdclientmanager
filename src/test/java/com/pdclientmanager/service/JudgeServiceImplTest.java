@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.pdclientmanager.config.WebConfigTest;
 import com.pdclientmanager.model.form.JudgeForm;
+import com.pdclientmanager.model.projection.CaseLightProjection;
 import com.pdclientmanager.model.projection.JudgeProjection;
+import com.pdclientmanager.repository.CaseRepository;
 import com.pdclientmanager.repository.JudgeRepository;
 import com.pdclientmanager.repository.entity.Judge;
 import com.pdclientmanager.repository.entity.WorkingStatus;
@@ -34,6 +37,8 @@ public class JudgeServiceImplTest {
     
     @Mock
     private JudgeRepository judgeRepositoryMock;
+    
+    @Mock CaseRepository caseRepositoryMock;
     
     @Mock
     private JudgeMapper judgeMapperMock;
@@ -51,7 +56,7 @@ public class JudgeServiceImplTest {
     public void setUp() {
 
         initMocks(this);
-        judgeService = new JudgeServiceImpl(judgeRepositoryMock, judgeMapperMock);
+        judgeService = new JudgeServiceImpl(judgeRepositoryMock, caseRepositoryMock, judgeMapperMock);
         
         judgeForm = new JudgeForm.JudgeFormBuilder().build();
         judge = new Judge.JudgeBuilder().build();
@@ -108,6 +113,7 @@ public class JudgeServiceImplTest {
     
     @Test
     public void delete_ShouldCallDeleteById() throws Exception {
+        when(caseRepositoryMock.findByJudge_Id(judgeProjection.getId(), CaseLightProjection.class)).thenReturn(new ArrayList<CaseLightProjection>());
         judgeService.delete(judgeProjection);
         
         verify(judgeRepositoryMock).deleteById(judgeProjection.getId());
@@ -115,6 +121,7 @@ public class JudgeServiceImplTest {
     
     @Test
     public void deleteById_ShouldCallDeleteById() throws Exception {
+        when(caseRepositoryMock.findByJudge_Id(judgeProjection.getId(), CaseLightProjection.class)).thenReturn(new ArrayList<CaseLightProjection>());
         judgeService.deleteById(1L);
         
         verify(judgeRepositoryMock).deleteById(1L);

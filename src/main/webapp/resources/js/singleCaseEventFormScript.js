@@ -20,19 +20,21 @@ const caseAutocompleteOptions = {
 	        if (!ui.item) {
 	            this.value = '';
 	            
-	            $('#clientField').text('');
+	            $('#caseIdField').val('');
+	            $('#clientField').html('');
 	            $('#attorneyField').val('');
-	            $('#custodyField').text('');
-	            document.getElementById('errorField').innerHTML = 'Please enter a valid case number';
+	            $('#custodyField').html('');
+	            $('#attorney.errors').text('Please select a valid case from the menu');
         	}
 	    },
 	    select: function( event, ui ) {
 		     event.preventDefault();
 		     $(this).val(ui.item.caseNumber);
-	            
+		     document.getElementById('caseIdField').value = ui.item.id;
              document.getElementById('clientField').innerHTML = ui.item.clientName;
              document.getElementById('attorneyField').value = ui.item.attorneyName;
 	         document.getElementById('custodyField').innerHTML = ui.item.custodyStatus;
+	         document.getElementById('attorney.errors').textContent = '';
 	    }
 	}
 
@@ -47,7 +49,7 @@ function validateEndTime() {
 	const endTimeElement = document.getElementById('endTime');
 	const endTimeValue = endTimeElement.value;
 	const startTimeValue = document.getElementById('startTime').value;
-	const endTimeIsValid = true;
+	let endTimeIsValid = true;
 	
 	const endTimeYear = endTimeValue.substring(0,4);
 	const startTimeYear = startTimeValue.substring(0,4);
@@ -131,8 +133,10 @@ function handleValidEndTime() {
 				q : document.getElementById('caseNumberInput').value
 			},
 			success: function(result){
+				document.getElementById('caseIdField').value = result[0].id;
     			document.getElementById('clientField').innerHTML = result[0].clientName;
     			document.getElementById('custodyField').innerHTML = result[0].custodyStatus;
+    			document.getElementById('attorneyField').value = result[0].attorneyName;
   }});
 	}
 })();

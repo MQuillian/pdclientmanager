@@ -42,7 +42,7 @@
 		<div class="d-flex justify-content-center h-100" style="padding-top:20vh">
 			<div class="card" style="background-color:rgba(255,255,255,0.9)">
 				<div class="card-header">
-					<h3>Login</h3>
+					<h3>PDClientManager</h3>
 				</div>
 				<div class="card-body">
 					<form name="f" action="${contextPath}/handle_login" method="POST">

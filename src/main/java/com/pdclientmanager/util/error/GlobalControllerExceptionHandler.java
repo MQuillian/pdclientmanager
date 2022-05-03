@@ -30,13 +30,13 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ModelAndView handleEntityNotFound(HttpServletRequest req, EntityNotFoundException ex) {
         warningLogger.warn("Entity could not be found", ex);
-        ApiError error = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Oops! The entity you are searching for could not be found", ex);
+        ApiError error = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "The entity you are searching for could not be found", ex);
         return createDefaultErrorModelAndView(error, req);
     }
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ModelAndView handleMethodArgumentNotValid(HttpServletRequest req, MethodArgumentNotValidException ex) {
         warningLogger.warn("There was an invalid request");
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, "Oops! There was an invalid request.", ex);
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, "There was an invalid request", ex);
         return createDefaultErrorModelAndView(error, req);
     }
     
@@ -46,8 +46,8 @@ public class GlobalControllerExceptionHandler {
                 ex.getClass(), ResponseStatus.class) != null) {
                     throw ex;
                 }
-        ApiError error = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Oops! The program has encountered an unexpected error.", ex);
-        warningLogger.error("There was an unexpected error");
+        ApiError error = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "The program has encountered an unexpected error.", ex);
+        warningLogger.error("", ex);
         return createDefaultErrorModelAndView(error, req);
     }
     

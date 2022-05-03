@@ -99,7 +99,7 @@ public class EmployeeController {
         } else {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", 
-                    "The attorney's active caseload must be reassigned before deleting!");
+                    "The attorney's cases must be reassigned before deleting!");
         }
         return "redirect:/attorneys";
     }
@@ -114,11 +114,11 @@ public class EmployeeController {
     
     @PostMapping("/investigators")
     public String saveInvestigator(
-            @ModelAttribute("investigator") @Valid InvestigatorForm investigatorForm, 
+            @ModelAttribute("investigatorForm") @Valid InvestigatorForm investigatorForm,
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
-
+            model.addAttribute("activeAttorneys", attorneyService.findAllActive());
             return "investigators/investigatorForm";
         } else {
             Long entityId = investigatorService.save(investigatorForm);

@@ -212,7 +212,7 @@ public class CaseControllerTest {
     @Test
     public void showCase_WithValidId_ShouldAddCaseToModelAndRenderCaseView() throws Exception {
     	List<CaseEvent> caseEvents = new ArrayList<>();
-        caseEvents.add(new CaseEvent("TestId", caseProjection.getCaseNumber(), "Test Attorney",
+        caseEvents.add(new CaseEvent("TestId", caseProjection.getCaseNumber(), caseProjection.getId().toString(), "Test Attorney",
         		"Test Description", "Test Summary", LocalDateTime.now(), LocalDateTime.now()));
     	
     	when(caseServiceMock.findById(1L, CaseProjection.class)).thenReturn(caseProjection);

@@ -90,10 +90,13 @@ public class JudgeController {
     @PostMapping("/judges/{id}/delete")
     public String deleteJudge(@PathVariable("id") Long targetId,
             final RedirectAttributes redirectAttributes) {
-        judgeService.deleteById(targetId);
-        
-        redirectAttributes.addFlashAttribute("css", "success");
-        redirectAttributes.addFlashAttribute("msg", "Judge deleted successfully!");
+        if(judgeService.deleteById(targetId)) {
+            redirectAttributes.addFlashAttribute("css", "success");
+            redirectAttributes.addFlashAttribute("msg", "Judge deleted successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", "Cannot delete judge with existing cases");
+        }
         
         return "redirect:/judges/list";
     }

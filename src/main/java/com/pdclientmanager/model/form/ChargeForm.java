@@ -1,9 +1,13 @@
 package com.pdclientmanager.model.form;
 
+import javax.validation.constraints.NotEmpty;
+
 public class ChargeForm {
 
     private Long id;
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String statute;
     
     public ChargeForm () {

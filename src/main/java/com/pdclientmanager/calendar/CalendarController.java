@@ -1,6 +1,7 @@
 package com.pdclientmanager.calendar;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
@@ -28,11 +29,21 @@ public class CalendarController {
     }
 
     @GetMapping("/calendar/management")
-    public String showCalendarManagement() {
-        return "calendar/calendarManagement";
+    public String showCalendarManagement(Model model) {
+        try {
+            List<CaseEvent> upcomingEvents = service.sortCaseEventListChronologically(
+                    service.getListOfAllEventsForCurrentUser());
+            
+            model.addAttribute("events", upcomingEvents);
+            
+            return "calendar/calendarManagement";
+        } catch(IOException e) {
+            System.out.println("Error fetching upcoming events");
+            return "error";
+        }
     }
     
-    @GetMapping("calendar/caseEventForm")
+    @GetMapping("/calendar/caseEventForm")
     public String showCaseEventForm(Model model) {
         CaseEvent caseEvent = new CaseEvent();
         model.addAttribute("caseEvent", caseEvent);
@@ -44,7 +55,7 @@ public class CalendarController {
             BindingResult result, Model model,
             final RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
-            return "redirect:/calendar/caseEventForm";
+            return "calendar/caseEventForm";
         } else {
             try {
             	if(caseEvent.getId() == "") {
@@ -63,7 +74,7 @@ public class CalendarController {
                 redirectAttributes.addFlashAttribute("msg", "Error saving event");
             }
             
-            return "redirect:/cases/byCaseNumber/" + caseEvent.getCaseNumber();
+            return "redirect:/cases/" + caseEvent.getCaseId();
         }
     }
     
@@ -118,7 +129,7 @@ public class CalendarController {
     		service.deleteEvent(eventId);
     		
     		redirectAttributes.addFlashAttribute("css", "success");
-    		redirectAttributes.addFlashAttribute("msg", "Event succcessfully deleted!");
+    		redirectAttributes.addFlashAttribute("msg", "Event successfully deleted!");
     		
     		return "redirect:/calendar/management";
     	} catch(IOException e) {
@@ -134,7 +145,7 @@ public class CalendarController {
             service.deleteEvent(eventId);
             
             redirectAttributes.addFlashAttribute("css", "success");
-            redirectAttributes.addFlashAttribute("msg", "Event succcessfully deleted!");
+            redirectAttributes.addFlashAttribute("msg", "Event successfully deleted!");
             
             return "redirect:/";
         } catch(IOException e) {

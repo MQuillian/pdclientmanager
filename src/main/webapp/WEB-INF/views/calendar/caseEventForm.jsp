@@ -21,12 +21,12 @@
     <div class="form-row">
 	    <div class="form-group col-md-3">
 	    	<label for="startTime">Event start date/time: </label>
-	    	<form:input type="datetime-local" path="startTime" id="startTime" max="9999:12:31T23:59" required="true"/>
+	    	<form:input type="datetime-local" path="startTime" id="startTime" max="9999:12:31T23:59" class="form-control" required="true"/>
 	    	<span id="startTime.errors" class="error"></span>
 	    </div>
 	    <div class="form-group col-md-3">
 	    	<label for="endTime">Event end date/time: </label>
-	    	<form:input type="datetime-local" path="endTime" id="endTime" max="9999:12:31T23:59" required="true"/>
+	    	<form:input type="datetime-local" path="endTime" id="endTime" max="9999:12:31T23:59" class="form-control" required="true"/>
     		<span id="endTime.errors" class="error"></span>
 		</div>
     </div>
@@ -47,6 +47,7 @@
               			<td>
               				<form:input id="caseNumberInput" path="caseNumber" type="text" class="form-control"
 							placeholder="Case number" />
+							<form:input id="caseIdField" path="caseId" type="hidden" />
               			</td>
               			<td>
               				<span id="clientField"></span>
@@ -60,9 +61,10 @@
               		</tr>
               	</tbody>
             </table>
-        </div>
-        <div id="caseNumberInput.errors"></div>    
-    </div>    
+        </div>  
+    </div>
+    <span id="attorney.errors" class="error"></span>
+    <form:errors path="attorney" class="control-label" cssClass="error"/>
 <br> 
 	
 	<div class="form-group">
@@ -75,7 +77,7 @@
 				<form:radiobutton path="description" value="Appointment" />Appointment
 			</label>
 			<br />
-			<form:errors path="description" class="control-label" />
+			<form:errors path="description" class="control-label" cssClass="error" />
 		</div>
 	</div>    
 <br>

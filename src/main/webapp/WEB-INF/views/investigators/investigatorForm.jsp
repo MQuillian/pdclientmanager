@@ -25,7 +25,7 @@
 			<div class="col-sm-10">
 				<form:input path="name" type="text" class="form-control"
 					id="name" placeholder="Name" />
-				<form:errors path="name" class="control-label" />
+				<form:errors path="name" class="control-label" cssClass="error"/>
 			</div>
 		</div>
 	</spring:bind>
@@ -41,7 +41,7 @@
 					<form:radiobutton path="workingStatus" value="INACTIVE" />Inactive
 				</label>
 				<br />
-				<form:errors path="workingStatus" class="control-label" />
+				<form:errors path="workingStatus" class="control-label" cssClass="error" />
 			</div>
 		</div>
 	</spring:bind>

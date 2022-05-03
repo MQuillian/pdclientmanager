@@ -3,8 +3,11 @@ package com.pdclientmanager.calendar;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 public class CaseEventsList {
 
+    @Valid
     private List<CaseEvent> caseEvents;
     
     public CaseEventsList() {

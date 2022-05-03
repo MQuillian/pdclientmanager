@@ -17,7 +17,7 @@ public interface JudgeService {
     
     List<JudgeProjection> findAllActive();
     
-    void delete(final JudgeProjection target);
+    boolean delete(final JudgeProjection target);
     
-    void deleteById(final Long targetId);
+    boolean deleteById(final Long targetId);
 }

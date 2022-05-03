@@ -6,11 +6,11 @@
 		<hr>
 		<a href="admin">System Management</a>
 		<br>
-		<a href="calendar/management">Calendar Management</a>
-		<br>
 		<a href="cases">Case Management</a>
 		<br>
 		<a href="clients">Client Management</a>
+		<br>
+		<a href="calendar/management">Calendar Management</a>
 		<br>
 		<a href="employeeManagement">Employee Management</a>
 		<br>

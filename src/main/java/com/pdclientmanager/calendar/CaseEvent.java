@@ -14,6 +14,9 @@ public class CaseEvent {
     private String caseNumber;
     
     @NotEmpty
+    private String caseId;
+    
+    @NotEmpty
     private String attorney;
     
     @NotEmpty
@@ -30,10 +33,11 @@ public class CaseEvent {
         
     }
     
-    public CaseEvent(String id, String caseNumber, String attorney,
+    public CaseEvent(String id, String caseNumber, String caseId, String attorney,
         String description, String summary, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.caseNumber = caseNumber;
+        this.caseId = caseId;
         this.attorney = attorney;
         this.description = description;
         this.summary = summary;
@@ -55,6 +59,14 @@ public class CaseEvent {
     
     public void setCaseNumber(String caseNumber) {
         this.caseNumber = caseNumber;
+    }
+    
+    public String getCaseId() {
+        return caseId;
+    }
+    
+    public void setCaseId(String caseId) {
+        this.caseId = caseId;
     }
     
     public String getAttorney() {
@@ -109,7 +121,7 @@ public class CaseEvent {
     
     @Override
     public String toString() {
-        return "CaseEvent [id=" + id + ", caseNumber=" + caseNumber + ", attorney=" + attorney + ", investigator="
+        return "CaseEvent [id=" + id + ", caseNumber=" + caseNumber + ", caseId=" + caseId + ", attorney=" + attorney + ", investigator="
                 + ", description=" + description + ", summary=" + summary + ", startTime=" + startTime
                 + ", endTime=" + endTime + "]";
     }

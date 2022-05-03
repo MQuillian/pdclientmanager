@@ -32,6 +32,7 @@ public class CustomCaseLightProjectionSerializer extends StdSerializer<CaseLight
         
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("label", caseProjection.getCaseNumber() + " - " + caseProjection.getClient().getName());
+        jsonGenerator.writeStringField("id", caseProjection.getId().toString());
         jsonGenerator.writeStringField("caseNumber", caseProjection.getCaseNumber());
         jsonGenerator.writeStringField("clientName", caseProjection.getClient().getName());
         jsonGenerator.writeStringField("custodyStatus", custodyStatus);

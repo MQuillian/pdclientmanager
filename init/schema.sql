@@ -182,7 +182,7 @@ begin
 	TRUNCATE TABLE attorneys;
 	INSERT INTO attorneys VALUES (1, 'Matt Quillian', 0, 1), (2, 'John Doe', 0, 2), (3, 'Jane Smith', 1, NULL), (4, 'Matt Schneider', 1, NULL);
 	TRUNCATE TABLE clients;
-	INSERT INTO clients VALUES (1, 'Eric Hoefle', 0, '2018-07-16', NULL), (2, 'Jason Baddorf', 0, '2018-05-14', NULL), (3, 'Jamie Jameson', 1, '2018-08-23', '2018-08-25'), (4, 'Marky Mark', 1, '2017-10-17', '2017-11-17'), (5, 'Phteven McButton', 0, '2017-08-16', NULL), (6, 'Atticus Finch', 1, '2018-06-07', '2018-06-09'), (7, 'Erica Erickson', 0, '2018-07-16', NULL), (8, 'Fblthp NLN', 0, '2018-03-29', NULL), (9, 'Jimmy Fallon', 0, '2017-07-20', NULL), (10,'Hamilton Holmes', 1, '2018-11-05', '2018-11-20');
+	INSERT INTO clients VALUES (1, 'Eric Hoefle', 0, '2018-07-16', NULL), (2, 'Jason Baddorf', 0, '2018-05-14', NULL), (3, 'Jamie Jameson', 1, '2018-08-23', '2018-08-25'), (4, 'Marky Mark', 1, '2017-10-17', '2017-11-17'), (5, 'Phteven McButton', 0, '2017-08-16', NULL), (6, 'Atticus Finch', 1, '2018-06-07', '2018-06-09'), (7, 'Erica Erickson', 0, '2018-07-16', NULL), (8, 'Ned Ryerson', 0, '2018-03-29', NULL), (9, 'Jimmy Fallon', 0, '2017-07-20', NULL), (10,'Hamilton Holmes', 1, '2018-11-05', '2018-11-20');
 	TRUNCATE TABLE judges;
 	INSERT INTO judges VALUES (1, 'Horace Johnson', 0), (2, 'John Mott', 0);
 	TRUNCATE TABLE cases;
@@ -246,3 +246,4 @@ CALL RESET_SECURITY_DATA;
 
 GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON *.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
 GRANT SELECT ON mysql.proc TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+FLUSH PRIVILEGES;

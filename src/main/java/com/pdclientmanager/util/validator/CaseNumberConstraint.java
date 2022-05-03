@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CaseNumberConstraint {
 
-    String message() default "Invalid case number";
+    String message() default "Invalid case number - Please use ##J#### format";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

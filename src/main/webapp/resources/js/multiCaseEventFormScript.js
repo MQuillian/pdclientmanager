@@ -20,23 +20,23 @@ const caseAutocompleteOptions = {
 	        if (!ui.item) {
 	            this.value = '';
 	            
-	            const clientField = this.id + ".client";
-	            $('#' + clientField).text('');
-	            
-	            const attorneyField = this.id + ".attorney";
-	            $('#' + attorneyField).val('');
-	            
-	            const custodyField = this.id + ".custodyStatus";
-	            $('#' + custodyField).text('');
-	            
-	            const errorField = this.id + ".errors";
-	            document.getElementById(errorField).innerHTML = 'Please enter a valid case number';
+	            document.getElementById(this.id + '.caseId').value = '';
+	            document.getElementById(this.id + '.client').innerHTML = '';
+	            document.getElementById(this.id + '.attorney').value = '';
+	            document.getElementById(this.id + '.custodyStatus').innerHTML = '';
+	            document.getElementById(this.id + '.errors').textContent = 'Please select a valid case from the menu';
         	}
 	    },
 	    select: function( event, ui ) {
 		     event.preventDefault();
 		     $(this).val(ui.item.caseNumber);
+		     
+		     const errorField = this.id +".errors";
+		     document.getElementById(errorField).textContent = '';
 	            
+		     const caseIdField = this.id + ".caseId";
+		     document.getElementById(caseIdField).value = ui.item.id;
+		     
      		 const clientField = this.id + ".client";
              document.getElementById(clientField).innerHTML = ui.item.clientName;
             
@@ -59,7 +59,7 @@ function validateEndTime() {
 	const endTimeElement = document.getElementById('endTime');
 	const endTimeValue = endTimeElement.value;
 	const startTimeValue = document.getElementById('startTime').value;
-	const endTimeIsValid = true;
+	let endTimeIsValid = true;
 	
 	const endTimeYear = endTimeValue.substring(0,4);
 	const startTimeYear = startTimeValue.substring(0,4);
@@ -128,7 +128,7 @@ function newRow() {
 	label.innerText = (caseEventNumber + 1) + ". ";
     cell0.appendChild(label);
         
-     // CREATE HIDDEN INPUTS TO STORE TIMES AND INVESTIGATOR IN NEW ROW
+     // CREATE HIDDEN INPUTS TO STORE TIMES AND ID IN NEW ROW
     const startTimeInput = document.createElement('INPUT');
 	startTimeInput.id = "startTime" + caseEventNumber + "hidden";
 	startTimeInput.type = "hidden";
@@ -149,6 +149,13 @@ function newRow() {
 	descriptionInput.name = "caseEvents[" + caseEventNumber + "].description";
 	descriptionInput.value = "Court appearance";
 	cell0.appendChild(descriptionInput);
+	
+	const caseIdInput = document.createElement('INPUT');
+	caseIdInput.id = "caseEvent" + caseEventNumber + ".caseId";
+	caseIdInput.name = "caseEvents[" + caseEventNumber + "].caseId"
+	caseIdInput.value = "";
+	caseIdInput.type = "hidden";
+	cell0.appendChild(caseIdInput);
 
     // CREATE INPUT FOR NEW ROW
 	const cell1 = row.insertCell(1);
@@ -156,7 +163,9 @@ function newRow() {
     caseNumberInput.id = "caseEvent" + caseEventNumber;
     caseNumberInput.name= "caseEvents[" + caseEventNumber + "].caseNumber";
     caseNumberInput.classList.add('caseEventCaseNumberInput');
+    caseNumberInput.classList.add('form-control');
     caseNumberInput.placeholder = "Case number";
+    caseNumberInput.required = true;
     $(caseNumberInput).autocomplete(caseAutocompleteOptions);
     cell1.appendChild(caseNumberInput);
     
@@ -172,7 +181,8 @@ function newRow() {
     const attorneyInput = document.createElement('INPUT');
     attorneyInput.id = "caseEvent" + caseEventNumber + ".attorney";
     attorneyInput.name= "caseEvents[" + caseEventNumber + "].attorney";
-    attorneyInput.setAttribute('disabled', true);
+    attorneyInput.value = "";
+    attorneyInput.readOnly = true;
     attorneyInput.classList.add('attorneyInput','form-control-plaintext','padding-m');
     attorneyInput.placeholder = "";
     cell3.appendChild(attorneyInput);
@@ -188,7 +198,7 @@ function newRow() {
    	const errorField = document.createElement('DIV');
 	errorField.id = "caseEvent" + caseEventNumber + ".errors";
 	errorField.classList.add('error');
-	cell1.appendChild(errorField);
+	cell4.appendChild(errorField);
 }
 	
 function deleteRow(){

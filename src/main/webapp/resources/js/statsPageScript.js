@@ -12,6 +12,7 @@ function generateStats() {
 				
 				for(i = 0; i < result.agingReport.length; i++) {
 					let table = document.getElementById("agingReportTable");
+					table.innerHTML = '';
 				    let row = table.insertRow(i);
 				    
 				    // CREATE SPAN FOR NAME

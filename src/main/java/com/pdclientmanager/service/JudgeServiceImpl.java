@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pdclientmanager.model.form.JudgeForm;
+import com.pdclientmanager.model.projection.CaseLightProjection;
 import com.pdclientmanager.model.projection.JudgeProjection;
+import com.pdclientmanager.repository.CaseRepository;
 import com.pdclientmanager.repository.JudgeRepository;
 import com.pdclientmanager.repository.entity.Judge;
 import com.pdclientmanager.repository.entity.WorkingStatus;
@@ -19,11 +21,14 @@ import com.pdclientmanager.util.mapper.JudgeMapper;
 public class JudgeServiceImpl implements JudgeService {
 
     private JudgeRepository repository;
+    private CaseRepository caseRepository;
     private JudgeMapper mapper;
     
     @Autowired
-    public JudgeServiceImpl(JudgeRepository repository, JudgeMapper mapper) {
+    public JudgeServiceImpl(JudgeRepository repository, CaseRepository caseRepository,
+            JudgeMapper mapper) {
         this.repository = repository;
+        this.caseRepository = caseRepository;
         this.mapper = mapper;
     }
     
@@ -68,14 +73,19 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Override
     @Transactional
-    public void delete(JudgeProjection judge) {
-        repository.deleteById(judge.getId());
+    public boolean delete(JudgeProjection judge) {
+        return deleteById(judge.getId());
     }
 
     @Override
     @Transactional
-    public void deleteById(Long targetId) {
-        repository.deleteById(targetId);
+    public boolean deleteById(Long targetId) {
+        if(caseRepository.findByJudge_Id(targetId, CaseLightProjection.class).isEmpty()) {
+            repository.deleteById(targetId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

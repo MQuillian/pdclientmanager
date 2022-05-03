@@ -30,9 +30,9 @@ public class EventMapperDecorator implements EventMapper {
         
         Map<String, String> eventProperties = googleEvent.getExtendedProperties().getPrivate();
         
-        result.setCaseNumber(eventProperties.get("caseNumber").toString());
-        result.setAttorney(eventProperties.get("attorney").toString());
-        
+        result.setCaseNumber(eventProperties.get("caseNumber"));
+        result.setCaseId(eventProperties.get("caseId"));
+        result.setAttorney(eventProperties.get("attorney"));    
         
         return result;
     }
@@ -46,6 +46,7 @@ public class EventMapperDecorator implements EventMapper {
         
         Map<String, String> privateProps = new HashMap<>();
         privateProps.put("caseNumber", event.getCaseNumber());
+        privateProps.put("caseId", event.getCaseId());
         privateProps.put("attorney", event.getAttorney());
         
         result.setExtendedProperties(new ExtendedProperties());

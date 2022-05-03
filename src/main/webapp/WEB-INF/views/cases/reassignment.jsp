@@ -13,8 +13,8 @@
     
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-5 control-label">Reassign caseload from:</label>
-			<div class="col-sm-2">
-				<select name="prevAssignedAttorneyId" size="5" required>
+			<div class="col-sm-3">
+				<select name="prevAssignedAttorneyId" size="5" class="form-control" required>
 					<c:forEach var="attorney"  items="${activeAttorneys}">
 						<option value="${attorney.id}">${attorney.name}</option>
 					</c:forEach>
@@ -25,8 +25,8 @@
 	
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-5 control-label">Reassign caseload to:</label>
-			<div class="col-sm-5">
-				<select name="newAssignedAttorneyId" size="5" required>
+			<div class="col-sm-3">
+				<select name="newAssignedAttorneyId" size="5" class="form-control" required>
 					<c:forEach var="attorney"  items="${activeAttorneys}">
 						<option value="${attorney.id}">${attorney.name}</option>
 					</c:forEach>
@@ -37,7 +37,7 @@
 		
 		<div class="form-group">
 			<label class="col-sm-5 control-label">Select cases to reassign:</label>
-			<div class="col-sm-10">
+			<div class="col-sm-5">
 				<div class="radio">
 					<input type="radio" name="reassignedCases" value="openCases" checked />Open cases only
 				</div>

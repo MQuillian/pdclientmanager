@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,6 +120,18 @@ public class GoogleCalendarServiceImpl implements CalendarService {
         return mapper.toListCaseEventFromListEvent(events.getItems());
     }
     
+    @Override
+    public List<CaseEvent> getListOfAllFutureEventsByCaseId(String searchTerm) throws IOException {
+        Events events = getFutureEventsFromSearchTerm("caseId", searchTerm, "primary");
+        return mapper.toListCaseEventFromListEvent(events.getItems());
+    }
+    
+    @Override
+    public List<CaseEvent> getListOfAllFutureEventsByAttorney(String searchTerm) throws IOException {
+        Events events = getFutureEventsFromSearchTerm("attorney", searchTerm, "primary");
+        return mapper.toListCaseEventFromListEvent(events.getItems());
+    }
+    
     public CaseEvent addEvent(CaseEvent event, String calId) throws IOException {
         Event googleEvent = mapper.toEventFromCaseEvent(event);
         googleEvent = calendar.events().insert(calId, googleEvent).execute();
@@ -126,7 +139,7 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     }
     
     public void batchInsertEvents(List<CaseEvent> caseEvents, String calId) throws IOException {
-        
+
         // LIMIT BATCH SIZE TO <50 events DUE TO API CONSTRAINTS
         int currentIndex = 0;
         
@@ -199,6 +212,12 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     public void deleteEvent(String eventId) throws IOException {
     	deleteEvent(eventId, "primary");
     }
+    
+    @Override
+    public List<CaseEvent> sortCaseEventListChronologically(List<CaseEvent> caseEvents) {
+        Collections.sort(caseEvents, new ChronologicalCaseEventsComparator());
+        return caseEvents;
+    }
 
     private DateTime getTodaysDateTime() {
         return DateTime.parseRfc3339(LocalDate.now().toString().concat("T00:00:00.00z"));
@@ -245,6 +264,14 @@ public class GoogleCalendarServiceImpl implements CalendarService {
         batch.execute();
     }
     
+    private Events getFutureEventsFromSearchTerm(String propertyName, String searchTerm, String calId) throws IOException {
+        List<String> searchTerms = new ArrayList<>();
+        searchTerms.add(propertyName + "=" + searchTerm);
+        return calendar.events().list(calId)
+            .setPrivateExtendedProperty(searchTerms)
+            .setTimeMin(getTodaysDateTime())
+            .execute();
+    }
     
     // The below methods are intended solely for use in creating a test calendar
     
@@ -264,5 +291,20 @@ public class GoogleCalendarServiceImpl implements CalendarService {
     
     public List<CaseEvent> getAllEvents(String calId) throws IOException {
         return mapper.toListCaseEventFromListEvent(calendar.events().list(calId).execute().getItems());
+    }
+    
+    private static class ChronologicalCaseEventsComparator implements Comparator<CaseEvent> {
+
+        @Override
+        public int compare(CaseEvent arg0, CaseEvent arg1) {
+            if(arg0.getStartTime().compareTo(arg1.getStartTime()) != 0) {
+                return arg0.getStartTime().compareTo(arg1.getStartTime());
+            } else if(arg0.getEndTime().compareTo(arg1.getEndTime()) != 0) {
+                return arg0.getEndTime().compareTo(arg1.getEndTime());
+            } else {
+                return arg0.getCaseNumber().compareTo(arg1.getCaseNumber());
+            }
+        }
+        
     }
 }
