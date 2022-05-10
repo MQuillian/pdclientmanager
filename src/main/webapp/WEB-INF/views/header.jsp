@@ -40,6 +40,7 @@
 		        	<a class="dropdown-item" href="${contextPath}/cases">Case management</a>
 		        	<a class="dropdown-item" href="${contextPath}/cases/list">Full list</a>
 		        	<a class="dropdown-item" href="${contextPath}/cases/add">Add case</a>
+		        	<a class="dropdown-item" href="${contextPath}/cases/reassignment">Reassign caseload</a>
 		        </div>
 		      </li>
 		      <li class="nav-item dropdown">

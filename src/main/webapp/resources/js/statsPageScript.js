@@ -10,10 +10,9 @@ function generateStats() {
 				document.getElementById('totalClients').innerHTML = "Number of clients: " + result.totalClients;
 				document.getElementById('inCustodyClients').innerHTML = "Number of in-custody clients: " + result.inCustodyClients;
 				
+				let newTable = document.createElement('tbody');
 				for(i = 0; i < result.agingReport.length; i++) {
-					let table = document.getElementById("agingReportTable");
-					table.innerHTML = '';
-				    let row = table.insertRow(i);
+				    let row = newTable.insertRow(i);
 				    
 				    // CREATE SPAN FOR NAME
 				    let cell0 = row.insertCell(0);
@@ -23,5 +22,8 @@ function generateStats() {
 					let cell1 = row.insertCell(1);
 					cell1.innerHTML = result.agingReport[i].incarcerationDate;
 				}
+				
+				let oldTable = document.getElementById("agingReportTable");
+				oldTable.parentNode.replaceChild(newTable, oldTable);
   }});
 }

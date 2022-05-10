@@ -16,11 +16,6 @@
 		<br>
 		<a href="individualStats">Individual Statistics</a>
 		<br>
-		<br>
-		<form:form action="reset" method="post">
-			<button class="btn btn-danger" type="submit">
-			Reset Data (FOR DEMO USE ONLY)</button>
-		</form:form>
 	</div>
 	<div class="col-8">
 	<h2>Upcoming Events</h2>

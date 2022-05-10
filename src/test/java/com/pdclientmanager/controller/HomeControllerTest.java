@@ -34,7 +34,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.pdclientmanager.calendar.CalendarService;
 import com.pdclientmanager.calendar.CaseEvent;
 import com.pdclientmanager.config.WebConfigTest;
-import com.pdclientmanager.repository.DemoDao;
 import com.pdclientmanager.service.AttorneyService;
 
 @ExtendWith(SpringExtension.class)
@@ -42,9 +41,6 @@ import com.pdclientmanager.service.AttorneyService;
 @ContextConfiguration(classes = {WebConfigTest.class})
 @TestInstance(Lifecycle.PER_CLASS)
 public class HomeControllerTest {
-    
-    @Mock
-    private DemoDao demoDaoMock;
     
     @Mock
     private CalendarService calendarServiceMock;
