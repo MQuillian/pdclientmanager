@@ -7,7 +7,7 @@
 <a href="${contextPath}/cases/byCaseNumber/${caseNumber}">Return to ${caseNumber}</a>
 <hr />
 
-<spring:url value="/documents/${caseNumber}/upload" var="uploadActionUrl" />
+<spring:url value="/documents/${caseId}/${caseNumber}/upload" var="uploadActionUrl" />
 
 <form:form class="form-horizontal" modelAttribute="document" enctype="multipart/form-data" method="post" action="${uploadActionUrl}">
     

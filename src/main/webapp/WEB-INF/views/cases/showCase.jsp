@@ -75,8 +75,8 @@
 <br>
 <div class="row">
 	<div class="btn-group" role="group">
-		<spring:url value="/documents/${courtCase.caseNumber}/upload" var="uploadUrl" />
-		<spring:url value="/documents/${courtCase.caseNumber}/list" var="listFilesUrl" />
+		<spring:url value="/documents/${courtCase.id}/${courtCase.caseNumber}/upload" var="uploadUrl" />
+		<spring:url value="/documents/${courtCase.id}/${courtCase.caseNumber}/list" var="listFilesUrl" />
 		
 		<button class="btn btn-success"
 			onclick="location.href='${uploadUrl}'">Upload document</button>

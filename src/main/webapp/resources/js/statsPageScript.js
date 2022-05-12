@@ -24,6 +24,7 @@ function generateStats() {
 				}
 				
 				let oldTable = document.getElementById("agingReportTable");
+				newTable.id = "agingReportTable";
 				oldTable.parentNode.replaceChild(newTable, oldTable);
   }});
 }

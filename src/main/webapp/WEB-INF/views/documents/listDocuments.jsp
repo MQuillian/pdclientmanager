@@ -18,8 +18,8 @@
 			<td>${document}</td>
 			<td>
 				<div class="btn-group" role="group">
-					<spring:url value="/documents/${caseNumber}/view/${document}" var="viewUrl" />
-					<spring:url value="/documents/${caseNumber}/delete/${document}" var="deleteUrl" />
+					<spring:url value="/documents/${caseId}/view/${document}" var="viewUrl" />
+					<spring:url value="/documents/${caseId}/delete/${document}" var="deleteUrl" />
 					
 					<button class="btn btn-primary"
 						onclick="window.open('${viewUrl}', '_blank')">View</button>

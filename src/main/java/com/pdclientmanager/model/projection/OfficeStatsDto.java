@@ -45,5 +45,12 @@ public class OfficeStatsDto {
         this.inCustodyAvgAge = inCustodyAvgAge;
     }
     
+    public double getRoundedTotalAvgAge() {
+        return Math.round(totalAvgAge * 100) / 100;
+    }
+    
+    public double getRoundedInCustodyAvgAge() {
+        return Math.round(inCustodyAvgAge * 100) / 100;
+    }
     
 }

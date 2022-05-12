@@ -30,19 +30,21 @@ public class DocumentController {
         this.caseService = caseService;
     }
 
-    @GetMapping("/documents/{caseNumber}/upload")
-    public String showUploadDocumentForm(@PathVariable("caseNumber") String caseNumber, Model model,
+    @GetMapping("/documents/{id}/{caseNumber}/upload")
+    public String showUploadDocumentForm(@PathVariable("id") String caseId,
+            @PathVariable("caseNumber") String caseNumber, Model model,
             final RedirectAttributes redirectAttributes) {
         
-        
         model.addAttribute("caseNumber", caseNumber);
+        model.addAttribute("caseId", caseId);
         model.addAttribute("document", new Document()); 
         
         return "documents/fileUpload";
     }
     
-    @PostMapping(path = "/documents/{caseNumber}/upload")
-    public String uploadDocument(@PathVariable("caseNumber") String caseNumber,
+    @PostMapping(path = "/documents/{id}/{caseNumber}/upload")
+    public String uploadDocument(@PathVariable("id") String caseId,
+            @PathVariable("caseNumber") String caseNumber,
             @ModelAttribute("document") @Valid Document document, BindingResult result,
             Model model, final RedirectAttributes redirectAttributes) {
             
@@ -52,32 +54,31 @@ public class DocumentController {
                 redirectAttributes.addFlashAttribute("css", "danger");
                 redirectAttributes.addFlashAttribute("msg", "File and file name cannot be empty");
                 
-                return "redirect:/documents/" + caseNumber + "/upload";
+                return "redirect:/documents/" + caseId + "/" + caseNumber + "/upload";
                 
             } else {
-                documentService.uploadFile(caseNumber, document.getFileName(), document.getFile());
+                documentService.uploadFile(caseId, document.getFileName(), document.getFile());
                 
                 redirectAttributes.addFlashAttribute("css", "success");
                 redirectAttributes.addFlashAttribute("msg", "Document saved successfully!");
-                Long id = caseService.findByCaseNumber(caseNumber, CaseLightProjection.class).getId();
                 
-                return "redirect:/cases/" + id;
+                return "redirect:/cases/" + caseId;
             }
         } catch(Exception e) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", "Error with document storage");
         
-            return "redirect:/documents/" + caseNumber + "/upload";
+            return "redirect:/documents/" + caseId + "/upload";
         }
     }
     
-    @GetMapping("/documents/{caseNumber}/view/{fileName}")
-    public String showUploadDocumentForm(@PathVariable("caseNumber") String caseNumber,
+    @GetMapping("/documents/{id}/view/{fileName}")
+    public String showDocument(@PathVariable("id") String caseId,
             @PathVariable("fileName") String fileName,
             final RedirectAttributes redirectAttributes) {
         
         try {
-            URL url = documentService.getDownloadUrl(caseNumber, fileName);
+            URL url = documentService.getDownloadUrl(caseId, fileName);
             
             return "redirect:" + url.toString();
         } catch(Exception e) {
@@ -88,12 +89,15 @@ public class DocumentController {
         }
     }
     
-    @GetMapping("/documents/{caseNumber}/list")
-    public String showDocumentList(@PathVariable("caseNumber") String caseNumber, 
+    @GetMapping("/documents/{id}/{caseNumber}/list")
+    public String showDocumentList(@PathVariable("id") String caseId, 
+            @PathVariable("caseNumber") String caseNumber,
             Model model, final RedirectAttributes redirectAttributes) {
         
         try {
-            List<String> documentNames = documentService.listFiles(caseNumber);
+            List<String> documentNames = documentService.listFiles(caseId);
+            model.addAttribute("caseId", caseId);
+            model.addAttribute("caseNumber", caseNumber);
             model.addAttribute("documents", documentNames);
             
             return "documents/listDocuments";
@@ -105,24 +109,24 @@ public class DocumentController {
         }
     }
     
-    @PostMapping("/documents/{caseNumber}/delete/{document}")
-    public String deleteDocumentById(@PathVariable("caseNumber") String caseNumber,
+    @PostMapping("/documents/{id}/delete/{document}")
+    public String deleteDocumentById(@PathVariable("id") String caseId,
             @PathVariable("document") String fileName,
             final RedirectAttributes redirectAttributes) {
         try {
-            documentService.deleteFile(caseNumber, fileName);
+            documentService.deleteFile(caseId, fileName);
 
             redirectAttributes.addFlashAttribute("css", "success");
             redirectAttributes.addFlashAttribute("msg", "Document is deleted!");
             
-            Long id = caseService.findByCaseNumber(caseNumber, CaseLightProjection.class).getId();
+            Long id = caseService.findByCaseNumber(caseId, CaseLightProjection.class).getId();
             
             return "redirect:/cases/" + id;
         } catch(Exception e) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", "Error with document deletion");
             
-            return "redirect:/documents/" + caseNumber + "/list";
+            return "redirect:/documents/" + caseId + "/list";
         }
     }
 }

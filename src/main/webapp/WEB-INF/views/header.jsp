@@ -19,6 +19,7 @@
 		<link rel="stylesheet" href="<spring:url value="/resources/css/jquery-ui.min.css" />">
 		<link rel="stylesheet" href="<spring:url value="/resources/css/bootstrap.min.css" />">
 		<link rel="stylesheet" href="<spring:url value="/resources/css/global.css" />">
+		<link rel="shortcut icon" href="/pdclientmanager/favicon.ico" />
 		<script> var contextPathVar = "${pageContext.request.contextPath}"</script>
 		<script src="<spring:url value="/resources/js/jquery-3.4.1.js" />"></script>
   		<script src="<spring:url value="/resources/js/jquery-ui.min.js" />"></script>

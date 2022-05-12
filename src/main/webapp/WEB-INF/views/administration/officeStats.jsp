@@ -16,12 +16,12 @@
 
 <div class="row">
 	<label class="col-sm-3">Average age of all open cases</label>
-	<div class="col-sm-8">${officeStats.totalAvgAge} days</div>
+	<div class="col-sm-8">${officeStats.roundedTotalAvgAge} days</div>
 </div>
 
 <div class="row">
 	<label class="col-sm-3">Average age of in-custody cases</label>
-	<div class="col-sm-8">${officeStats.inCustodyAvgAge} days</div>
+	<div class="col-sm-8">${officeStats.roundedInCustodyAvgAge} days</div>
 </div>
 
 <%@ include file = "../footer.jsp" %>

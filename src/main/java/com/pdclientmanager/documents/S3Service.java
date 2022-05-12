@@ -49,13 +49,13 @@ public class S3Service implements DocumentStorageService {
     }
     
     @Override
-    public void uploadFile(String caseNumber, String fileName, MultipartFile file)
+    public void uploadFile(String caseId, String fileName, MultipartFile file)
         throws AwsServiceException, SdkClientException, S3Exception, IOException {
         //NOTE: for cost-saving/demo purposes, objects expire 1 hr after upload and delete 24 hours after that
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .contentType("application/pdf")
-                .key(generateObjectKey(caseNumber, fileName))
+                .key(generateObjectKey(caseId, fileName))
                 .expires(Instant.now().plusSeconds(3600L))
                 .build();
         
@@ -63,10 +63,10 @@ public class S3Service implements DocumentStorageService {
     }
     
     @Override
-    public URL getDownloadUrl(String caseNumber, String fileName) throws AwsServiceException, SdkClientException, S3Exception {
+    public URL getDownloadUrl(String caseId, String fileName) throws AwsServiceException, SdkClientException, S3Exception {
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(bucketName)
-                .key(generateObjectKey(caseNumber, fileName))
+                .key(generateObjectKey(caseId, fileName))
                 .responseContentType("application/pdf")
                 .build();
         
@@ -82,10 +82,10 @@ public class S3Service implements DocumentStorageService {
     }
     
     @Override
-    public List<String> listFiles(String caseNumber) throws AwsServiceException, SdkClientException, S3Exception {
+    public List<String> listFiles(String caseId) throws AwsServiceException, SdkClientException, S3Exception {
         ListObjectsRequest listObjects = ListObjectsRequest.builder()
                 .bucket(bucketName)
-                .prefix(generateListPrefix(caseNumber))
+                .prefix(generateListPrefix(caseId))
                 .build();
         
         ListObjectsResponse res = s3Client.listObjects(listObjects);
@@ -98,20 +98,20 @@ public class S3Service implements DocumentStorageService {
     }
     
     @Override
-    public void deleteFile(String caseNumber, String fileName) throws AwsServiceException, SdkClientException, S3Exception {
+    public void deleteFile(String caseId, String fileName) throws AwsServiceException, SdkClientException, S3Exception {
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                 .bucket(bucketName)
-                .key(generateObjectKey(caseNumber, fileName))
+                .key(generateObjectKey(caseId, fileName))
                 .build();
         
         s3Client.deleteObject(deleteObjectRequest);
     }
     
-    private String generateObjectKey(String caseNumber, String fileName) {
-        return "Documents/" + caseNumber + "/" + fileName;
+    private String generateObjectKey(String caseId, String fileName) {
+        return "Documents/" + caseId + "/" + fileName;
     }
     
-    private String generateListPrefix(String caseNumber) {
-        return "Documents/" + caseNumber + "/";
+    private String generateListPrefix(String caseId) {
+        return "Documents/" + caseId + "/";
     }
 }
