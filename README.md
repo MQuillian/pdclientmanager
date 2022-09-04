@@ -1,5 +1,5 @@
-# [PDClientManager](http://pdcm-alb-1-1934426545.us-west-2.elb.amazonaws.com/pdclientmanager)
-NOTE: The deployed application is only available from 16:00 - 23:00 UTC (9am - 4pm PDT) in order to save on costs.
+# [PDClientManager](http://54.191.32.153/pdclientmanager/)
+NOTE: The application is currently deployed on a single EC2 instance for cost-saving purposes
 
 PDClientManager is a webapp for efficiently managing the clients and caseload of a public defender's office. By streamlining processes for creating and controlling the various records, PDClientManager offers the support and tools necessary to achieve the optimal results for clients.
 
@@ -18,7 +18,7 @@ PDClientManager tracks and displays various metrics, such as aging reports, that
 * Secured login credentials and endpoints via Spring Security
 * Form validation using JavaScript and Spring validators
 * AOP exception handlers to intercept and handle exceptions
-* Dockerized deployment to AWS EC2 using an Auto Scaling Group and Application Load Balancer to enable high availability and fault tolerance
+* Dockerized deployment to AWS EC2 to allow use of an Auto Scaling Group and Application Load Balancer to enable high availability and fault tolerance
 * JUnit unit tests and MockMVC integration tests  to provide immediate development feedback, identify bugs, and protect application integrity
 
 ## Project Packages Description
@@ -40,8 +40,8 @@ PDClientManager tracks and displays various metrics, such as aging reports, that
 
 ## Usage
 
-The application has been deployed on AWS and may be accessed [here](http://pdcm-alb-1-1934426545.us-west-2.elb.amazonaws.com/pdclientmanager).
-NOTE: The deployed application is only available from 16:00 - 23:00 UTC (9am - 4pm PDT) in order to save on costs.
+The application has been deployed on AWS and may be accessed [here](http://54.191.32.153/pdclientmanager/)
+NOTE: The application is currently deployed on a single EC2 instance for cost-saving purposes
 
 ![pdcm-home](https://user-images.githubusercontent.com/38482544/167959086-437e9d8a-3c6f-4030-86e2-682fefae6999.PNG)
 
